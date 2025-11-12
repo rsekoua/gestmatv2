@@ -1,27 +1,28 @@
 <?php
 
-namespace App\Filament\Resources\Attributions\Tables;
+namespace App\Filament\Resources\Materiels\RelationManagers;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class AttributionsTable
+class AttributionsRelationManager extends RelationManager
 {
-    /**
-     * @throws \Exception
-     */
-    public static function configure(Table $table): Table
+    protected static string $relationship = 'attributions';
+
+    protected static ?string $title = 'Historique des Attributions';
+
+    protected static ?string $recordTitleAttribute = 'numero_decharge_att';
+
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('numero_decharge_att')
             ->columns([
                 TextColumn::make('numero_decharge_att')
                     ->label('N° Décharge')
@@ -34,15 +35,6 @@ class AttributionsTable
                     ->copyMessage('Numéro copié!')
                     ->copyMessageDuration(1500),
 
-                TextColumn::make('materiel.nom')
-                    ->label('Matériel')
-                    ->icon(Heroicon::ComputerDesktop)
-                    ->iconColor('info')
-                    ->searchable()
-                    ->sortable()
-                    ->description(fn ($record): string => $record->materiel?->numero_serie ?? '—')
-                    ->wrap(),
-
                 TextColumn::make('employee.full_name')
                     ->label('Employé')
                     ->icon(Heroicon::User)
@@ -50,7 +42,11 @@ class AttributionsTable
                     ->searchable(['nom', 'prenom'])
                     ->sortable()
                     ->description(fn ($record): string => $record->employee?->service?->nom ?? 'Aucun service')
-                    ->wrap(),
+                    ->wrap()
+                    ->url(fn ($record): string => $record->employee
+                        ? route('filament.admin.resources.employees.view', ['record' => $record->employee])
+                        : '#'
+                    ),
 
                 TextColumn::make('date_attribution')
                     ->label('Date Attribution')
@@ -77,7 +73,32 @@ class AttributionsTable
                     ->iconColor('gray')
                     ->sortable()
                     ->alignCenter()
-                    ->tooltip('Durée de l\'attribution'),
+                    ->badge()
+                    ->color(fn ($state): string => match (true) {
+                        $state < 30 => 'success',
+                        $state < 180 => 'warning',
+                        default => 'danger',
+                    }),
+
+                TextColumn::make('etat_fonctionnel_res')
+                    ->label('État Retour')
+                    ->badge()
+                    ->color(fn (?string $state): string => match ($state) {
+                        'parfait' => 'success',
+                        'defauts_mineurs' => 'success',
+                        'dysfonctionnements' => 'warning',
+                        'hors_service' => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'parfait' => 'Parfait',
+                        'defauts_mineurs' => 'Défauts mineurs',
+                        'dysfonctionnements' => 'Dysfonctionnements',
+                        'hors_service' => 'Hors service',
+                        default => '—',
+                    })
+                    ->placeholder('—')
+                    ->toggleable(),
 
                 TextColumn::make('decision_res')
                     ->label('Décision')
@@ -95,65 +116,33 @@ class AttributionsTable
                         default => '—',
                     })
                     ->placeholder('—')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('created_at')
-                    ->label('Créé le')
-                    ->dateTime('d/m/Y à H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->icon(Heroicon::Clock)
-                    ->tooltip(fn ($record): string => $record->created_at->diffForHumans()),
+                    ->toggleable(),
             ])
             ->filters([
                 TernaryFilter::make('status')
                     ->label('Statut')
-                    ->placeholder('Tous')
+                    ->placeholder('Toutes')
                     ->trueLabel('Actives')
                     ->falseLabel('Clôturées')
                     ->queries(
                         true: fn (Builder $query) => $query->active(),
                         false: fn (Builder $query) => $query->closed(),
                     ),
-
-                SelectFilter::make('materiel_id')
-                    ->label('Matériel')
-                    ->relationship('materiel', 'numero_serie')
-                    ->searchable(['numero_serie', 'marque', 'modele'])
-                    ->preload()
-                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->nom} ({$record->numero_serie})"),
-
-                SelectFilter::make('employee_id')
-                    ->label('Employé')
-                    ->relationship('employee', 'nom')
-                    ->searchable()
-                    ->preload()
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name),
-
-                SelectFilter::make('decision_res')
-                    ->label('Décision de restitution')
-                    ->options([
-                        'remis_en_stock' => 'Remis en Stock',
-                        'a_reparer' => 'À Réparer',
-                        'rebut' => 'Rebut',
-                    ]),
             ])
-            ->recordActions([
+            ->headerActions([
+                // On peut ajouter une action pour créer une attribution depuis le matériel
+            ])
+            ->actions([
                 ViewAction::make()
-                    ->iconButton(),
-                EditAction::make()
-                    ->iconButton(),
+                    ->url(fn ($record): string => route('filament.admin.resources.attributions.view', ['record' => $record])),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->requiresConfirmation(),
-                ]),
+            ->bulkActions([
+                // Pas d'actions en masse sur les attributions depuis cette vue
             ])
-            ->emptyStateHeading('Aucune attribution trouvée')
-            ->emptyStateDescription('Commencez par créer votre première attribution en cliquant sur le bouton ci-dessous.')
+            ->emptyStateHeading('Aucune attribution')
+            ->emptyStateDescription('Ce matériel n\'a jamais été attribué.')
             ->emptyStateIcon(Heroicon::ArrowsRightLeft)
             ->defaultSort('date_attribution', 'desc')
-            ->striped();
+            ->paginated([10, 25, 50]);
     }
 }

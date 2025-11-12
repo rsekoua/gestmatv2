@@ -33,11 +33,20 @@ class AttributionForm
                     ->schema([
                         Select::make('materiel_id')
                             ->label('Matériel')
-                            ->relationship('materiel', 'numero_serie')
+                            ->relationship(
+                                name: 'materiel',
+                                titleAttribute: 'numero_serie',
+                                modifyQueryUsing: fn ($query, $record) => $record
+                                    ? $query
+                                    : $query->where('statut', 'disponible')
+                            )
                             ->searchable(['numero_serie', 'marque', 'modele'])
                             ->preload()
                             ->required()
-                            ->helperText('Sélectionnez le matériel à attribuer')
+                            ->helperText(fn ($record) => $record
+                                ? 'Matériel actuellement attribué'
+                                : 'Seuls les matériels disponibles sont affichés'
+                            )
                             ->getOptionLabelFromRecordUsing(fn (Materiel $record) => "{$record->nom} ({$record->numero_serie})")
                             ->columnSpan(1),
 
@@ -132,9 +141,10 @@ class AttributionForm
                         Select::make('etat_fonctionnel_res')
                             ->label('État Fonctionnel')
                             ->options([
-                                'fonctionnel' => 'Fonctionnel',
-                                'partiellement_fonctionnel' => 'Partiellement Fonctionnel',
-                                'non_fonctionnel' => 'Non Fonctionnel',
+                                'parfait' => 'Parfait',
+                                'defauts_mineurs' => 'Défauts Mineurs',
+                                'dysfonctionnements' => 'Dysfonctionnements',
+                                'hors_service' => 'Hors Service',
                             ])
                             ->native(false)
                             ->columnSpan(1),
@@ -142,9 +152,9 @@ class AttributionForm
                         Select::make('decision_res')
                             ->label('Décision')
                             ->options([
-                                'maintien_en_service' => 'Maintien en Service',
-                                'reparation' => 'Réparation',
-                                'reforme' => 'Réforme',
+                                'remis_en_stock' => 'Remis en Stock',
+                                'a_reparer' => 'À Réparer',
+                                'rebut' => 'Rebut',
                             ])
                             ->native(false)
                             ->columnSpan(1),

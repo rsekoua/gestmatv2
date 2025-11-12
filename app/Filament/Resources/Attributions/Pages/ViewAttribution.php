@@ -179,15 +179,17 @@ class ViewAttribution extends ViewRecord
                             ->label('État Fonctionnel')
                             ->badge()
                             ->color(fn (?string $state): string => match ($state) {
-                                'fonctionnel' => 'success',
-                                'partiellement_fonctionnel' => 'warning',
-                                'non_fonctionnel' => 'danger',
+                                'parfait' => 'success',
+                                'defauts_mineurs' => 'success',
+                                'dysfonctionnements' => 'warning',
+                                'hors_service' => 'danger',
                                 default => 'gray',
                             })
                             ->formatStateUsing(fn (?string $state): string => match ($state) {
-                                'fonctionnel' => 'Fonctionnel',
-                                'partiellement_fonctionnel' => 'Partiellement Fonctionnel',
-                                'non_fonctionnel' => 'Non Fonctionnel',
+                                'parfait' => 'Parfait',
+                                'defauts_mineurs' => 'Défauts Mineurs',
+                                'dysfonctionnements' => 'Dysfonctionnements',
+                                'hors_service' => 'Hors Service',
                                 default => '—',
                             })
                             ->placeholder('—')
@@ -197,15 +199,15 @@ class ViewAttribution extends ViewRecord
                             ->label('Décision')
                             ->badge()
                             ->color(fn (?string $state): string => match ($state) {
-                                'maintien_en_service' => 'success',
-                                'reparation' => 'warning',
-                                'reforme' => 'danger',
+                                'remis_en_stock' => 'success',
+                                'a_reparer' => 'warning',
+                                'rebut' => 'danger',
                                 default => 'gray',
                             })
                             ->formatStateUsing(fn (?string $state): string => match ($state) {
-                                'maintien_en_service' => 'Maintien en Service',
-                                'reparation' => 'Réparation',
-                                'reforme' => 'Réforme',
+                                'remis_en_stock' => 'Remis en Stock',
+                                'a_reparer' => 'À Réparer',
+                                'rebut' => 'Rebut',
                                 default => '—',
                             })
                             ->placeholder('—')

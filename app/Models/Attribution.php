@@ -14,7 +14,7 @@ use Spatie\Activitylog\LogOptions;
 
 class Attribution extends Model
 {
-    use HasUuids, LogsActivity;
+    use HasFactory, HasUuids, LogsActivity;
 
     /**
      * The attributes that are mass assignable.

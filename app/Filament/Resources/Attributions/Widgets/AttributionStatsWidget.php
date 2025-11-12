@@ -32,9 +32,9 @@ class AttributionStatsWidget extends StatsOverviewWidget
         $topMaterielName = $topMateriel ? $topMateriel->nom : 'Aucun';
         $topMaterielCount = $topMateriel ? $topMateriel->attributions_count : 0;
 
-        // Nombre d'attributions avec décision de réforme
-        $reformeCount = Attribution::closed()
-            ->where('decision_res', 'reforme')
+        // Nombre d'attributions avec décision de rebut
+        $rebutCount = Attribution::closed()
+            ->where('decision_res', 'rebut')
             ->count();
 
         return [
@@ -63,10 +63,10 @@ class AttributionStatsWidget extends StatsOverviewWidget
                 ->descriptionIcon(Heroicon::ComputerDesktop)
                 ->color('info'),
 
-            Stat::make('Réformes', $reformeCount)
-                ->description('Attributions avec décision de réforme')
+            Stat::make('Rebuts', $rebutCount)
+                ->description('Attributions avec décision de rebut')
                 ->descriptionIcon(Heroicon::ExclamationTriangle)
-                ->color($reformeCount > 0 ? 'danger' : 'success'),
+                ->color($rebutCount > 0 ? 'danger' : 'success'),
         ];
     }
 
