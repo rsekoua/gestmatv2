@@ -209,7 +209,7 @@ class MaterialsTable
                         'actif' => $query->whereHas('materielType', function ($q) {
                             $q->whereIn('nom', ['Ordinateur Portable', 'Ordinateur Bureau']);
                         })
-                        ->whereDate('purchase_date', '>', now()->subYears(3)),
+                            ->whereDate('purchase_date', '>', now()->subYears(3)),
                         default => $query,
                     }),
 
@@ -245,6 +245,6 @@ class MaterialsTable
             ->emptyStateIcon(Heroicon::ComputerDesktop)
             ->defaultSort('created_at', 'desc')
             ->striped();
-           // ->recordUrl(null);
+        // ->recordUrl(null);
     }
 }

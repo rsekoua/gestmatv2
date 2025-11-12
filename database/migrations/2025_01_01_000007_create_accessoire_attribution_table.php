@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('statut_att', ['fourni'])->default('fourni');
             $table->enum('statut_res', ['restitué', 'manquant'])->nullable();
             $table->timestamps();
-            
+
             $table->index('attribution_id');
             $table->index('accessory_id');
         });

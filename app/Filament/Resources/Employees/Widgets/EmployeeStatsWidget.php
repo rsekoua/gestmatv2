@@ -36,12 +36,12 @@ class EmployeeStatsWidget extends StatsOverviewWidget
                 ->chart($this->getEmployeesChartData()),
 
             Stat::make('Employés Assignés', $employeesWithService)
-                ->description($employeesWithoutService . ' employés non assignés')
+                ->description($employeesWithoutService.' employés non assignés')
                 ->descriptionIcon(Heroicon::BuildingOffice2)
                 ->color($employeesWithoutService > 0 ? 'warning' : 'success'),
 
             Stat::make('Avec Attributions', $employeesWithAttributions)
-                ->description($employeesWithActiveAttributions . ' avec attributions actives')
+                ->description($employeesWithActiveAttributions.' avec attributions actives')
                 ->descriptionIcon(Heroicon::Cube)
                 ->color('info'),
 

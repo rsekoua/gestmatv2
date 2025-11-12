@@ -42,7 +42,7 @@ class AttributionObserver
     public function updating(Attribution $attribution): void
     {
         // Si on ajoute une date de restitution (clôture de l'attribution)
-        if ($attribution->isDirty('date_restitution') && !is_null($attribution->date_restitution)) {
+        if ($attribution->isDirty('date_restitution') && ! is_null($attribution->date_restitution)) {
             $this->handleRestitution($attribution);
         }
     }
@@ -88,7 +88,7 @@ class AttributionObserver
      */
     protected function handleRestitution(Attribution $attribution): void
     {
-        if (!$attribution->materiel_id) {
+        if (! $attribution->materiel_id) {
             return;
         }
 

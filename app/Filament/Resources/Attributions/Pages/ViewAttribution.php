@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attributions\Pages;
 
+use App\Filament\Actions\RestituerAttributionAction;
 use App\Filament\Resources\Attributions\AttributionResource;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
@@ -18,6 +19,7 @@ class ViewAttribution extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            RestituerAttributionAction::make(),
             EditAction::make()
                 ->icon(Heroicon::PencilSquare),
         ];
@@ -135,7 +137,7 @@ class ViewAttribution extends ViewRecord
                     ->icon(Heroicon::ArrowUturnLeft)
                     ->collapsible()
                     ->collapsed(fn ($record) => is_null($record->date_restitution))
-                    ->visible(fn ($record) => !is_null($record->date_restitution))
+                    ->visible(fn ($record) => ! is_null($record->date_restitution))
                     ->columns([
                         'sm' => 1,
                         'md' => 2,

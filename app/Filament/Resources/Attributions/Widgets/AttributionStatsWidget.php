@@ -45,11 +45,11 @@ class AttributionStatsWidget extends StatsOverviewWidget
                 ->chart($this->getAttributionsChartData()),
 
             Stat::make('Attributions Actives', $activeAttributions)
-                ->description($closedAttributions . ' attributions clôturées')
+                ->description($closedAttributions.' attributions clôturées')
                 ->descriptionIcon(Heroicon::CheckCircle)
                 ->color($activeAttributions > 0 ? 'success' : 'gray'),
 
-            Stat::make('Durée Moyenne', $avgDurationFormatted . ' jours')
+            Stat::make('Durée Moyenne', $avgDurationFormatted.' jours')
                 ->description('Durée moyenne des attributions actives')
                 ->descriptionIcon(Heroicon::Clock)
                 ->color(match (true) {
@@ -58,7 +58,7 @@ class AttributionStatsWidget extends StatsOverviewWidget
                     default => 'danger',
                 }),
 
-            Stat::make('Matériel Populaire', $topMaterielCount . ' fois')
+            Stat::make('Matériel Populaire', $topMaterielCount.' fois')
                 ->description($topMaterielName)
                 ->descriptionIcon(Heroicon::ComputerDesktop)
                 ->color('info'),

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Employees\Pages;
 
+use App\Filament\Actions\VoirHistoriqueAttributionsAction;
 use App\Filament\Resources\Employees\EmployeeResource;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
@@ -18,6 +19,7 @@ class ViewEmployee extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            VoirHistoriqueAttributionsAction::makeForEmployee(),
             EditAction::make()
                 ->icon(Heroicon::PencilSquare),
         ];

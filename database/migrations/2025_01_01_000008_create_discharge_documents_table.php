@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('file_path', 500);
             $table->timestamp('generated_at');
             $table->timestamps();
-            
+
             $table->index('attribution_id');
             $table->index('numero_decharge');
             $table->index('type');

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Materiels\Pages;
 
+use App\Filament\Actions\AttribuerRapidementAction;
+use App\Filament\Actions\VoirHistoriqueAttributionsAction;
 use App\Filament\Resources\Materiels\MaterialResource;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
@@ -18,6 +20,8 @@ class ViewMaterial extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            AttribuerRapidementAction::make(),
+            VoirHistoriqueAttributionsAction::makeForMateriel(),
             EditAction::make()
                 ->icon(Heroicon::PencilSquare),
         ];

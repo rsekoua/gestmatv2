@@ -44,8 +44,6 @@ class ServiceResource extends Resource
         return 'success';
     }
 
-
-
     public static function getNavigationBadgeTooltip(): ?string
     {
         $count = static::getModel()::count();

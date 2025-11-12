@@ -30,12 +30,12 @@ class ServiceStatsWidget extends StatsOverviewWidget
                 ->chart($this->getServicesChartData()),
 
             Stat::make('Services avec Responsable', $servicesWithResponsable)
-                ->description(($totalServices > 0 ? round(($servicesWithResponsable / $totalServices) * 100) : 0) . '% des services')
+                ->description(($totalServices > 0 ? round(($servicesWithResponsable / $totalServices) * 100) : 0).'% des services')
                 ->descriptionIcon(Heroicon::User)
                 ->color('success'),
 
             Stat::make('Services avec Employés', $servicesWithEmployees)
-                ->description($servicesWithoutEmployees . ' services sans employés')
+                ->description($servicesWithoutEmployees.' services sans employés')
                 ->descriptionIcon(Heroicon::Users)
                 ->color('warning'),
 

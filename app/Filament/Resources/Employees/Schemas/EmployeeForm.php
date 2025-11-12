@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Employees\Schemas;
 
-use App\Models\Service;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -96,8 +95,8 @@ class EmployeeForm
                                     ->maxLength(255),
                                 TextInput::make('code')
                                     ->label('Code du Service')
-                                    ->extraInputAttributes(['oninput' => 'this.value = this.value.toUpperCase()'])                                    ->maxLength(10),
-//                                    ->uppercase(),
+                                    ->extraInputAttributes(['oninput' => 'this.value = this.value.toUpperCase()'])->maxLength(10),
+                                //                                    ->uppercase(),
                                 TextInput::make('responsable')
                                     ->label('Responsable du Service')
                                     ->maxLength(255),

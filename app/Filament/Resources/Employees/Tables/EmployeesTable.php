@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Employees\Tables;
 
-use App\Models\Service;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -190,6 +189,6 @@ class EmployeesTable
             ->emptyStateIcon(Heroicon::Users)
             ->defaultSort('nom', 'asc')
             ->striped();
-//            ->recordUrl(null);
+        //            ->recordUrl(null);
     }
 }

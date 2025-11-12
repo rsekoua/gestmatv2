@@ -15,7 +15,8 @@
       "Bash(herd php artisan:*)",
       "Bash(php vendor/bin/pint:*)",
       "mcp__laravel-boost__tinker",
-      "mcp__laravel-boost__list-routes"
+      "mcp__laravel-boost__list-routes",
+      "Bash(herd php:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

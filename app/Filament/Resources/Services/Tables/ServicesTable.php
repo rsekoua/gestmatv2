@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Services\Tables;
 
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -104,9 +103,9 @@ class ServicesTable
                     ->iconButton(),
                 EditAction::make()
                     ->iconButton(),
-//                DeleteAction::make()
-//                    ->iconButton()
-//                    ->requiresConfirmation(),
+                //                DeleteAction::make()
+                //                    ->iconButton()
+                //                    ->requiresConfirmation(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -119,6 +118,6 @@ class ServicesTable
             ->emptyStateIcon(Heroicon::BuildingOffice2)
             ->defaultSort('nom', 'asc')
             ->striped();
-           // ->recordUrl(null);
+        // ->recordUrl(null);
     }
 }

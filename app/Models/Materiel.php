@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Materiel extends Model
 {
@@ -112,7 +111,7 @@ class Materiel extends Model
                 $typesAmortissables = ['Ordinateur Portable', 'Ordinateur Bureau'];
 
                 // Si le type n'est pas dans la liste, pas d'amortissement automatique
-                if (!in_array($this->materielType->nom, $typesAmortissables)) {
+                if (! in_array($this->materielType->nom, $typesAmortissables)) {
                     return false;
                 }
 
@@ -187,7 +186,7 @@ class Materiel extends Model
             $specs[] = "Écran: {$this->screen_size}\"";
         }
 
-        return !empty($specs) ? implode(' | ', $specs) : null;
+        return ! empty($specs) ? implode(' | ', $specs) : null;
     }
 
     /**
@@ -214,7 +213,7 @@ class Materiel extends Model
         return $query->whereHas('materielType', function ($q) {
             $q->whereIn('nom', ['Ordinateur Portable', 'Ordinateur Bureau']);
         })
-        ->whereDate('purchase_date', '<=', now()->subYears(3));
+            ->whereDate('purchase_date', '<=', now()->subYears(3));
     }
 
     /**

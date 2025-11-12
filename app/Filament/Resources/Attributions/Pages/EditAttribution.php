@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attributions\Pages;
 
+use App\Filament\Actions\RestituerAttributionAction;
 use App\Filament\Resources\Attributions\AttributionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -15,6 +16,7 @@ class EditAttribution extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            RestituerAttributionAction::make(),
             ViewAction::make()
                 ->icon(Heroicon::Eye),
             DeleteAction::make()

@@ -16,14 +16,14 @@ class ListServices extends ListRecords
         return [
             CreateAction::make()
                 ->icon('heroicon-o-plus')
-                ->label("")
+                ->label(''),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-           // ServiceStatsWidget::class,
+            // ServiceStatsWidget::class,
         ];
     }
 

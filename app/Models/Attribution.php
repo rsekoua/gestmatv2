@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Attribution extends Model
 {
@@ -95,7 +95,7 @@ class Attribution extends Model
      */
     public function isClosed(): bool
     {
-        return !is_null($this->date_restitution);
+        return ! is_null($this->date_restitution);
     }
 
     /**
@@ -206,7 +206,7 @@ class Attribution extends Model
         // Générer automatiquement le numéro de décharge de restitution
         static::updating(function ($attribution) {
             if ($attribution->isDirty('date_restitution') &&
-                !empty($attribution->date_restitution) &&
+                ! empty($attribution->date_restitution) &&
                 empty($attribution->numero_decharge_res)) {
                 $attribution->numero_decharge_res = static::generateRestitutionNumber();
             }

@@ -2,10 +2,17 @@
 
 namespace App\Filament\Resources\Materiels\RelationManagers;
 
+use App\Models\Attribution;
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -132,8 +139,87 @@ class AttributionsRelationManager extends RelationManager
             ->headerActions([
                 // On peut ajouter une action pour créer une attribution depuis le matériel
             ])
-            ->actions([
+            ->recordActions([
+                Action::make('restituer')
+                    ->icon(Heroicon::ArrowUturnLeft)
+                    ->color('warning')
+                    ->iconButton()
+                    ->tooltip('Restituer')
+                    ->visible(fn (Attribution $record): bool => $record->isActive())
+                    ->requiresConfirmation()
+                    ->modalHeading('Restituer le matériel')
+                    ->modalSubmitActionLabel('Confirmer')
+                    ->modalWidth('2xl')
+                    ->Schema([
+                        Section::make('Informations de restitution')
+                            ->schema([
+                                DatePicker::make('date_restitution')
+                                    ->label('Date de restitution')
+                                    ->required()
+                                    ->default(now())
+                                    ->maxDate(now())
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->closeOnDateSelection(),
+
+                                Textarea::make('observations_res')
+                                    ->label('Observations')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Section::make('État du matériel')
+                            ->schema([
+                                Radio::make('etat_general_res')
+                                    ->label('État général')
+                                    ->required()
+                                    ->options([
+                                        'excellent' => 'Excellent',
+                                        'bon' => 'Bon',
+                                        'moyen' => 'Moyen',
+                                        'mauvais' => 'Mauvais',
+                                    ])
+                                    ->inline()
+                                    ->default('bon'),
+
+                                Radio::make('etat_fonctionnel_res')
+                                    ->label('État fonctionnel')
+                                    ->required()
+                                    ->options([
+                                        'parfait' => 'Parfait',
+                                        'defauts_mineurs' => 'Défauts mineurs',
+                                        'dysfonctionnements' => 'Dysfonctionnements',
+                                        'hors_service' => 'Hors service',
+                                    ])
+                                    ->inline()
+                                    ->default('parfait'),
+
+                                Radio::make('decision_res')
+                                    ->label('Décision')
+                                    ->required()
+                                    ->options([
+                                        'remis_en_stock' => 'Remis en stock',
+                                        'a_reparer' => 'À réparer',
+                                        'rebut' => 'Rebut',
+                                    ])
+                                    ->inline()
+                                    ->default('remis_en_stock'),
+
+                                Textarea::make('dommages_res')
+                                    ->label('Dommages constatés')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                            ]),
+                    ])
+                    ->action(function (Attribution $record, array $data): void {
+                        $record->update($data);
+                        Notification::make()
+                            ->title('Restitution enregistrée')
+                            ->success()
+                            ->send();
+                    }),
                 ViewAction::make()
+                    ->iconButton()
                     ->url(fn ($record): string => route('filament.admin.resources.attributions.view', ['record' => $record])),
             ])
             ->bulkActions([

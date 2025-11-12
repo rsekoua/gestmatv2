@@ -10,8 +10,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -72,7 +72,7 @@ class MaterielTypeResource extends Resource
                 //
             ])
             ->recordActions([
-              //  ViewAction::make(),
+                //  ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

@@ -19,19 +19,19 @@ return new class extends Migration
             $table->date('date_restitution')->nullable();
             $table->string('numero_decharge_att', 50)->unique()->nullable();
             $table->string('numero_decharge_res', 50)->unique()->nullable();
-            
+
             // Champs pour l'attribution
             $table->text('observations_att')->nullable();
-            
+
             // Champs pour la restitution
             $table->text('observations_res')->nullable();
             $table->enum('etat_general_res', ['excellent', 'bon', 'moyen', 'mauvais'])->nullable();
             $table->enum('etat_fonctionnel_res', ['parfait', 'defauts_mineurs', 'dysfonctionnements', 'hors_service'])->nullable();
             $table->json('dommages_res')->nullable();
             $table->enum('decision_res', ['remis_en_stock', 'a_reparer', 'rebut'])->nullable();
-            
+
             $table->timestamps();
-            
+
             $table->index('materiel_id');
             $table->index('employee_id');
             $table->index('date_attribution');
