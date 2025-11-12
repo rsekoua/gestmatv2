@@ -72,9 +72,9 @@ class ServiceResource extends Resource
     {
         return [
             'index' => ListServices::route('/'),
-            'create' => CreateService::route('/create'),
+//            'create' => CreateService::route('/create'),
             'view' => ViewService::route('/{record}'),
-            'edit' => EditService::route('/{record}/edit'),
+//            'edit' => EditService::route('/{record}/edit'),
         ];
     }
 }

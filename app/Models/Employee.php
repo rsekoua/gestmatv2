@@ -23,9 +23,10 @@ class Employee extends Model
         'service_id',
         'nom',
         'prenom',
+        'emploi',
         'email',
         'telephone',
-        'poste',
+        'fonction',
     ];
 
     /**

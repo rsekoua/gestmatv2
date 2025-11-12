@@ -16,11 +16,12 @@ return new class extends Migration
             $table->foreignUuid('service_id')->nullable()->constrained('services')->onDelete('set null');
             $table->string('nom', 100);
             $table->string('prenom', 100);
+            $table->string('emploi', 100);
             $table->string('email', 255)->unique();
             $table->string('telephone', 20)->nullable();
-            $table->string('poste', 100)->nullable();
+            $table->string('fonction', 100)->nullable();
             $table->timestamps();
-            
+
             $table->index('service_id');
             $table->index('email');
         });
