@@ -6,6 +6,15 @@
                 "C:\\Users\\roger\\Herd\\gestmatv2\\artisan",
                 "boost:mcp"
             ]
+        },
+        "herd": {
+            "command": "C:\\Users\\roger\\.config\\herd\\bin\\php84\\php.exe",
+            "args": [
+                "C:/Users/roger/.config/herd/bin/herd-mcp.phar"
+            ],
+            "env": {
+                "SITE_PATH": "C:\\Users\\roger\\Herd\\gestmatv2"
+            }
         }
     }
 }
