@@ -15,7 +15,7 @@ use Spatie\Activitylog\LogOptions;
 
 class Materiel extends Model
 {
-    use  HasUuids, LogsActivity;
+    use HasFactory, HasUuids, LogsActivity;
 
     /**
      * The attributes that are mass assignable.

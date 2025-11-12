@@ -244,7 +244,7 @@ class MaterialsTable
             ->emptyStateDescription('Commencez par créer votre premier matériel en cliquant sur le bouton ci-dessous.')
             ->emptyStateIcon(Heroicon::ComputerDesktop)
             ->defaultSort('created_at', 'desc')
-            ->striped()
-            ->recordUrl(null);
+            ->striped();
+           // ->recordUrl(null);
     }
 }

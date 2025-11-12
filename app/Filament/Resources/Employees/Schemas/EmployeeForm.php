@@ -68,7 +68,7 @@ class EmployeeForm
                             ->prefix('+225')
                             ->prefixIcon(Heroicon::Phone)
                             ->tel()
-                            ->maxLength(20)
+                            ->maxLength(10)
                             ->autocomplete(false)
                             ->columnSpan(1),
                     ]),

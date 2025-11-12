@@ -15,7 +15,8 @@ class ServiceForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([                                Section::make('Informations du Service')
+            ->components([
+                Section::make('Informations du Service')
                     ->description('Renseignez les informations principales du service')
                     ->icon(Heroicon::BuildingOffice2)
                     ->columns([

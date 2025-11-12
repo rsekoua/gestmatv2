@@ -69,6 +69,7 @@ class Attribution extends Model
     public function accessories(): BelongsToMany
     {
         return $this->belongsToMany(Accessory::class, 'accessoire_attribution')
+            ->using(AccessoireAttribution::class)
             ->withPivot(['statut_att', 'statut_res'])
             ->withTimestamps();
     }

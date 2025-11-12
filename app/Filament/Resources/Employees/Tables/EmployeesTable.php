@@ -189,7 +189,7 @@ class EmployeesTable
             ->emptyStateDescription('Commencez par créer votre premier employé en cliquant sur le bouton ci-dessous.')
             ->emptyStateIcon(Heroicon::Users)
             ->defaultSort('nom', 'asc')
-            ->striped()
-            ->recordUrl(null);
+            ->striped();
+//            ->recordUrl(null);
     }
 }

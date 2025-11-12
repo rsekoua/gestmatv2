@@ -12,7 +12,7 @@ use Spatie\Activitylog\LogOptions;
 
 class Employee extends Model
 {
-    use  HasUuids, LogsActivity;
+    use HasFactory, HasUuids, LogsActivity;
 
     /**
      * The attributes that are mass assignable.

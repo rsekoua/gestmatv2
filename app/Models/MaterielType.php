@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MaterielType extends Model
 {
-    use  HasUuids;
+    use HasFactory, HasUuids;
 
     /**
      * The attributes that are mass assignable.

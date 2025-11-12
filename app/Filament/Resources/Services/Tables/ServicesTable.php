@@ -118,7 +118,7 @@ class ServicesTable
             ->emptyStateDescription('Commencez par créer votre premier service en cliquant sur le bouton ci-dessous.')
             ->emptyStateIcon(Heroicon::BuildingOffice2)
             ->defaultSort('nom', 'asc')
-            ->striped()
-            ->recordUrl(null);
+            ->striped();
+           // ->recordUrl(null);
     }
 }
