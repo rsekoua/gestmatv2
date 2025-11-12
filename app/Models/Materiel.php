@@ -24,13 +24,15 @@ class Materiel extends Model
      */
     protected $fillable = [
         'materiel_type_id',
-        'nom',
         'marque',
         'modele',
         'numero_serie',
-        'specifications',
+        'processor',
+        'ram_size_gb',
+        'storage_size_gb',
+        'screen_size',
         'purchase_date',
-        'purchase_price',
+        'acquision',
         'statut',
         'etat_physique',
         'notes',
@@ -43,7 +45,9 @@ class Materiel extends Model
      */
     protected $casts = [
         'purchase_date' => 'date',
-        'purchase_price' => 'decimal:2',
+        'ram_size_gb' => 'integer',
+        'storage_size_gb' => 'integer',
+        'screen_size' => 'decimal:2',
     ];
 
     /**
@@ -89,6 +93,14 @@ class Materiel extends Model
     }
 
     /**
+     * Check if materiel is out of service (rebuté).
+     */
+    public function isRebutted(): bool
+    {
+        return $this->statut === 'rebuté';
+    }
+
+    /**
      * Check if materiel is depreciated (only for computers).
      * Depreciation applies only to "Ordinateur Portable" and "Ordinateur Bureau" after 3 years.
      */
@@ -123,17 +135,25 @@ class Materiel extends Model
     }
 
     /**
-     * Get the full description of the materiel.
+     * Get the name of the materiel (generated from type, marque, modele).
      */
-    public function getFullDescriptionAttribute(): string
+    public function getNomAttribute(): string
     {
         $parts = array_filter([
-            $this->materielType->nom,
+            $this->materielType?->nom,
             $this->marque,
             $this->modele,
         ]);
 
-        return implode(' - ', $parts);
+        return implode(' - ', $parts) ?: 'Matériel sans nom';
+    }
+
+    /**
+     * Get the full description of the materiel.
+     */
+    public function getFullDescriptionAttribute(): string
+    {
+        return $this->nom;
     }
 
     /**
@@ -142,6 +162,32 @@ class Materiel extends Model
     public function getFullDescriptionWithSerialAttribute(): string
     {
         return "{$this->full_description} (S/N: {$this->numero_serie})";
+    }
+
+    /**
+     * Get the specifications summary.
+     */
+    public function getSpecificationsSummaryAttribute(): ?string
+    {
+        $specs = [];
+
+        if ($this->processor) {
+            $specs[] = "CPU: {$this->processor}";
+        }
+
+        if ($this->ram_size_gb) {
+            $specs[] = "RAM: {$this->ram_size_gb}GB";
+        }
+
+        if ($this->storage_size_gb) {
+            $specs[] = "Stockage: {$this->storage_size_gb}GB";
+        }
+
+        if ($this->screen_size) {
+            $specs[] = "Écran: {$this->screen_size}\"";
+        }
+
+        return !empty($specs) ? implode(' | ', $specs) : null;
     }
 
     /**
@@ -187,14 +233,17 @@ class Materiel extends Model
         return LogOptions::defaults()
             ->logOnly([
                 'materiel_type_id',
-                'nom',
                 'marque',
                 'modele',
                 'numero_serie',
+                'processor',
+                'ram_size_gb',
+                'storage_size_gb',
+                'screen_size',
                 'statut',
                 'etat_physique',
                 'purchase_date',
-                'purchase_price',
+                'acquision',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
