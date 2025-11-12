@@ -14,7 +14,7 @@ use Spatie\Activitylog\LogOptions;
 
 class Attribution extends Model
 {
-    use HasFactory, HasUuids, LogsActivity;
+    use HasUuids, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -107,7 +107,7 @@ class Attribution extends Model
                 if ($this->isActive()) {
                     return $this->date_attribution->diffInDays(now());
                 }
-                
+
                 return $this->date_attribution->diffInDays($this->date_restitution);
             }
         );
@@ -204,8 +204,8 @@ class Attribution extends Model
 
         // Générer automatiquement le numéro de décharge de restitution
         static::updating(function ($attribution) {
-            if ($attribution->isDirty('date_restitution') && 
-                !empty($attribution->date_restitution) && 
+            if ($attribution->isDirty('date_restitution') &&
+                !empty($attribution->date_restitution) &&
                 empty($attribution->numero_decharge_res)) {
                 $attribution->numero_decharge_res = static::generateRestitutionNumber();
             }

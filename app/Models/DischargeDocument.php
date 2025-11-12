@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DischargeDocument extends Model
 {
-    use HasFactory, HasUuids;
+    use HasUuids;
 
     /**
      * The attributes that are mass assignable.

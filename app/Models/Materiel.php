@@ -15,7 +15,7 @@ use Spatie\Activitylog\LogOptions;
 
 class Materiel extends Model
 {
-    use HasFactory, HasUuids, LogsActivity;
+    use  HasUuids, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -98,12 +98,12 @@ class Materiel extends Model
             get: function (): bool {
                 // Vérification du type de matériel
                 $typesAmortissables = ['Ordinateur Portable', 'Ordinateur Bureau'];
-                
+
                 // Si le type n'est pas dans la liste, pas d'amortissement automatique
                 if (!in_array($this->materielType->nom, $typesAmortissables)) {
                     return false;
                 }
-                
+
                 // Si c'est un ordinateur, calculer si > 3 ans
                 return $this->purchase_date->diffInYears(now()) >= 3;
             }
