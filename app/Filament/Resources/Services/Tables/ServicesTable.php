@@ -77,36 +77,36 @@ class ServicesTable
                     ->icon(Heroicon::PencilSquare)
                     ->tooltip(fn ($record): string => $record->updated_at->diffForHumans()),
             ])
-            ->filters([
-                SelectFilter::make('responsable')
-                    ->label('Filtrer par responsable')
-                    ->options(fn (): array => \App\Models\Service::query()
-                        ->whereNotNull('responsable')
-                        ->pluck('responsable', 'responsable')
-                        ->toArray()
-                    )
-                    ->placeholder('Tous les responsables'),
-
-                SelectFilter::make('has_employees')
-                    ->label('Avec/sans employés')
-                    ->options([
-                        'with' => 'Avec employés',
-                        'without' => 'Sans employés',
-                    ])
-                    ->query(fn (Builder $query, array $data): Builder => match ($data['value'] ?? null) {
-                        'with' => $query->has('employees'),
-                        'without' => $query->doesntHave('employees'),
-                        default => $query,
-                    }),
-            ])
+//            ->filters([
+//                SelectFilter::make('responsable')
+//                    ->label('Filtrer par responsable')
+//                    ->options(fn (): array => \App\Models\Service::query()
+//                        ->whereNotNull('responsable')
+//                        ->pluck('responsable', 'responsable')
+//                        ->toArray()
+//                    )
+//                    ->placeholder('Tous les responsables'),
+//
+//                SelectFilter::make('has_employees')
+//                    ->label('Avec/sans employés')
+//                    ->options([
+//                        'with' => 'Avec employés',
+//                        'without' => 'Sans employés',
+//                    ])
+//                    ->query(fn (Builder $query, array $data): Builder => match ($data['value'] ?? null) {
+//                        'with' => $query->has('employees'),
+//                        'without' => $query->doesntHave('employees'),
+//                        default => $query,
+//                    }),
+//            ])
             ->recordActions([
                 ViewAction::make()
                     ->iconButton(),
                 EditAction::make()
                     ->iconButton(),
-                DeleteAction::make()
-                    ->iconButton()
-                    ->requiresConfirmation(),
+//                DeleteAction::make()
+//                    ->iconButton()
+//                    ->requiresConfirmation(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

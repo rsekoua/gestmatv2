@@ -15,7 +15,7 @@ class ListMaterials extends ListRecords
     {
         return [
             CreateAction::make()
-                ->icon('heroicon-o-plus'),
+                ->icon('heroicon-o-plus')->label(''),
         ];
     }
 

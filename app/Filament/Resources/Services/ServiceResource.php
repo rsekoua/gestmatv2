@@ -44,6 +44,8 @@ class ServiceResource extends Resource
         return 'success';
     }
 
+
+
     public static function getNavigationBadgeTooltip(): ?string
     {
         $count = static::getModel()::count();
@@ -51,11 +53,17 @@ class ServiceResource extends Resource
         return $count > 1 ? "{$count} services enregistrés" : "{$count} service enregistré";
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function form(Schema $schema): Schema
     {
         return ServiceForm::configure($schema);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return ServicesTable::configure($table);
@@ -72,9 +80,9 @@ class ServiceResource extends Resource
     {
         return [
             'index' => ListServices::route('/'),
-//            'create' => CreateService::route('/create'),
+            'create' => CreateService::route('/create'),
             'view' => ViewService::route('/{record}'),
-//            'edit' => EditService::route('/{record}/edit'),
+            'edit' => EditService::route('/{record}/edit'),
         ];
     }
 }

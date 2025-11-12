@@ -17,7 +17,7 @@ class EditService extends EditRecord
     {
         return [
             ViewAction::make()
-                ->icon(Heroicon::Eye),
+                ->icon(Heroicon::Eye)->label('Voir la fiche detaillée'),
             DeleteAction::make()
                 ->icon(Heroicon::Trash)
                 ->requiresConfirmation()
@@ -27,6 +27,7 @@ class EditService extends EditRecord
                         ->title('Service supprimé')
                         ->body('Le service a été supprimé avec succès.')
                 ),
+
         ];
     }
 

@@ -19,7 +19,8 @@ class ViewService extends ViewRecord
     {
         return [
             EditAction::make()
-                ->icon(Heroicon::PencilSquare),
+                ->icon(Heroicon::PencilSquare)->label('')
+                ->defaultSize('2xl'),
         ];
     }
 
@@ -83,6 +84,6 @@ class ViewService extends ViewRecord
                             ->since()
                             ->columnSpan(1),
                     ]),
-            ]);
+            ])->columns(2);
     }
 }
