@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Attributions\Pages;
 
 use App\Filament\Actions\RestituerAttributionAction;
 use App\Filament\Resources\Attributions\AttributionResource;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
@@ -19,7 +20,31 @@ class ViewAttribution extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('download_attribution_discharge')
+                ->label('Décharge d\'Attribution')
+                ->icon(Heroicon::DocumentArrowDown)
+                ->color('primary')
+                ->url(fn ($record) => route('attributions.discharge.attribution', $record))
+                ->openUrlInNewTab(),
+
+            Action::make('download_restitution_discharge')
+                ->label('Décharge de Restitution')
+                ->icon(Heroicon::DocumentArrowDown)
+                ->color('success')
+                ->visible(fn ($record) => $record->isClosed())
+                ->url(fn ($record) => route('attributions.discharge.restitution', $record))
+                ->openUrlInNewTab(),
+
+            Action::make('download_combined_discharge')
+                ->label('Décharge Complète')
+                ->icon(Heroicon::DocumentDuplicate)
+                ->color('info')
+                ->visible(fn ($record) => $record->isClosed())
+                ->url(fn ($record) => route('attributions.discharge.combined', $record))
+                ->openUrlInNewTab(),
+
             RestituerAttributionAction::make(),
+
             EditAction::make()
                 ->icon(Heroicon::PencilSquare),
         ];
