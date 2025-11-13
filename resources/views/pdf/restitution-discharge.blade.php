@@ -6,112 +6,121 @@
     <title>Décharge de Restitution - {{ $attribution->numero_decharge_res }}</title>
     <style>
         @page {
-            margin: 2cm;
+            margin: 1.5cm;
         }
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 11pt;
-            color: #333;
-            line-height: 1.6;
+            font-size: 9pt;
+            color: #1f2937;
+            line-height: 1.4;
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #dc2626;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 4px solid #dc2626;
         }
         .header h1 {
             color: #991b1b;
-            margin: 0;
-            font-size: 24pt;
+            margin: 0 0 5px 0;
+            font-size: 16pt;
+            font-weight: bold;
         }
-        .header .doc-number {
-            color: #64748b;
-            font-size: 10pt;
-            margin-top: 5px;
+        .header-info {
+            font-size: 8pt;
+            color: #4b5563;
+            margin: 2px 0;
         }
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
         }
         .section-title {
             background-color: #fee2e2;
             color: #991b1b;
-            padding: 8px 12px;
+            padding: 4px 8px;
             font-weight: bold;
-            font-size: 12pt;
-            margin-bottom: 10px;
+            font-size: 9pt;
+            margin-bottom: 5px;
             border-left: 4px solid #dc2626;
         }
-        .info-grid {
-            display: table;
+        table {
             width: 100%;
-            margin-bottom: 15px;
+            border-collapse: collapse;
+            font-size: 8pt;
         }
-        .info-row {
-            display: table-row;
+        td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #e5e7eb;
         }
-        .info-label {
-            display: table-cell;
+        .td-label {
             font-weight: bold;
-            width: 40%;
-            padding: 6px 10px;
-            background-color: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
+            width: 35%;
+            background-color: #f9fafb;
         }
-        .info-value {
-            display: table-cell;
-            padding: 6px 10px;
-            border-bottom: 1px solid #e2e8f0;
+        .td-value {
+            width: 65%;
         }
-        .status-badge {
+        .badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 9pt;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 7pt;
             font-weight: bold;
         }
-        .status-excellent { background-color: #d1fae5; color: #065f46; }
-        .status-bon { background-color: #dbeafe; color: #1e40af; }
-        .status-moyen { background-color: #fef3c7; color: #92400e; }
-        .status-mauvais { background-color: #fee2e2; color: #991b1b; }
-        .decision-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 10pt;
+        .badge-green { background-color: #d1fae5; color: #065f46; }
+        .badge-blue { background-color: #dbeafe; color: #1e40af; }
+        .badge-yellow { background-color: #fef3c7; color: #92400e; }
+        .badge-red { background-color: #fee2e2; color: #991b1b; }
+        .observations {
+            background-color: #f9fafb;
+            padding: 8px;
+            border-left: 4px solid #9ca3af;
+            font-style: italic;
+            font-size: 8pt;
+            min-height: 30px;
         }
-        .decision-stock { background-color: #d1fae5; color: #065f46; }
-        .decision-reparer { background-color: #fef3c7; color: #92400e; }
-        .decision-rebut { background-color: #fee2e2; color: #991b1b; }
+        .damages {
+            background-color: #fef2f2;
+            padding: 8px;
+            border-left: 4px solid #dc2626;
+            font-size: 8pt;
+            min-height: 30px;
+        }
         .signature-section {
-            margin-top: 50px;
-            page-break-inside: avoid;
+            margin-top: 20px;
         }
         .signature-grid {
             display: table;
             width: 100%;
+            table-layout: fixed;
         }
         .signature-cell {
             display: table-cell;
-            width: 48%;
+            width: 45%;
             text-align: center;
-            padding: 10px;
+            vertical-align: top;
         }
-        .signature-cell.spacer {
-            width: 4%;
-        }
-        .signature-box {
-            border: 2px solid #cbd5e1;
-            padding: 60px 20px 20px;
-            min-height: 100px;
-            margin-top: 10px;
-            background-color: #fafafa;
+        .signature-spacer {
+            display: table-cell;
+            width: 10%;
         }
         .signature-label {
             font-weight: bold;
-            color: #475569;
-            margin-bottom: 10px;
+            color: #374151;
+            margin-bottom: 5px;
+            font-size: 8pt;
+        }
+        .signature-name {
+            margin-bottom: 5px;
+            font-size: 8pt;
+        }
+        .signature-box {
+            border: 2px solid #d1d5db;
+            background-color: #f9fafb;
+            height: 60px;
+            padding-top: 40px;
+            font-size: 8pt;
+            color: #6b7280;
         }
         .footer {
             position: fixed;
@@ -119,125 +128,108 @@
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 9pt;
-            color: #94a3b8;
-            padding: 10px 0;
-            border-top: 1px solid #e2e8f0;
-        }
-        .observations {
-            background-color: #f8fafc;
-            padding: 15px;
-            border-left: 4px solid #94a3b8;
-            font-style: italic;
-            min-height: 60px;
-        }
-        .duration-box {
-            background-color: #eff6ff;
-            border: 2px solid #3b82f6;
-            padding: 15px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            color: #1e40af;
+            font-size: 7pt;
+            color: #9ca3af;
+            padding-top: 8px;
+            border-top: 1px solid #e5e7eb;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>DÉCHARGE DE RESTITUTION DE MATÉRIEL</h1>
-        <div class="doc-number">N° {{ $attribution->numero_decharge_res }}</div>
-        <div class="doc-number">Date : {{ $attribution->date_restitution->format('d/m/Y') }}</div>
+        <div class="header-info">N° {{ $attribution->numero_decharge_res }}</div>
+        <div class="header-info">Date : {{ $attribution->date_restitution->format('d/m/Y') }}</div>
     </div>
 
     {{-- Référence à l'attribution --}}
     <div class="section">
         <div class="section-title">RÉFÉRENCE D'ATTRIBUTION</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Numéro d'attribution</div>
-                <div class="info-value"><strong>{{ $attribution->numero_decharge_att }}</strong></div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Date d'attribution</div>
-                <div class="info-value">{{ $attribution->date_attribution->format('d/m/Y') }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Durée d'utilisation</div>
-                <div class="info-value">
-                    <div class="duration-box">
-                        {{ $attribution->duration_in_days }} jours
-                        ({{ round($attribution->duration_in_days / 30, 1) }} mois environ)
-                    </div>
-                </div>
-            </div>
-        </div>
+        <table>
+            <tr>
+                <td class="td-label">Numéro d'attribution</td>
+                <td class="td-value"><strong>{{ $attribution->numero_decharge_att }}</strong></td>
+            </tr>
+            <tr>
+                <td class="td-label">Date d'attribution</td>
+                <td class="td-value">{{ $attribution->date_attribution->format('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Durée d'utilisation</td>
+                <td class="td-value">
+                    <span class="badge badge-blue">
+                        {{ $attribution->duration_in_days }} jours ({{ round($attribution->duration_in_days / 30, 1) }} mois)
+                    </span>
+                </td>
+            </tr>
+        </table>
     </div>
 
     {{-- Informations du matériel --}}
     <div class="section">
         <div class="section-title">MATÉRIEL RESTITUÉ</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Type de matériel</div>
-                <div class="info-value">{{ $attribution->materiel->materielType->nom }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Marque / Modèle</div>
-                <div class="info-value">{{ $attribution->materiel->marque ?? 'N/A' }} {{ $attribution->materiel->modele ?? '' }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Numéro de série</div>
-                <div class="info-value"><strong>{{ $attribution->materiel->numero_serie }}</strong></div>
-            </div>
-        </div>
+        <table>
+            <tr>
+                <td class="td-label">Type de matériel</td>
+                <td class="td-value">{{ $attribution->materiel->materielType->nom }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Marque / Modèle</td>
+                <td class="td-value">{{ $attribution->materiel->marque ?? 'N/A' }} {{ $attribution->materiel->modele ?? '' }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Numéro de série</td>
+                <td class="td-value"><strong>{{ $attribution->materiel->numero_serie }}</strong></td>
+            </tr>
+        </table>
     </div>
 
     {{-- Informations de l'employé --}}
     <div class="section">
         <div class="section-title">EMPLOYÉ RESTITUANT</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Nom complet</div>
-                <div class="info-value"><strong>{{ $attribution->employee->full_name }}</strong></div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Service</div>
-                <div class="info-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</div>
-            </div>
-        </div>
+        <table>
+            <tr>
+                <td class="td-label">Nom complet</td>
+                <td class="td-value"><strong>{{ $attribution->employee->full_name }}</strong></td>
+            </tr>
+            <tr>
+                <td class="td-label">Service</td>
+                <td class="td-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</td>
+            </tr>
+        </table>
     </div>
 
     {{-- État du matériel --}}
     <div class="section">
         <div class="section-title">ÉTAT DU MATÉRIEL À LA RESTITUTION</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">État général</div>
-                <div class="info-value">
+        <table>
+            <tr>
+                <td class="td-label">État général</td>
+                <td class="td-value">
                     @php
                         $statusClass = match($attribution->etat_general_res) {
-                            'excellent' => 'status-excellent',
-                            'bon' => 'status-bon',
-                            'moyen' => 'status-moyen',
-                            'mauvais' => 'status-mauvais',
-                            default => 'status-bon'
+                            'excellent' => 'badge-green',
+                            'bon' => 'badge-blue',
+                            'moyen' => 'badge-yellow',
+                            'mauvais' => 'badge-red',
+                            default => 'badge-blue'
                         };
                     @endphp
-                    <span class="status-badge {{ $statusClass }}">
+                    <span class="badge {{ $statusClass }}">
                         {{ strtoupper($attribution->etat_general_res) }}
                     </span>
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">État fonctionnel</div>
-                <div class="info-value">
+                </td>
+            </tr>
+            <tr>
+                <td class="td-label">État fonctionnel</td>
+                <td class="td-value">
                     @php
                         $functionalClass = match($attribution->etat_fonctionnel_res) {
-                            'parfait' => 'status-excellent',
-                            'defauts_mineurs' => 'status-bon',
-                            'dysfonctionnements' => 'status-moyen',
-                            'hors_service' => 'status-mauvais',
-                            default => 'status-bon'
+                            'parfait' => 'badge-green',
+                            'defauts_mineurs' => 'badge-blue',
+                            'dysfonctionnements' => 'badge-yellow',
+                            'hors_service' => 'badge-red',
+                            default => 'badge-blue'
                         };
                         $functionalLabel = match($attribution->etat_fonctionnel_res) {
                             'parfait' => 'PARFAIT',
@@ -247,20 +239,20 @@
                             default => 'N/A'
                         };
                     @endphp
-                    <span class="status-badge {{ $functionalClass }}">
+                    <span class="badge {{ $functionalClass }}">
                         {{ $functionalLabel }}
                     </span>
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Décision</div>
-                <div class="info-value">
+                </td>
+            </tr>
+            <tr>
+                <td class="td-label">Décision</td>
+                <td class="td-value">
                     @php
                         $decisionClass = match($attribution->decision_res) {
-                            'remis_en_stock' => 'decision-stock',
-                            'a_reparer' => 'decision-reparer',
-                            'rebut' => 'decision-rebut',
-                            default => 'decision-stock'
+                            'remis_en_stock' => 'badge-green',
+                            'a_reparer' => 'badge-yellow',
+                            'rebut' => 'badge-red',
+                            default => 'badge-blue'
                         };
                         $decisionLabel = match($attribution->decision_res) {
                             'remis_en_stock' => '✓ REMIS EN STOCK',
@@ -269,19 +261,19 @@
                             default => 'N/A'
                         };
                     @endphp
-                    <span class="decision-badge {{ $decisionClass }}">
+                    <span class="badge {{ $decisionClass }}">
                         {{ $decisionLabel }}
                     </span>
-                </div>
-            </div>
-        </div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     {{-- Dommages --}}
     @if($attribution->dommages_res)
     <div class="section">
         <div class="section-title">DOMMAGES CONSTATÉS</div>
-        <div class="observations" style="border-left-color: #dc2626; background-color: #fef2f2;">
+        <div class="damages">
             {{ $attribution->dommages_res }}
         </div>
     </div>
@@ -301,20 +293,20 @@
     @if($attribution->accessories->count() > 0)
     <div class="section">
         <div class="section-title">ACCESSOIRES RESTITUÉS</div>
-        <div class="info-grid">
+        <table>
             @foreach($attribution->accessories as $accessory)
-                <div class="info-row">
-                    <div class="info-label">{{ $accessory->nom }}</div>
-                    <div class="info-value">
+                <tr>
+                    <td class="td-label" style="width: 60%;">{{ $accessory->nom }}</td>
+                    <td class="td-value" style="width: 40%;">
                         @if($accessory->pivot->statut_res)
-                            <span class="status-badge status-bon">{{ strtoupper($accessory->pivot->statut_res) }}</span>
+                            <span class="badge badge-blue">{{ strtoupper($accessory->pivot->statut_res) }}</span>
                         @else
-                            <span class="status-badge status-moyen">NON PRÉCISÉ</span>
+                            <span class="badge badge-yellow">NON PRÉCISÉ</span>
                         @endif
-                    </div>
-                </div>
+                    </td>
+                </tr>
             @endforeach
-        </div>
+        </table>
     </div>
     @endif
 
@@ -324,15 +316,15 @@
         <div class="signature-grid">
             <div class="signature-cell">
                 <div class="signature-label">L'employé restituant</div>
-                <div>{{ $attribution->employee->full_name }}</div>
+                <div class="signature-name">{{ $attribution->employee->full_name }}</div>
                 <div class="signature-box">
                     Signature et date
                 </div>
             </div>
-            <div class="signature-cell spacer"></div>
+            <div class="signature-spacer"></div>
             <div class="signature-cell">
                 <div class="signature-label">Le responsable</div>
-                <div>Service Informatique</div>
+                <div class="signature-name">Service Informatique</div>
                 <div class="signature-box">
                     Signature et cachet
                 </div>

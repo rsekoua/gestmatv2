@@ -6,105 +6,111 @@
     <title>Décharge d'Attribution - {{ $attribution->numero_decharge_att }}</title>
     <style>
         @page {
-            margin: 1cm 2cm;
+            margin: 1.5cm;
         }
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 11pt;
-            color: #333;
-            line-height: 1.6;
+            font-size: 9pt;
+            color: #1f2937;
+            line-height: 1.4;
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #2563eb;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 4px solid #4f46e5;
         }
         .header h1 {
-            color: #1e40af;
-            margin: 0;
-            font-size: 18pt;
+            color: #4338ca;
+            margin: 0 0 5px 0;
+            font-size: 16pt;
+            font-weight: bold;
         }
-        .header .doc-number {
-            color: #64748b;
-            font-size: 10pt;
-            margin-top: 5px;
+        .header-info {
+            font-size: 8pt;
+            color: #4b5563;
+            margin: 2px 0;
         }
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
         }
         .section-title {
-            background-color: #dbeafe;
-            color: #1e40af;
-            padding: 8px 12px;
+            background-color: #e0e7ff;
+            color: #4338ca;
+            padding: 4px 8px;
             font-weight: bold;
-            font-size: 12pt;
-            margin-bottom: 10px;
-            border-left: 4px solid #2563eb;
+            font-size: 9pt;
+            margin-bottom: 5px;
+            border-left: 4px solid #4f46e5;
         }
-        .info-grid {
-            display: table;
+        table {
             width: 100%;
-            margin-bottom: 15px;
+            border-collapse: collapse;
+            font-size: 8pt;
         }
-        .info-row {
-            display: table-row;
+        td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #e5e7eb;
         }
-        .info-label {
-            display: table-cell;
+        .td-label {
             font-weight: bold;
-            width: 40%;
-            padding: 6px 10px;
-            background-color: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
+            width: 35%;
+            background-color: #f9fafb;
         }
-        .info-value {
-            display: table-cell;
-            padding: 6px 10px;
-            border-bottom: 1px solid #e2e8f0;
+        .td-value {
+            width: 65%;
         }
-        .accessories-list {
-            list-style: none;
-            padding-left: 0;
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 8pt;
         }
-        .accessories-list li {
-            padding: 5px 0;
-            border-bottom: 1px dashed #e2e8f0;
+        ul li {
+            padding: 2px 0;
         }
-        .accessories-list li:before {
-            content: "✓ ";
-            color: #10b981;
-            font-weight: bold;
-            margin-right: 5px;
+        .observations {
+            background-color: #f9fafb;
+            padding: 8px;
+            border-left: 4px solid #9ca3af;
+            font-style: italic;
+            font-size: 8pt;
+            min-height: 30px;
         }
         .signature-section {
-            margin-top: 50px;
-            page-break-inside: avoid;
+            margin-top: 20px;
         }
         .signature-grid {
             display: table;
             width: 100%;
+            table-layout: fixed;
         }
         .signature-cell {
             display: table-cell;
-            width: 48%;
+            width: 45%;
             text-align: center;
-            padding: 10px;
+            vertical-align: top;
         }
-        .signature-cell.spacer {
-            width: 4%;
-        }
-        .signature-box {
-            border: 2px solid #cbd5e1;
-            padding: 60px 20px 20px;
-            min-height: 100px;
-            margin-top: 10px;
-            background-color: #fafafa;
+        .signature-spacer {
+            display: table-cell;
+            width: 10%;
         }
         .signature-label {
             font-weight: bold;
-            color: #475569;
-            margin-bottom: 10px;
+            color: #374151;
+            margin-bottom: 5px;
+            font-size: 8pt;
+        }
+        .signature-name {
+            margin-bottom: 5px;
+            font-size: 8pt;
+        }
+        .signature-box {
+            border: 2px solid #d1d5db;
+            background-color: #f9fafb;
+            height: 70px;
+            padding-top: 50px;
+            font-size: 8pt;
+            color: #6b7280;
         }
         .footer {
             position: fixed;
@@ -112,86 +118,79 @@
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 9pt;
-            color: #94a3b8;
-            padding: 10px 0;
-            border-top: 1px solid #e2e8f0;
-        }
-        .observations {
-            background-color: #f8fafc;
-            padding: 15px;
-            border-left: 4px solid #94a3b8;
-            font-style: italic;
-            min-height: 60px;
+            font-size: 7pt;
+            color: #9ca3af;
+            padding-top: 8px;
+            border-top: 1px solid #e5e7eb;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>DÉCHARGE POUR ATTRIBUTION DE MATÉRIEL</h1>
-        <div class="doc-number">N° {{ $attribution->numero_decharge_att }}</div>
-        <div class="doc-number">Date : {{ $attribution->date_attribution->format('d/m/Y') }}</div>
+        <div class="header-info">N° {{ $attribution->numero_decharge_att }}</div>
+        <div class="header-info">Date : {{ $attribution->date_attribution->format('d/m/Y') }}</div>
     </div>
 
     {{-- Informations du matériel --}}
     <div class="section">
         <div class="section-title">INFORMATIONS DU MATÉRIEL</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Type de matériel</div>
-                <div class="info-value">{{ $attribution->materiel->materielType->nom }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Marque</div>
-                <div class="info-value">{{ $attribution->materiel->marque ?? 'N/A' }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Modèle</div>
-                <div class="info-value">{{ $attribution->materiel->modele ?? 'N/A' }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Numéro de série</div>
-                <div class="info-value"><strong>{{ $attribution->materiel->numero_serie }}</strong></div>
-            </div>
+        <table>
+            <tr>
+                <td class="td-label">Type de matériel</td>
+                <td class="td-value">{{ $attribution->materiel->materielType->nom }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Marque</td>
+                <td class="td-value">{{ $attribution->materiel->marque ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Modèle</td>
+                <td class="td-value">{{ $attribution->materiel->modele ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Numéro de série</td>
+                <td class="td-value"><strong>{{ $attribution->materiel->numero_serie }}</strong></td>
+            </tr>
             @if($attribution->materiel->specifications_summary)
-            <div class="info-row">
-                <div class="info-label">Spécifications</div>
-                <div class="info-value">{{ $attribution->materiel->specifications_summary }}</div>
-            </div>
+            <tr>
+                <td class="td-label">Spécifications</td>
+                <td class="td-value">{{ $attribution->materiel->specifications_summary }}</td>
+            </tr>
             @endif
-        </div>
+        </table>
     </div>
 
     {{-- Informations de l'employé --}}
     <div class="section">
         <div class="section-title">BÉNÉFICIAIRE</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Nom complet</div>
-                <div class="info-value"><strong>{{ $attribution->employee->full_name }}</strong></div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Email</div>
-                <div class="info-value">{{ $attribution->employee->email }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Service</div>
-                <div class="info-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</div>
-            </div>
+        <table>
+            <tr>
+                <td class="td-label">Nom complet</td>
+                <td class="td-value"><strong>{{ $attribution->employee->full_name }}</strong></td>
+            </tr>
+            <tr>
+                <td class="td-label">Email</td>
+                <td class="td-value">{{ $attribution->employee->email }}</td>
+            </tr>
+            <tr>
+                <td class="td-label">Service</td>
+                <td class="td-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</td>
+            </tr>
             @if($attribution->employee->fonction)
-            <div class="info-row">
-                <div class="info-label">Fonction</div>
-                <div class="info-value">{{ $attribution->employee->fonction }}</div>
-            </div>
+            <tr>
+                <td class="td-label">Fonction</td>
+                <td class="td-value">{{ $attribution->employee->fonction }}</td>
+            </tr>
             @endif
-        </div>
+        </table>
     </div>
 
     {{-- Accessoires --}}
     @if($attribution->accessories->count() > 0)
     <div class="section">
         <div class="section-title">ACCESSOIRES FOURNIS</div>
-        <ul class="accessories-list">
+        <ul>
             @foreach($attribution->accessories as $accessory)
                 <li>{{ $accessory->nom }}</li>
             @endforeach
@@ -215,15 +214,15 @@
         <div class="signature-grid">
             <div class="signature-cell">
                 <div class="signature-label">L'employé bénéficiaire</div>
-                <div>{{ $attribution->employee->full_name }}</div>
+                <div class="signature-name">{{ $attribution->employee->full_name }}</div>
                 <div class="signature-box">
                     Signature et date
                 </div>
             </div>
-            <div class="signature-cell spacer"></div>
+            <div class="signature-spacer"></div>
             <div class="signature-cell">
                 <div class="signature-label">Le responsable</div>
-                <div>Service Informatique</div>
+                <div class="signature-name">Service Informatique</div>
                 <div class="signature-box">
                     Signature et cachet
                 </div>
