@@ -22,83 +22,81 @@ class VoirHistoriqueAttributionsAction
             ->color('info')
             ->modalHeading(fn (Model $record): string => "Historique d'attributions - {$record->numero_serie}"
             )
-            ->modalWidth('5xl')
-            ->Schema(function (Model $record): TextEntry {
+            ->modalWidth('2xl')
+            ->schema(function (Model $record): array {
                 $attributions = Attribution::where('materiel_id', $record->id)
                     ->with(['employee.service'])
                     ->orderBy('date_attribution', 'desc')
                     ->get();
 
-                return TextEntry::make()
-                    ->state(['attributions' => $attributions])
-                    ->schema([
-                        Section::make('Statistiques')
-                            ->schema([
-                                TextEntry::make('total')
-                                    ->label('Total')
-                                    ->state(fn (): int => $attributions->count())
-                                    ->badge()
-                                    ->color('primary'),
+                return [
+                    Section::make('Statistiques')
+                        ->schema([
+                            TextEntry::make('total')
+                                ->label('Total')
+                                ->state(fn (): int => $attributions->count())
+                                ->badge()
+                                ->color('primary'),
 
-                                TextEntry::make('actives')
-                                    ->label('Actives')
-                                    ->state(fn (): int => $attributions->where('date_restitution', null)->count())
-                                    ->badge()
-                                    ->color('success'),
+                            TextEntry::make('actives')
+                                ->label('Actives')
+                                ->state(fn (): int => $attributions->where('date_restitution', null)->count())
+                                ->badge()
+                                ->color('success'),
 
-                                TextEntry::make('cloturees')
-                                    ->label('Clôturées')
-                                    ->state(fn (): int => $attributions->whereNotNull('date_restitution')->count())
-                                    ->badge()
-                                    ->color('gray'),
-                            ])
-                            ->columns(3),
+                            TextEntry::make('cloturees')
+                                ->label('Clôturées')
+                                ->state(fn (): int => $attributions->whereNotNull('date_restitution')->count())
+                                ->badge()
+                                ->color('gray'),
+                        ])
+                        ->columns(3),
 
-                        Section::make('Historique complet')
-                            ->schema([
-                                TextEntry::make('historique')
-                                    ->label('')
-                                    ->state(function () use ($attributions): string {
-                                        if ($attributions->isEmpty()) {
-                                            return 'Aucune attribution trouvée.';
-                                        }
+                    Section::make('Historique complet')
+                        ->schema([
+                            TextEntry::make('historique')
+                                ->label('')
+                                ->state(function () use ($attributions): string {
+                                    if ($attributions->isEmpty()) {
+                                        return 'Aucune attribution trouvée.';
+                                    }
 
-                                        return $attributions->map(function (Attribution $attribution): string {
-                                            $status = $attribution->isActive() ? '🟢 Active' : '⚫ Clôturée';
-                                            $employee = $attribution->employee->full_name;
-                                            $service = $attribution->employee->service?->nom ?? 'Sans service';
-                                            $dateAtt = $attribution->date_attribution->format('d/m/Y');
-                                            $dateRes = $attribution->date_restitution?->format('d/m/Y') ?? 'En cours';
-                                            $duree = $attribution->duration_in_days.' jours';
+                                    return $attributions->map(function (Attribution $attribution): string {
+                                        $status = $attribution->isActive() ? '🟢 Active' : '⚫ Clôturée';
+                                        $employee = $attribution->employee->full_name;
+                                        $service = $attribution->employee->service?->nom ?? 'Sans service';
+                                        $dateAtt = $attribution->date_attribution->format('d/m/Y');
+                                        $dateRes = $attribution->date_restitution?->format('d/m/Y') ?? 'En cours';
+                                        $duree = $attribution->duration_in_days.' jours';
 
-                                            $decision = match ($attribution->decision_res) {
-                                                'remis_en_stock' => '✅ Remis en stock',
-                                                'a_reparer' => '🔧 À réparer',
-                                                'rebut' => '🗑️ Rebut',
-                                                default => '—',
-                                            };
+                                        $decision = match ($attribution->decision_res) {
+                                            'remis_en_stock' => '✅ Remis en stock',
+                                            'a_reparer' => '🔧 À réparer',
+                                            'rebut' => '🗑️ Rebut',
+                                            default => '—',
+                                        };
 
-                                            return <<<HTML
-                                            <div style="border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem;">
-                                                <div style="font-weight: 600; margin-bottom: 0.5rem;">
-                                                    {$status} | {$attribution->numero_decharge_att}
-                                                </div>
-                                                <div style="margin-bottom: 0.25rem;">
-                                                    👤 <strong>{$employee}</strong> ({$service})
-                                                </div>
-                                                <div style="margin-bottom: 0.25rem;">
-                                                    📅 {$dateAtt} → {$dateRes} ({$duree})
-                                                </div>
-                                                <div>
-                                                    📋 {$decision}
-                                                </div>
+                                        return <<<HTML
+                                        <div style="border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem;">
+                                            <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                                                {$status} | {$attribution->numero_decharge_att}
                                             </div>
-                                            HTML;
-                                        })->join('');
-                                    })
-                                    ->html(),
-                            ]),
-                    ]);
+                                            <div style="margin-bottom: 0.25rem;">
+                                                👤 <strong>{$employee}</strong> ({$service})
+                                            </div>
+                                            <div style="margin-bottom: 0.25rem;">
+                                                📅 {$dateAtt} → {$dateRes} ({$duree})
+                                            </div>
+                                            <div>
+                                                📋 {$decision}
+                                            </div>
+                                        </div>
+                                        HTML;
+                                    })->join('');
+                                })
+                                ->html(),
+                        ]),
+                ];
             });
     }
 
@@ -114,86 +112,84 @@ class VoirHistoriqueAttributionsAction
             ->modalHeading(fn (Model $record): string => "Historique d'attributions - {$record->full_name}"
             )
             ->modalWidth('5xl')
-            ->Schema(function (Model $record): TextEntry {
+            ->schema(function (Model $record): array {
                 $attributions = Attribution::where('employee_id', $record->id)
                     ->with(['materiel.type'])
                     ->orderBy('date_attribution', 'desc')
                     ->get();
 
-                return TextEntry::make()
-                    ->state(['attributions' => $attributions])
-                    ->schema([
-                        Section::make('Statistiques')
-                            ->schema([
-                                TextEntry::make('total')
-                                    ->label('Total')
-                                    ->state(fn (): int => $attributions->count())
-                                    ->badge()
-                                    ->color('primary'),
+                return [
+                    Section::make('Statistiques')
+                        ->schema([
+                            TextEntry::make('total')
+                                ->label('Total')
+                                ->state(fn (): int => $attributions->count())
+                                ->badge()
+                                ->color('primary'),
 
-                                TextEntry::make('actives')
-                                    ->label('Actives')
-                                    ->state(fn (): int => $attributions->where('date_restitution', null)->count())
-                                    ->badge()
-                                    ->color('success'),
+                            TextEntry::make('actives')
+                                ->label('Actives')
+                                ->state(fn (): int => $attributions->where('date_restitution', null)->count())
+                                ->badge()
+                                ->color('success'),
 
-                                TextEntry::make('cloturees')
-                                    ->label('Clôturées')
-                                    ->state(fn (): int => $attributions->whereNotNull('date_restitution')->count())
-                                    ->badge()
-                                    ->color('gray'),
-                            ])
-                            ->columns(3),
+                            TextEntry::make('cloturees')
+                                ->label('Clôturées')
+                                ->state(fn (): int => $attributions->whereNotNull('date_restitution')->count())
+                                ->badge()
+                                ->color('gray'),
+                        ])
+                        ->columns(3),
 
-                        Section::make('Historique complet')
-                            ->schema([
-                                TextEntry::make('historique')
-                                    ->label('')
-                                    ->state(function () use ($attributions): string {
-                                        if ($attributions->isEmpty()) {
-                                            return 'Aucune attribution trouvée.';
-                                        }
+                    Section::make('Historique complet')
+                        ->schema([
+                            TextEntry::make('historique')
+                                ->label('')
+                                ->state(function () use ($attributions): string {
+                                    if ($attributions->isEmpty()) {
+                                        return 'Aucune attribution trouvée.';
+                                    }
 
-                                        return $attributions->map(function (Attribution $attribution): string {
-                                            $status = $attribution->isActive() ? '🟢 Active' : '⚫ Clôturée';
-                                            $materiel = $attribution->materiel->numero_serie;
-                                            $type = $attribution->materiel->type?->nom ?? 'Type inconnu';
-                                            $marque = "{$attribution->materiel->marque} {$attribution->materiel->modele}";
-                                            $dateAtt = $attribution->date_attribution->format('d/m/Y');
-                                            $dateRes = $attribution->date_restitution?->format('d/m/Y') ?? 'En cours';
-                                            $duree = $attribution->duration_in_days.' jours';
+                                    return $attributions->map(function (Attribution $attribution): string {
+                                        $status = $attribution->isActive() ? '🟢 Active' : '⚫ Clôturée';
+                                        $materiel = $attribution->materiel->numero_serie;
+                                        $type = $attribution->materiel->type?->nom ?? 'Type inconnu';
+                                        $marque = "{$attribution->materiel->marque} {$attribution->materiel->modele}";
+                                        $dateAtt = $attribution->date_attribution->format('d/m/Y');
+                                        $dateRes = $attribution->date_restitution?->format('d/m/Y') ?? 'En cours';
+                                        $duree = $attribution->duration_in_days.' jours';
 
-                                            $decision = match ($attribution->decision_res) {
-                                                'remis_en_stock' => '✅ Remis en stock',
-                                                'a_reparer' => '🔧 À réparer',
-                                                'rebut' => '🗑️ Rebut',
-                                                default => '—',
-                                            };
+                                        $decision = match ($attribution->decision_res) {
+                                            'remis_en_stock' => '✅ Remis en stock',
+                                            'a_reparer' => '🔧 À réparer',
+                                            'rebut' => '🗑️ Rebut',
+                                            default => '—',
+                                        };
 
-                                            return <<<HTML
-                                            <div style="border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem;">
-                                                <div style="font-weight: 600; margin-bottom: 0.5rem;">
-                                                    {$status} | {$attribution->numero_decharge_att}
-                                                </div>
-                                                <div style="margin-bottom: 0.25rem;">
-                                                    💻 <strong>{$materiel}</strong> ({$type})
-                                                </div>
-                                                <div style="margin-bottom: 0.25rem;">
-                                                    🏷️ {$marque}
-                                                </div>
-                                                <div style="margin-bottom: 0.25rem;">
-                                                    📅 {$dateAtt} → {$dateRes} ({$duree})
-                                                </div>
-                                                <div>
-                                                    📋 {$decision}
-                                                </div>
+                                        return <<<HTML
+                                        <div style="border-left: 3px solid #3b82f6; padding-left: 1rem; margin-bottom: 1rem;">
+                                            <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                                                {$status} | {$attribution->numero_decharge_att}
                                             </div>
-                                            HTML;
-                                        })->join('');
-                                    })
-                                    ->html(),
-                            ]),
-                    ]);
+                                            <div style="margin-bottom: 0.25rem;">
+                                                💻 <strong>{$materiel}</strong> ({$type})
+                                            </div>
+                                            <div style="margin-bottom: 0.25rem;">
+                                                🏷️ {$marque}
+                                            </div>
+                                            <div style="margin-bottom: 0.25rem;">
+                                                📅 {$dateAtt} → {$dateRes} ({$duree})
+                                            </div>
+                                            <div>
+                                                📋 {$decision}
+                                            </div>
+                                        </div>
+                                        HTML;
+                                    })->join('');
+                                })
+                                ->html(),
+                        ]),
+                ];
             });
     }
 }

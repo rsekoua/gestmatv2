@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('processor', 255)->nullable();
             $table->integer('ram_size_gb')->nullable();
             $table->integer('storage_size_gb')->nullable();
-            $table->decimal('screen_size', 4, 2);
+            $table->decimal('screen_size', 4, 2)->nullable();
             // $table->text('specifications')->nullable();
             $table->date('purchase_date')->nullable();
             $table->string('acquision')->nullable();

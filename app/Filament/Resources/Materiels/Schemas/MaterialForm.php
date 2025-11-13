@@ -130,7 +130,7 @@ class MaterialForm
                             ->placeholder('Ex: 15.6')
                             ->helperText('Diagonale de l\'écran en pouces')
                             ->prefixIcon(Heroicon::ComputerDesktop)
-                            ->required()
+                            //->required()
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(99.99)
