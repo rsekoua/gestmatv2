@@ -111,10 +111,10 @@ class VoirHistoriqueAttributionsAction
             ->color('info')
             ->modalHeading(fn (Model $record): string => "Historique d'attributions - {$record->full_name}"
             )
-            ->modalWidth('5xl')
+            ->modalWidth('2xl')
             ->schema(function (Model $record): array {
                 $attributions = Attribution::where('employee_id', $record->id)
-                    ->with(['materiel.type'])
+                    ->with(['materiel.materielType'])
                     ->orderBy('date_attribution', 'desc')
                     ->get();
 
@@ -153,7 +153,7 @@ class VoirHistoriqueAttributionsAction
                                     return $attributions->map(function (Attribution $attribution): string {
                                         $status = $attribution->isActive() ? '🟢 Active' : '⚫ Clôturée';
                                         $materiel = $attribution->materiel->numero_serie;
-                                        $type = $attribution->materiel->type?->nom ?? 'Type inconnu';
+                                        $type = $attribution->materiel->materielType?->nom ?? 'Type inconnu';
                                         $marque = "{$attribution->materiel->marque} {$attribution->materiel->modele}";
                                         $dateAtt = $attribution->date_attribution->format('d/m/Y');
                                         $dateRes = $attribution->date_restitution?->format('d/m/Y') ?? 'En cours';

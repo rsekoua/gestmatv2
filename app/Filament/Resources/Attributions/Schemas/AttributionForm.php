@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 
@@ -117,6 +118,11 @@ class AttributionForm
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->helperText('Laissez vide si le matériel n\'est pas encore restitué')
+                            ->afterOrEqual('date_attribution')
+                            ->validationMessages([
+                                'after_or_equal' => 'La date de restitution doit être postérieure ou égale à la date d\'attribution.',
+                            ])
+                            ->live()
                             ->columnSpan(1),
 
                         TextInput::make('numero_decharge_res')
@@ -136,6 +142,10 @@ class AttributionForm
                                 'mauvais' => 'Mauvais',
                             ])
                             ->native(false)
+                            ->required(fn (Get $get) => filled($get('date_restitution')))
+                            ->validationMessages([
+                                'required' => 'L\'état général est obligatoire lors de la restitution.',
+                            ])
                             ->columnSpan(1),
 
                         Select::make('etat_fonctionnel_res')
@@ -147,6 +157,10 @@ class AttributionForm
                                 'hors_service' => 'Hors Service',
                             ])
                             ->native(false)
+                            ->required(fn (Get $get) => filled($get('date_restitution')))
+                            ->validationMessages([
+                                'required' => 'L\'état fonctionnel est obligatoire lors de la restitution.',
+                            ])
                             ->columnSpan(1),
 
                         Select::make('decision_res')
@@ -163,7 +177,11 @@ class AttributionForm
                             ->label('Observations de Restitution')
                             ->rows(3)
                             ->columnSpanFull()
-                            ->placeholder('Notes ou observations concernant la restitution'),
+                            ->placeholder('Notes ou observations concernant la restitution')
+                            ->required(fn (Get $get) => filled($get('date_restitution')))
+                            ->validationMessages([
+                                'required' => 'Les observations de restitution sont obligatoires.',
+                            ]),
 
                         Textarea::make('dommages_res')
                             ->label('Dommages Constatés')

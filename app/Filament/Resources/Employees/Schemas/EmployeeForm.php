@@ -87,6 +87,7 @@ class EmployeeForm
                             ->prefixIcon(Heroicon::BuildingOffice2)
                             ->relationship('service', 'nom')
                             ->searchable()
+                            ->required()
                             ->preload()
                             ->createOptionForm([
                                 TextInput::make('nom')
@@ -112,6 +113,7 @@ class EmployeeForm
                             ->helperText('Intitulé de l\'emploi ou du poste')
                             ->prefixIcon(Heroicon::Briefcase)
                             ->maxLength(255)
+                            ->required()
                             ->autocomplete(false)
                             ->columnSpan(1),
 

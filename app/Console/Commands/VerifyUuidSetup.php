@@ -10,6 +10,7 @@ use App\Models\MaterielType;
 use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class VerifyUuidSetup extends Command
 {
@@ -73,11 +74,11 @@ class VerifyUuidSetup extends Command
             $this->info('✅ Tous les tests sont passés avec succès !');
             $this->info('🚀 Vous pouvez commencer le développement Filament.');
 
-            return Command::SUCCESS;
+            return CommandAlias::SUCCESS;
         } else {
             $this->error('❌ Certains tests ont échoué. Veuillez vérifier l\'installation.');
 
-            return Command::FAILURE;
+            return CommandAlias::FAILURE;
         }
     }
 

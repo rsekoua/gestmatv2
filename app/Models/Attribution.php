@@ -44,7 +44,7 @@ class Attribution extends Model
     protected $casts = [
         'date_attribution' => 'date',
         'date_restitution' => 'date',
-        'dommages_res' => 'array',
+        // 'dommages_res' => 'array',
     ];
 
     /**

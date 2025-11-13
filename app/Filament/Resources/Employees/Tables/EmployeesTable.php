@@ -28,7 +28,7 @@ class EmployeesTable
                     ->icon(Heroicon::UserCircle)
                     ->iconColor('primary')
                     ->weight(FontWeight::Bold)
-                    ->searchable(['nom', 'prenom'])
+                   // ->searchable(['nom', 'prenom'])
                     ->sortable(['nom', 'prenom'])
                     ->getStateUsing(fn ($record) => $record->full_name)
                     ->description(fn ($record): string => $record->email)

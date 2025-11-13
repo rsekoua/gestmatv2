@@ -169,18 +169,30 @@ class MaterialForm
                         Select::make('statut')
                             ->label('Statut')
                             ->placeholder('Sélectionnez un statut')
-                            ->helperText('État d\'attribution ou de fonctionnement')
+                            ->helperText(fn ($record) => $record?->activeAttribution
+                                ? '⚠️ Ce matériel a une attribution active. Le statut est géré automatiquement.'
+                                : 'État de fonctionnement du matériel (le statut "Attribué" est géré automatiquement)')
                             ->prefixIcon(Heroicon::Signal)
-                            ->options([
-                                'disponible' => 'Disponible',
-                                'attribué' => 'Attribué',
-                                'en_panne' => 'En panne',
-                                'en_maintenance' => 'En maintenance',
-                                'rebuté' => 'Rebuté',
-                            ])
+                            ->options(fn ($record) => $record?->activeAttribution
+                                ? [
+                                    'disponible' => 'Disponible',
+                                    'attribué' => 'Attribué (géré automatiquement)',
+                                    'en_panne' => 'En panne',
+                                    'en_maintenance' => 'En maintenance',
+                                    'rebuté' => 'Rebuté',
+                                ]
+                                : [
+                                    'disponible' => 'Disponible',
+                                    'en_panne' => 'En panne',
+                                    'en_maintenance' => 'En maintenance',
+                                    'rebuté' => 'Rebuté',
+                                ]
+                            )
                             ->default('disponible')
                             ->required()
                             ->native(false)
+                            ->disabled(fn ($record) => $record?->activeAttribution !== null)
+                            ->dehydrated(fn ($record) => $record?->activeAttribution === null)
                             ->columnSpan(1),
 
                         Select::make('etat_physique')
@@ -196,6 +208,8 @@ class MaterialForm
                             ])
                             ->default('bon')
                             ->required()
+                            ->disabled(fn ($record) => $record?->activeAttribution !== null)
+                            ->dehydrated(fn ($record) => $record?->activeAttribution === null)
                             ->native(false)
                             ->columnSpan(1),
                     ]),

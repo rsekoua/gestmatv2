@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Attribution;
+use App\Models\Employee;
+use App\Models\Materiel;
 use App\Observers\AttributionObserver;
+use App\Observers\EmployeeObserver;
+use App\Observers\MaterielObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Attribution::observe(AttributionObserver::class);
+        Employee::observe(EmployeeObserver::class);
+        Materiel::observe(MaterielObserver::class);
     }
 }

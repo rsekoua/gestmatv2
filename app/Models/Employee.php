@@ -76,7 +76,7 @@ class Employee extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['nom', 'prenom', 'email', 'telephone', 'poste', 'service_id'])
+            ->logOnly(['nom', 'prenom', 'email', 'telephone', 'emploi', 'fonction', 'service_id'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }

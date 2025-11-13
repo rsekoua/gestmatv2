@@ -38,16 +38,19 @@ class AttributionStatsWidget extends StatsOverviewWidget
             ->count();
 
         return [
-            Stat::make('Total des Attributions', $totalAttributions)
-                ->description('Toutes les attributions dans le système')
-                ->descriptionIcon(Heroicon::ArrowsRightLeft)
-                ->color('primary')
-                ->chart($this->getAttributionsChartData()),
 
             Stat::make('Attributions Actives', $activeAttributions)
                 ->description($closedAttributions.' attributions clôturées')
                 ->descriptionIcon(Heroicon::CheckCircle)
                 ->color($activeAttributions > 0 ? 'success' : 'gray'),
+
+//            Stat::make('Total des Attributions', $totalAttributions)
+//                ->description('Toutes les attributions dans le système')
+//                ->descriptionIcon(Heroicon::ArrowsRightLeft)
+//                ->color('primary')
+//                ->chart($this->getAttributionsChartData()),
+
+
 
             Stat::make('Durée Moyenne', $avgDurationFormatted.' jours')
                 ->description('Durée moyenne des attributions actives')

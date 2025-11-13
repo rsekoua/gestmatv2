@@ -203,19 +203,6 @@ class ViewMaterial extends ViewRecord
                             ->columnSpan(1),
                     ]),
 
-                Section::make('Notes et Informations Complémentaires')
-                    ->description('Observations et historique')
-                    ->icon(Heroicon::DocumentText)
-                    ->columns(1)
-                    ->schema([
-                        TextEntry::make('notes')
-                            ->label('Notes')
-                            ->icon(Heroicon::ClipboardDocumentList)
-                            ->placeholder('Aucune note')
-                            ->markdown()
-                            ->columnSpanFull(),
-                    ]),
-
                 Section::make('Statistiques et Métadonnées')
                     ->description('Amortissement et historique')
                     ->icon(Heroicon::ChartBar)
@@ -263,6 +250,22 @@ class ViewMaterial extends ViewRecord
                             ->since()
                             ->columnSpan(1),
                     ]),
+
+                Section::make('Notes et Informations Complémentaires')
+                    ->description('Observations et historique')
+                    ->icon(Heroicon::DocumentText)
+                    ->columns(1)
+                    ->collapsed()
+                    ->columnSpan(2)
+                    ->schema([
+                        TextEntry::make('notes')
+                            ->label('Notes')
+                            ->icon(Heroicon::ClipboardDocumentList)
+                            ->placeholder('Aucune note')
+                            ->markdown()
+                            ->columnSpanFull(),
+                    ]),
+
             ]);
     }
 }

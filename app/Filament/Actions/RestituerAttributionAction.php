@@ -7,18 +7,22 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 
 class RestituerAttributionAction
 {
+    /**
+     * @throws \Exception
+     */
     public static function make(): Action
     {
-        return Action::make('restituer')
-            ->label('Restituer')
+        return Action::make('-')
+            //->label('Restituer')
             ->icon(Heroicon::ArrowUturnLeft)
-            ->color('warning')
+            ->color('danger')
             ->visible(fn (Attribution $record): bool => $record->isActive())
             ->requiresConfirmation()
             ->modalHeading('Restituer le matériel')
@@ -36,13 +40,22 @@ class RestituerAttributionAction
                             ->maxDate(now())
                             ->native(false)
                             ->displayFormat('d/m/Y')
-                            ->closeOnDateSelection(),
+                            ->closeOnDateSelection()
+                            ->afterOrEqual(fn (Attribution $record) => $record->date_attribution)
+                            ->validationMessages([
+                                'after_or_equal' => 'La date de restitution doit être postérieure à celle de l\'attribution.',
+                                'required' => 'La date de restitution est obligatoire.',
+                            ]),
 
                         Textarea::make('observations_res')
                             ->label('Observations')
+                            ->required()
                             ->rows(3)
                             ->placeholder('Observations générales sur la restitution...')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->validationMessages([
+                                'required' => 'Les observations de restitution sont obligatoires.',
+                            ]),
                     ]),
 
                 Section::make('État du matériel')
@@ -58,7 +71,10 @@ class RestituerAttributionAction
                             ])
                             ->inline()
                             ->inlineLabel(false)
-                            ->default('bon'),
+                            ->default('bon')
+                            ->validationMessages([
+                                'required' => 'L\'état général est obligatoire lors de la restitution.',
+                            ]),
 
                         Radio::make('etat_fonctionnel_res')
                             ->label('État fonctionnel')
@@ -71,7 +87,10 @@ class RestituerAttributionAction
                             ])
                             ->inline()
                             ->inlineLabel(false)
-                            ->default('parfait'),
+                            ->default('parfait')
+                            ->validationMessages([
+                                'required' => 'L\'état fonctionnel est obligatoire lors de la restitution.',
+                            ]),
 
                         Radio::make('decision_res')
                             ->label('Décision')

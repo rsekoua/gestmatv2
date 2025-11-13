@@ -22,7 +22,7 @@ class ListEmployees extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            EmployeeStatsWidget::class,
+            //EmployeeStatsWidget::class,
         ];
     }
 

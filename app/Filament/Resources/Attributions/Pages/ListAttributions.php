@@ -16,14 +16,15 @@ class ListAttributions extends ListRecords
     {
         return [
             CreateAction::make()
-                ->icon(Heroicon::Plus),
+                ->icon(Heroicon::Plus)
+                ->color('default'),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            AttributionStatsWidget::class,
+           // AttributionStatsWidget::class,
         ];
     }
 }
