@@ -18,10 +18,12 @@
             text-align: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 4px solid #4f46e5;
+            border-bottom: 4px solid #000000;
+            /*border-bottom: 4px solid #4f46e5;*/
         }
         .header h1 {
-            color: #4338ca;
+            color: #000000;
+            /*color: #433_8ca;*/
             margin: 0 0 5px 0;
             font-size: 16pt;
             font-weight: bold;
@@ -36,12 +38,14 @@
         }
         .section-title {
             background-color: #e0e7ff;
-            color: #4338ca;
+         /* background-color: #e0e7ff;*/
+            color: #000000;
             padding: 4px 8px;
             font-weight: bold;
             font-size: 9pt;
             margin-bottom: 5px;
-            border-left: 4px solid #4f46e5;
+           /* border-left: 4px solid #4f46e5;*/
+            border-left: 4px solid #000000;
         }
         table {
             width: 100%;
@@ -128,7 +132,7 @@
 <body>
     <div class="header">
         <h1>DÉCHARGE POUR ATTRIBUTION DE MATÉRIEL</h1>
-        <div class="header-info">N° {{ $attribution->numero_decharge_att }}</div>
+        <div class="header-info"><b>N° {{ $attribution->numero_decharge_att }}</b></div>
         <div class="header-info">Date : {{ $attribution->date_attribution->format('d/m/Y') }}</div>
     </div>
 

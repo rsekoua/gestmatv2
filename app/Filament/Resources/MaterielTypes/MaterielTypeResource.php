@@ -23,7 +23,8 @@ class MaterielTypeResource extends Resource
 {
     protected static ?string $model = MaterielType::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+//    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|null|\UnitEnum $navigationGroup = 'Gestion des Matériels';
 
     public static function form(Schema $schema): Schema
     {

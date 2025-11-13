@@ -20,7 +20,7 @@ class MaterialResource extends Resource
 {
     protected static ?string $model = Materiel::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::ComputerDesktop;
+//    protected static string|BackedEnum|null $navigationIcon = Heroicon::ComputerDesktop;
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestion des Matériels';
 

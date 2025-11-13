@@ -22,8 +22,9 @@ use Filament\Tables\Table;
 class AccessoryResource extends Resource
 {
     protected static ?string $model = Accessory::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|null|\UnitEnum $navigationGroup = 'Gestion des Matériels';
+//    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?int $navigationSort = 0;
 
     public static function form(Schema $schema): Schema
     {
