@@ -32,18 +32,15 @@ class RapportParcInformatique extends Page implements HasForms
 
     protected static ?int $navigationSort = 1;
 
-    public ?string $dateReference = null;
-
-    public ?string $materielTypeId = null;
-
-    public ?string $serviceId = null;
-
-    public ?string $statutFiltre = null;
+    public ?array $data = [];
 
     public function mount(): void
     {
         $this->form->fill([
             'dateReference' => now()->format('Y-m-d'),
+            'materielTypeId' => null,
+            'serviceId' => null,
+            'statutFiltre' => null,
         ]);
     }
 
@@ -87,12 +84,17 @@ class RapportParcInformatique extends Page implements HasForms
                             ->native(false),
                     ])
                     ->columns(2),
-            ]);
+            ])
+            ->statePath('data');
     }
 
     protected function getFormData(): array
     {
-        return $this->form->getState();
+        try {
+            return $this->form->getState();
+        } catch (\Throwable $e) {
+            return $this->data ?? [];
+        }
     }
 
     public function getStatistiquesGlobales(): array

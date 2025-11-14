@@ -9,15 +9,14 @@
                 </div>
             </x-slot>
 
-            <x-filament-panels::form wire:submit="$refresh">
+            <form wire:submit.prevent="$refresh" class="space-y-6">
                 {{ $this->form }}
 
-                <div class="mt-4">
-                    <x-filament::button type="submit" color="primary">
-                        Générer le rapport
-                    </x-filament::button>
-                </div>
-            </x-filament-panels::form>
+                <x-filament::button type="submit" color="primary" wire:loading.attr="disabled">
+                    <span wire:loading.remove>Générer le rapport</span>
+                    <span wire:loading>Génération en cours...</span>
+                </x-filament::button>
+            </form>
         </x-filament::section>
 
         {{-- Statistiques globales --}}
