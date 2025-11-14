@@ -9,44 +9,58 @@ use App\Models\MaterielType;
 use App\Models\Service;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Section;
 use Illuminate\Support\Facades\DB;
 
 class RapportParcInformatique extends Page implements HasForms
 {
     use InteractsWithForms;
-    protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
 
-    protected static string $view = 'filament.pages.rapport-parc-informatique';
+    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-document-chart-bar';
+
+    protected  string $view = 'filament.pages.rapport-parc-informatique';
 
     protected static ?string $navigationLabel = 'Rapport du Parc';
 
     protected static ?string $title = 'Rapport de l\'État du Parc Informatique';
 
-    protected static ?string $navigationGroup = 'Rapports';
+    protected static string|null|\UnitEnum $navigationGroup = 'Rapports';
 
     protected static ?int $navigationSort = 1;
 
+    // 5. Propriété pour stocker les valeurs des filtres
     public ?array $data = [];
+
+    // 6. Initialiser le formulaire
+
+
+    public ?string $dateReference = null;
+
+    public ?string $materielTypeId = null;
+
+    public ?string $serviceId = null;
+
+    public ?string $statutFiltre = null;
 
     public function mount(): void
     {
+        $this->dateReference = now()->format('Y-m-d');
+        // Remplit le formulaire avec des valeurs par défaut si nécessaire
         $this->form->fill([
-            'dateReference' => now()->format('Y-m-d'),
-            'materielTypeId' => null,
-            'serviceId' => null,
-            'statutFiltre' => null,
+            'statut' => null,
+            'date_debut' => null,
+            // ... autres valeurs par défaut
         ]);
     }
 
-    public function form(Form $form): Form
+    public function schema( $schema): Form
     {
-        return $form
+        return $schema
             ->schema([
                 Section::make('Filtres du Rapport')
                     ->description('Sélectionnez les critères pour générer le rapport')
@@ -88,26 +102,16 @@ class RapportParcInformatique extends Page implements HasForms
             ->statePath('data');
     }
 
-    protected function getFormData(): array
-    {
-        try {
-            return $this->form->getState();
-        } catch (\Throwable $e) {
-            return $this->data ?? [];
-        }
-    }
-
     public function getStatistiquesGlobales(): array
     {
-        $data = $this->getFormData();
         $query = Materiel::query();
 
-        if (!empty($data['materielTypeId'])) {
-            $query->where('materiel_type_id', $data['materielTypeId']);
+        if ($this->materielTypeId) {
+            $query->where('materiel_type_id', $this->materielTypeId);
         }
 
-        if (!empty($data['statutFiltre'])) {
-            $query->where('statut', $data['statutFiltre']);
+        if ($this->statutFiltre) {
+            $query->where('statut', $this->statutFiltre);
         }
 
         $totalMateriels = $query->count();
@@ -131,14 +135,13 @@ class RapportParcInformatique extends Page implements HasForms
 
     public function getRepartitionParType(): array
     {
-        $data = $this->getFormData();
         $query = Materiel::query()
             ->select('materiel_type_id', DB::raw('count(*) as total'))
             ->with('materielType')
             ->groupBy('materiel_type_id');
 
-        if (!empty($data['statutFiltre'])) {
-            $query->where('statut', $data['statutFiltre']);
+        if ($this->statutFiltre) {
+            $query->where('statut', $this->statutFiltre);
         }
 
         return $query->get()
@@ -171,12 +174,11 @@ class RapportParcInformatique extends Page implements HasForms
 
     public function getAttributionsActives(): int
     {
-        $data = $this->getFormData();
         $query = Attribution::active();
 
-        if (!empty($data['serviceId'])) {
-            $query->whereHas('employee', function ($q) use ($data) {
-                $q->where('service_id', $data['serviceId']);
+        if ($this->serviceId) {
+            $query->whereHas('employee', function ($q) {
+                $q->where('service_id', $this->serviceId);
             });
         }
 
@@ -185,21 +187,20 @@ class RapportParcInformatique extends Page implements HasForms
 
     public function getMateriels()
     {
-        $data = $this->getFormData();
         $query = Materiel::query()
             ->with(['materielType', 'activeAttribution.employee.service']);
 
-        if (!empty($data['materielTypeId'])) {
-            $query->where('materiel_type_id', $data['materielTypeId']);
+        if ($this->materielTypeId) {
+            $query->where('materiel_type_id', $this->materielTypeId);
         }
 
-        if (!empty($data['statutFiltre'])) {
-            $query->where('statut', $data['statutFiltre']);
+        if ($this->statutFiltre) {
+            $query->where('statut', $this->statutFiltre);
         }
 
-        if (!empty($data['serviceId'])) {
-            $query->whereHas('activeAttribution.employee', function ($q) use ($data) {
-                $q->where('service_id', $data['serviceId']);
+        if ($this->serviceId) {
+            $query->whereHas('activeAttribution.employee', function ($q) {
+                $q->where('service_id', $this->serviceId);
             });
         }
 
@@ -286,15 +287,13 @@ class RapportParcInformatique extends Page implements HasForms
 
     protected function prepareReportData(): array
     {
-        $data = $this->getFormData();
-
         return [
-            'date_reference' => $data['dateReference'] ?? now()->format('Y-m-d'),
+            'date_reference' => $this->dateReference,
             'date_generation' => now(),
             'filtres' => [
-                'type' => !empty($data['materielTypeId']) ? MaterielType::find($data['materielTypeId'])?->nom : 'Tous',
-                'service' => !empty($data['serviceId']) ? Service::find($data['serviceId'])?->nom : 'Tous',
-                'statut' => !empty($data['statutFiltre']) ? ucfirst($data['statutFiltre']) : 'Tous',
+                'type' => $this->materielTypeId ? MaterielType::find($this->materielTypeId)?->nom : 'Tous',
+                'service' => $this->serviceId ? Service::find($this->serviceId)?->nom : 'Tous',
+                'statut' => $this->statutFiltre ? ucfirst($this->statutFiltre) : 'Tous',
             ],
             'statistiques' => $this->getStatistiquesGlobales(),
             'repartition_type' => $this->getRepartitionParType(),
