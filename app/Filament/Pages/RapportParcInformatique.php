@@ -11,12 +11,15 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 
-class RapportParcInformatique extends Page
+class RapportParcInformatique extends Page implements HasForms
 {
+    use InteractsWithForms;
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
 
     protected static string $view = 'filament.pages.rapport-parc-informatique';
@@ -39,7 +42,9 @@ class RapportParcInformatique extends Page
 
     public function mount(): void
     {
-        $this->dateReference = now()->format('Y-m-d');
+        $this->form->fill([
+            'dateReference' => now()->format('Y-m-d'),
+        ]);
     }
 
     public function form(Form $form): Form
@@ -82,20 +87,25 @@ class RapportParcInformatique extends Page
                             ->native(false),
                     ])
                     ->columns(2),
-            ])
-            ->statePath('data');
+            ]);
+    }
+
+    protected function getFormData(): array
+    {
+        return $this->form->getState();
     }
 
     public function getStatistiquesGlobales(): array
     {
+        $data = $this->getFormData();
         $query = Materiel::query();
 
-        if ($this->materielTypeId) {
-            $query->where('materiel_type_id', $this->materielTypeId);
+        if (!empty($data['materielTypeId'])) {
+            $query->where('materiel_type_id', $data['materielTypeId']);
         }
 
-        if ($this->statutFiltre) {
-            $query->where('statut', $this->statutFiltre);
+        if (!empty($data['statutFiltre'])) {
+            $query->where('statut', $data['statutFiltre']);
         }
 
         $totalMateriels = $query->count();
@@ -119,13 +129,14 @@ class RapportParcInformatique extends Page
 
     public function getRepartitionParType(): array
     {
+        $data = $this->getFormData();
         $query = Materiel::query()
             ->select('materiel_type_id', DB::raw('count(*) as total'))
             ->with('materielType')
             ->groupBy('materiel_type_id');
 
-        if ($this->statutFiltre) {
-            $query->where('statut', $this->statutFiltre);
+        if (!empty($data['statutFiltre'])) {
+            $query->where('statut', $data['statutFiltre']);
         }
 
         return $query->get()
@@ -158,11 +169,12 @@ class RapportParcInformatique extends Page
 
     public function getAttributionsActives(): int
     {
+        $data = $this->getFormData();
         $query = Attribution::active();
 
-        if ($this->serviceId) {
-            $query->whereHas('employee', function ($q) {
-                $q->where('service_id', $this->serviceId);
+        if (!empty($data['serviceId'])) {
+            $query->whereHas('employee', function ($q) use ($data) {
+                $q->where('service_id', $data['serviceId']);
             });
         }
 
@@ -171,20 +183,21 @@ class RapportParcInformatique extends Page
 
     public function getMateriels()
     {
+        $data = $this->getFormData();
         $query = Materiel::query()
             ->with(['materielType', 'activeAttribution.employee.service']);
 
-        if ($this->materielTypeId) {
-            $query->where('materiel_type_id', $this->materielTypeId);
+        if (!empty($data['materielTypeId'])) {
+            $query->where('materiel_type_id', $data['materielTypeId']);
         }
 
-        if ($this->statutFiltre) {
-            $query->where('statut', $this->statutFiltre);
+        if (!empty($data['statutFiltre'])) {
+            $query->where('statut', $data['statutFiltre']);
         }
 
-        if ($this->serviceId) {
-            $query->whereHas('activeAttribution.employee', function ($q) {
-                $q->where('service_id', $this->serviceId);
+        if (!empty($data['serviceId'])) {
+            $query->whereHas('activeAttribution.employee', function ($q) use ($data) {
+                $q->where('service_id', $data['serviceId']);
             });
         }
 
@@ -271,13 +284,15 @@ class RapportParcInformatique extends Page
 
     protected function prepareReportData(): array
     {
+        $data = $this->getFormData();
+
         return [
-            'date_reference' => $this->dateReference,
+            'date_reference' => $data['dateReference'] ?? now()->format('Y-m-d'),
             'date_generation' => now(),
             'filtres' => [
-                'type' => $this->materielTypeId ? MaterielType::find($this->materielTypeId)?->nom : 'Tous',
-                'service' => $this->serviceId ? Service::find($this->serviceId)?->nom : 'Tous',
-                'statut' => $this->statutFiltre ? ucfirst($this->statutFiltre) : 'Tous',
+                'type' => !empty($data['materielTypeId']) ? MaterielType::find($data['materielTypeId'])?->nom : 'Tous',
+                'service' => !empty($data['serviceId']) ? Service::find($data['serviceId'])?->nom : 'Tous',
+                'statut' => !empty($data['statutFiltre']) ? ucfirst($data['statutFiltre']) : 'Tous',
             ],
             'statistiques' => $this->getStatistiquesGlobales(),
             'repartition_type' => $this->getRepartitionParType(),
