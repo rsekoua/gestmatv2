@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class AttributionResource extends Resource
@@ -33,6 +34,19 @@ class AttributionResource extends Resource
     protected static ?string $pluralModelLabel = 'Attributions';
 
     protected static ?string $recordTitleAttribute = 'numero_decharge_att';
+
+    /**
+     * Optimize queries with eager loading to prevent N+1 problems.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with([
+                'materiel.materielType',
+                'employee.service',
+                'service.chefService',
+            ]);
+    }
 
     public static function getNavigationBadge(): ?string
     {

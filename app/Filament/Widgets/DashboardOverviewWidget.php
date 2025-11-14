@@ -9,6 +9,7 @@ use App\Models\Service;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardOverviewWidget extends StatsOverviewWidget
 {
@@ -25,27 +26,46 @@ class DashboardOverviewWidget extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        // Matériels
-        $totalMateriels = Materiel::count();
-        $disponibles = Materiel::where('statut', 'disponible')->count();
-        $attribues = Materiel::where('statut', 'attribué')->count();
-        $enPanne = Materiel::where('statut', 'en_panne')->count();
-        $disponibiliteRate = $totalMateriels > 0 ? round(($disponibles / $totalMateriels) * 100) : 0;
+        // Cache for 5 minutes to improve dashboard performance
+        $stats = Cache::remember('dashboard.overview.stats', now()->addMinutes(5), function () {
+            // Matériels
+            $totalMateriels = Materiel::count();
+            $disponibles = Materiel::where('statut', 'disponible')->count();
+            $attribues = Materiel::where('statut', 'attribué')->count();
+            $enPanne = Materiel::where('statut', 'en_panne')->count();
+            $disponibiliteRate = $totalMateriels > 0 ? round(($disponibles / $totalMateriels) * 100) : 0;
 
-        // Attributions
-        $activeAttributions = Attribution::active()->count();
-        $closedThisMonth = Attribution::closed()
-            ->whereMonth('date_restitution', now()->month)
-            ->whereYear('date_restitution', now()->year)
-            ->count();
+            // Attributions
+            $activeAttributions = Attribution::active()->count();
+            $closedThisMonth = Attribution::closed()
+                ->whereMonth('date_restitution', now()->month)
+                ->whereYear('date_restitution', now()->year)
+                ->count();
 
-        // Employés
-        $totalEmployees = Employee::count();
-        $employeesWithActiveAttributions = Employee::has('activeAttributions')->count();
-        $employeesRate = $totalEmployees > 0 ? round(($employeesWithActiveAttributions / $totalEmployees) * 100) : 0;
+            // Employés
+            $totalEmployees = Employee::count();
+            $employeesWithActiveAttributions = Employee::has('activeAttributions')->count();
+            $employeesRate = $totalEmployees > 0 ? round(($employeesWithActiveAttributions / $totalEmployees) * 100) : 0;
 
-        // Services
-        $totalServices = Service::count();
+            // Services
+            $totalServices = Service::count();
+
+            return compact(
+                'totalMateriels',
+                'disponibles',
+                'attribues',
+                'enPanne',
+                'disponibiliteRate',
+                'activeAttributions',
+                'closedThisMonth',
+                'totalEmployees',
+                'employeesWithActiveAttributions',
+                'employeesRate',
+                'totalServices'
+            );
+        });
+
+        extract($stats);
 
         return [
             Stat::make('Matériels Totaux', $totalMateriels)
@@ -79,27 +99,31 @@ class DashboardOverviewWidget extends StatsOverviewWidget
 
     protected function getMaterielsMonthlyData(): array
     {
-        $data = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $data[] = Materiel::whereYear('created_at', $date->year)
-                ->whereMonth('created_at', $date->month)
-                ->count();
-        }
+        return Cache::remember('dashboard.materiels.monthly', now()->addHour(), function () {
+            $data = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subMonths($i);
+                $data[] = Materiel::whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month)
+                    ->count();
+            }
 
-        return $data;
+            return $data;
+        });
     }
 
     protected function getAttributionsMonthlyData(): array
     {
-        $data = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $data[] = Attribution::whereYear('date_attribution', $date->year)
-                ->whereMonth('date_attribution', $date->month)
-                ->count();
-        }
+        return Cache::remember('dashboard.attributions.monthly', now()->addHour(), function () {
+            $data = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subMonths($i);
+                $data[] = Attribution::whereYear('date_attribution', $date->year)
+                    ->whereMonth('date_attribution', $date->month)
+                    ->count();
+            }
 
-        return $data;
+            return $data;
+        });
     }
 }

@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class EmployeeResource extends Resource
@@ -33,6 +34,15 @@ class EmployeeResource extends Resource
     protected static ?string $pluralModelLabel = 'Employés';
 
     protected static ?string $recordTitleAttribute = 'full_name';
+
+    /**
+     * Optimize queries with eager loading to prevent N+1 problems.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['service']);
+    }
 
     public static function getNavigationBadge(): ?string
     {

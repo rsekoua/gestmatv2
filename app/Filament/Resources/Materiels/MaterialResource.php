@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class MaterialResource extends Resource
@@ -33,6 +34,15 @@ class MaterialResource extends Resource
     protected static ?string $pluralModelLabel = 'Matériels';
 
     protected static ?string $recordTitleAttribute = 'nom';
+
+    /**
+     * Optimize queries with eager loading to prevent N+1 problems.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['materielType', 'activeAttribution.employee.service', 'activeAttribution.service.chefService']);
+    }
 
     public static function getNavigationBadge(): ?string
     {
