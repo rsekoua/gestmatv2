@@ -42,8 +42,8 @@ class AttribuerRapidementAction
                                 return Employee::with('service')
                                     ->get()
                                     ->mapWithKeys(function (Employee $employee) {
-                                        $serviceName = $employee->service?->nom ?? 'Sans service';
-                                        return [$employee->id => "{$employee->full_name} ({$serviceName})"];
+                                        $serviceName = $employee->service?->code ?? 'Sans service';
+                                        return [$employee->id => "{$employee->full_name} - ({$serviceName})"];
                                     });
                             })
                             ->placeholder('Sélectionnez un employé'),

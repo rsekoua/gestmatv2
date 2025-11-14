@@ -124,6 +124,40 @@ class Attribution extends Model
         );
     }
 
+    protected function formattedDuration(): Attribute
+    {
+        return Attribute::make(
+            get: function (): string {
+                // Détermine la date de fin (maintenant ou la date de restitution)
+                $endDate = $this->isActive() ? now() : $this->date_restitution;
+
+                // 1. Calcule l'intervalle de date (objet DateInterval)
+                $interval = $this->date_attribution->diff($endDate);
+
+                $parts = [];
+
+                // 2. Construit le tableau des parties de la chaîne
+                if ($interval->y > 0) {
+                    $parts[] = $interval->y . " an" . ($interval->y > 1 ? "s" : "");
+                }
+                if ($interval->m > 0) {
+                    $parts[] = $interval->m . " mois"; // 'mois' est invariable
+                }
+                if ($interval->d > 0) {
+                    $parts[] = $interval->d . " jour" . ($interval->d > 1 ? "s" : "");
+                }
+
+                // 3. Gère le cas où la durée est de 0 jour
+                if (empty($parts)) {
+                    return "0 jours";
+                }
+
+                // 4. Combine les parties
+                return implode(" ", $parts);
+            }
+        );
+    }
+
     /**
      * Generate attribution discharge number.
      */

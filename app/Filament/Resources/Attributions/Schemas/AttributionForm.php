@@ -146,6 +146,7 @@ class AttributionForm
                             ->label('Date d\'Attribution')
                             ->required()
                             ->default(now())
+                            ->maxDate(now())
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->columnSpan(1),
@@ -198,6 +199,7 @@ class AttributionForm
                             ->label('Date de Restitution')
                             ->native(false)
                             ->displayFormat('d/m/Y')
+                            ->maxDate(now())
                             ->helperText('Laissez vide si le matériel n\'est pas encore restitué')
                             ->afterOrEqual('date_attribution')
                             ->validationMessages([

@@ -4,29 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Décharge d'Attribution - {{ $attribution->numero_decharge_att }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
+
         @page {
-            margin: 1.5cm;
+            margin: 2.5cm 1.5cm 1.5cm;
         }
         body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-family:'Roboto', 'DejaVu Sans', Arial, sans-serif;
             font-size: 9pt;
             color: #1f2937;
             line-height: 1.4;
         }
         .header {
-            text-align: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 4px solid #000000;
-            /*border-bottom: 4px solid #4f46e5;*/
+        }
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+        .header-table td {
+            vertical-align: middle;
+            border: none;
+            padding: 0;
+        }
+        .header-logo {
+            width: 25%;
+            text-align: center;
+        }
+        .header-logo img {
+            height: 60px;
+            max-width: 100%;
+        }
+        .header-title {
+            width: 50%;
+            text-align: center;
         }
         .header h1 {
             color: #000000;
-            /*color: #433_8ca;*/
-            margin: 0 0 5px 0;
-            font-size: 16pt;
+            margin: 0;
+            font-size: 14pt;
             font-weight: bold;
+        }
+        .header-info-container {
+            text-align: center;
         }
         .header-info {
             font-size: 8pt;
@@ -76,8 +102,8 @@
             background-color: #f9fafb;
             padding: 8px;
             border-left: 4px solid #9ca3af;
-            font-style: italic;
-            font-size: 8pt;
+            /*font-style: italic;*/
+            font-size: 10pt;
             min-height: 30px;
         }
         .signature-section {
@@ -109,12 +135,12 @@
             font-size: 8pt;
         }
         .signature-box {
-            border: 2px solid #d1d5db;
-            background-color: #f9fafb;
-            height: 70px;
-            padding-top: 50px;
-            font-size: 8pt;
-            color: #6b7280;
+            border: 1px solid #e1e5eb;
+            background-color: #ffffff;
+            height: 60px;
+            padding-top: 40px;
+            font-size: 6pt;
+            color: #ccc;
         }
         .footer {
             position: fixed;
@@ -131,9 +157,23 @@
 </head>
 <body>
     <div class="header">
-        <h1>DÉCHARGE POUR ATTRIBUTION DE MATÉRIEL</h1>
-        <div class="header-info"><b>N° {{ $attribution->numero_decharge_att }}</b></div>
-        <div class="header-info">Date : {{ $attribution->date_attribution->format('d/m/Y') }}</div>
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    <img src="{{ public_path('storage/logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
+                </td>
+                <td class="header-title">
+                    <h1>DÉCHARGE POUR ATTRIBUTION DE MATÉRIEL</h1>
+                </td>
+                <td class="header-logo">
+                    <img src="{{ public_path('storage/logos/DAP.png') }}" alt="Logo DAP">
+                </td>
+            </tr>
+        </table>
+        <div class="header-info-container">
+            <div class="header-info"><b>N° {{ $attribution->numero_decharge_att }}</b></div>
+            <div class="header-info">Date : {{ $attribution->date_attribution->format('d/m/Y') }}</div>
+        </div>
     </div>
 
     {{-- Informations du matériel --}}
@@ -220,18 +260,30 @@
     @endif
 
     {{-- Observations --}}
-    @if($attribution->observations_att)
-    <div class="section">
-        <div class="section-title">OBSERVATIONS</div>
-        <div class="observations">
-            {{ $attribution->observations_att }}
+{{--    @if($attribution->observations_att)--}}
+{{--    <div class="section">--}}
+{{--        <div class="section-title">OBSERVATIONS</div>--}}
+{{--        <div class="observations">--}}
+{{--            {{ $attribution->observations_att }}--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--    @endif--}}
+
+    {{-- Observations --}}
+
+        <div class="section">
+            <div class="observations">
+                Par la présente, attestant la remise de matériel informatique, vous
+                vous engagez à restituer l'ordinateur à la <b>DAP</b> en bon état à la fin de
+                votre contrat.
+            </div>
         </div>
-    </div>
-    @endif
+
 
     {{-- Signatures --}}
     <div class="signature-section">
-        <div class="section-title">SIGNATURES</div>
+{{--        <div class="section-title">SIGNATURES</div>--}}
+        <hr>
         <div class="signature-grid">
             <div class="signature-cell">
                 @if($attribution->isForEmployee())
@@ -248,7 +300,7 @@
             <div class="signature-spacer"></div>
             <div class="signature-cell">
                 <div class="signature-label">Le responsable</div>
-                <div class="signature-name">Service Informatique</div>
+                <div class="signature-name">Service DSI </div>
                 <div class="signature-box">
                     Signature et cachet
                 </div>

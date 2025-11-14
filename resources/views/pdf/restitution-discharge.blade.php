@@ -9,22 +9,46 @@
             margin: 1.5cm;
         }
         body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-family:  Arial,'DejaVu Sans', sans-serif;
             font-size: 9pt;
             color: #1f2937;
             line-height: 1.4;
         }
         .header {
-            text-align: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 4px solid #dc2626;
         }
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+        .header-table td {
+            vertical-align: middle;
+            border: none;
+            padding: 0;
+        }
+        .header-logo {
+            width: 25%;
+            text-align: center;
+        }
+        .header-logo img {
+            height: 60px;
+            max-width: 100%;
+        }
+        .header-title {
+            width: 50%;
+            text-align: center;
+        }
         .header h1 {
             color: #991b1b;
-            margin: 0 0 5px 0;
-            font-size: 16pt;
+            margin: 0;
+            font-size: 14pt;
             font-weight: bold;
+        }
+        .header-info-container {
+            text-align: center;
         }
         .header-info {
             font-size: 8pt;
@@ -32,7 +56,7 @@
             margin: 2px 0;
         }
         .section {
-            margin-bottom: 12px;
+            margin-bottom: 5px;
         }
         .section-title {
             background-color: #fee2e2;
@@ -87,7 +111,7 @@
             min-height: 30px;
         }
         .signature-section {
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .signature-grid {
             display: table;
@@ -115,12 +139,12 @@
             font-size: 8pt;
         }
         .signature-box {
-            border: 2px solid #d1d5db;
-            background-color: #f9fafb;
+            border: 1px solid #e1e5eb;
+            background-color: #ffffff;
             height: 60px;
             padding-top: 40px;
-            font-size: 8pt;
-            color: #6b7280;
+            font-size: 6pt;
+            color: #ccc;
         }
         .footer {
             position: fixed;
@@ -137,9 +161,23 @@
 </head>
 <body>
     <div class="header">
-        <h1>DÉCHARGE DE RESTITUTION DE MATÉRIEL</h1>
-        <div class="header-info">N° {{ $attribution->numero_decharge_res }}</div>
-        <div class="header-info">Date : {{ $attribution->date_restitution->format('d/m/Y') }}</div>
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    <img src="{{ public_path('storage/logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
+                </td>
+                <td class="header-title">
+                    <h1>DÉCHARGE DE RESTITUTION DE MATÉRIEL</h1>
+                </td>
+                <td class="header-logo">
+                    <img src="{{ public_path('storage/logos/DAP.png') }}" alt="Logo DAP">
+                </td>
+            </tr>
+        </table>
+        <div class="header-info-container">
+            <div class="header-info">N° {{ $attribution->numero_decharge_res }}</div>
+            <div class="header-info">Date : {{ $attribution->date_restitution->format('d/m/Y') }}</div>
+        </div>
     </div>
 
     {{-- Référence à l'attribution --}}
@@ -157,9 +195,9 @@
             <tr>
                 <td class="td-label">Durée d'utilisation</td>
                 <td class="td-value">
-                    <span class="badge badge-blue">
-                        {{ $attribution->duration_in_days }} jours ({{ round($attribution->duration_in_days / 30, 1) }} mois)
-                    </span>
+                     <span class="badge badge-blue">
+                            {{ $attribution->formatted_duration }}
+                     </span>
                 </td>
             </tr>
         </table>
@@ -257,28 +295,28 @@
                     </span>
                 </td>
             </tr>
-            <tr>
-                <td class="td-label">Décision</td>
-                <td class="td-value">
-                    @php
-                        $decisionClass = match($attribution->decision_res) {
-                            'remis_en_stock' => 'badge-green',
-                            'a_reparer' => 'badge-yellow',
-                            'rebut' => 'badge-red',
-                            default => 'badge-blue'
-                        };
-                        $decisionLabel = match($attribution->decision_res) {
-                            'remis_en_stock' => '✓ REMIS EN STOCK',
-                            'a_reparer' => '⚠ À RÉPARER',
-                            'rebut' => '✗ REBUT',
-                            default => 'N/A'
-                        };
-                    @endphp
-                    <span class="badge {{ $decisionClass }}">
-                        {{ $decisionLabel }}
-                    </span>
-                </td>
-            </tr>
+{{--            <tr>--}}
+{{--                <td class="td-label">Décision</td>--}}
+{{--                <td class="td-value">--}}
+{{--                    @php--}}
+{{--                        $decisionClass = match($attribution->decision_res) {--}}
+{{--                            'remis_en_stock' => 'badge-green',--}}
+{{--                            'a_reparer' => 'badge-yellow',--}}
+{{--                            'rebut' => 'badge-red',--}}
+{{--                            default => 'badge-blue'--}}
+{{--                        };--}}
+{{--                        $decisionLabel = match($attribution->decision_res) {--}}
+{{--                            'remis_en_stock' => '✓ REMIS EN STOCK',--}}
+{{--                            'a_reparer' => '⚠ À RÉPARER',--}}
+{{--                            'rebut' => '✗ REBUT',--}}
+{{--                            default => 'N/A'--}}
+{{--                        };--}}
+{{--                    @endphp--}}
+{{--                    <span class="badge {{ $decisionClass }}">--}}
+{{--                        {{ $decisionLabel }}--}}
+{{--                    </span>--}}
+{{--                </td>--}}
+{{--            </tr>--}}
         </table>
     </div>
 
@@ -292,40 +330,33 @@
     </div>
     @endif
 
-    {{-- Observations --}}
-    @if($attribution->observations_res)
-    <div class="section">
-        <div class="section-title">OBSERVATIONS</div>
-        <div class="observations">
-            {{ $attribution->observations_res }}
-        </div>
-    </div>
-    @endif
+
 
     {{-- Accessoires restitués --}}
     @if($attribution->accessories->count() > 0)
     <div class="section">
         <div class="section-title">ACCESSOIRES RESTITUÉS</div>
-        <table>
-            @foreach($attribution->accessories as $accessory)
-                <tr>
-                    <td class="td-label" style="width: 60%;">{{ $accessory->nom }}</td>
-                    <td class="td-value" style="width: 40%;">
-                        @if($accessory->pivot->statut_res)
-                            <span class="badge badge-blue">{{ strtoupper($accessory->pivot->statut_res) }}</span>
-                        @else
-                            <span class="badge badge-yellow">NON PRÉCISÉ</span>
-                        @endif
-                    </td>
-                </tr>
-            @endforeach
-        </table>
+        <div class="observations">
+        {{-- Pluck récupère tous les 'nom' et 'join' les assemble --}}
+         {{ $attribution->accessories->pluck('nom')->join(' | ') }}
+        </div>
     </div>
+    @endif
+
+    {{-- Observations --}}
+    @if($attribution->observations_res)
+        <div class="section">
+            <div class="section-title">OBSERVATIONS</div>
+            <div class="observations">
+                {{ $attribution->observations_res }}
+            </div>
+        </div>
     @endif
 
     {{-- Signatures --}}
     <div class="signature-section">
-        <div class="section-title">SIGNATURES</div>
+{{--        <div class="section-title">SIGNATURES</div>--}}
+        <hr>
         <div class="signature-grid">
             <div class="signature-cell">
                 @if($attribution->isForEmployee())

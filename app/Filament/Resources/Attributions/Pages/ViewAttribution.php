@@ -20,11 +20,26 @@ class ViewAttribution extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('preview_attribution_discharge')
+                ->label('Attri')
+                ->icon(Heroicon::Eye)
+                ->color('gray')
+                ->url(fn ($record) => route('attributions.preview.attribution', $record))
+                ->openUrlInNewTab(),
+
             Action::make('download_attribution_discharge')
                 ->label('Décharge d\'Attribution')
                 ->icon(Heroicon::DocumentArrowDown)
                 ->color('primary')
                 ->url(fn ($record) => route('attributions.discharge.attribution', $record))
+                ->openUrlInNewTab(),
+
+            Action::make('preview_restitution_discharge')
+                ->label('Resti')
+                ->icon(Heroicon::Eye)
+                ->color('gray')
+                ->visible(fn ($record) => $record->isClosed())
+                ->url(fn ($record) => route('attributions.preview.restitution', $record))
                 ->openUrlInNewTab(),
 
             Action::make('download_restitution_discharge')
@@ -35,13 +50,13 @@ class ViewAttribution extends ViewRecord
                 ->url(fn ($record) => route('attributions.discharge.restitution', $record))
                 ->openUrlInNewTab(),
 
-            Action::make('download_combined_discharge')
-                ->label('Décharge Complète')
-                ->icon(Heroicon::DocumentDuplicate)
-                ->color('info')
-                ->visible(fn ($record) => $record->isClosed())
-                ->url(fn ($record) => route('attributions.discharge.combined', $record))
-                ->openUrlInNewTab(),
+//            Action::make('download_combined_discharge')
+//                ->label('Décharge Complète')
+//                ->icon(Heroicon::DocumentDuplicate)
+//                ->color('info')
+//                ->visible(fn ($record) => $record->isClosed())
+//                ->url(fn ($record) => route('attributions.discharge.combined', $record))
+//                ->openUrlInNewTab(),
 
             RestituerAttributionAction::make(),
 

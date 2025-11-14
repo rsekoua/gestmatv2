@@ -6,7 +6,10 @@
     <title>Décharge Complète - {{ $attribution->numero_decharge_att }}</title>
     <style>
         @page {
-            margin: 1.5cm;
+            margin-top: 2.5cm;
+            margin-right: 1.5cm;
+            margin-bottom: 1.5cm;
+            margin-left: 1.5cm;
         }
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
@@ -18,16 +21,40 @@
             page-break-after: always;
         }
         .header {
-            text-align: center;
             margin-bottom: 12px;
             padding-bottom: 8px;
             border-bottom: 3px solid #4f46e5;
         }
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+        }
+        .header-table td {
+            vertical-align: middle;
+            border: none;
+            padding: 0;
+        }
+        .header-logo {
+            width: 25%;
+            text-align: center;
+        }
+        .header-logo img {
+            height: 50px;
+            max-width: 100%;
+        }
+        .header-title {
+            width: 50%;
+            text-align: center;
+        }
         .header h1 {
             color: #4338ca;
-            margin: 0 0 3px 0;
-            font-size: 14pt;
+            margin: 0;
+            font-size: 12pt;
             font-weight: bold;
+        }
+        .header-info-container {
+            text-align: center;
         }
         .header-info {
             font-size: 7pt;
@@ -113,8 +140,22 @@
 <body>
     {{-- PAGE 1: ATTRIBUTION --}}
     <div class="header">
-        <h1>DÉCHARGE D'ATTRIBUTION</h1>
-        <div class="header-info">N° {{ $attribution->numero_decharge_att }} - {{ $attribution->date_attribution->format('d/m/Y') }}</div>
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    <img src="{{ public_path('storage/logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
+                </td>
+                <td class="header-title">
+                    <h1>DÉCHARGE D'ATTRIBUTION</h1>
+                </td>
+                <td class="header-logo">
+                    <img src="{{ public_path('storage/logos/DAP.png') }}" alt="Logo DAP">
+                </td>
+            </tr>
+        </table>
+        <div class="header-info-container">
+            <div class="header-info">N° {{ $attribution->numero_decharge_att }} - {{ $attribution->date_attribution->format('d/m/Y') }}</div>
+        </div>
     </div>
 
     <div class="section">
@@ -187,8 +228,22 @@
         <div class="page-break"></div>
 
         <div class="header header-restitution">
-            <h1>DÉCHARGE DE RESTITUTION</h1>
-            <div class="header-info">N° {{ $attribution->numero_decharge_res }} - {{ $attribution->date_restitution->format('d/m/Y') }}</div>
+            <table class="header-table">
+                <tr>
+                    <td class="header-logo">
+                        <img src="{{ public_path('storage/logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
+                    </td>
+                    <td class="header-title">
+                        <h1>DÉCHARGE DE RESTITUTION</h1>
+                    </td>
+                    <td class="header-logo">
+                        <img src="{{ public_path('storage/logos/DAP.png') }}" alt="Logo DAP">
+                    </td>
+                </tr>
+            </table>
+            <div class="header-info-container">
+                <div class="header-info">N° {{ $attribution->numero_decharge_res }} - {{ $attribution->date_restitution->format('d/m/Y') }}</div>
+            </div>
         </div>
 
         <div class="section">
