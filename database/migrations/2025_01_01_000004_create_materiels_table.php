@@ -35,6 +35,10 @@ return new class extends Migration
             $table->index('materiel_type_id');
             $table->index('numero_serie');
             $table->index('statut');
+            // Index composite pour filtres combinés statut + type
+            $table->index(['statut', 'materiel_type_id'], 'materiels_statut_type_index');
+            // Index pour recherche par état physique
+            $table->index('etat_physique', 'materiels_etat_physique_index');
         });
     }
 

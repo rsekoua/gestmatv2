@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('code', 20)->unique()->nullable();
             $table->string('responsable', 200)->nullable();
             $table->timestamps();
+
+            // Index pour recherche par code (si pas déjà unique)
+            $table->index('code', 'services_code_index');
         });
     }
 

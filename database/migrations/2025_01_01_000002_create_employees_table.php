@@ -24,6 +24,7 @@ return new class extends Migration
 
             $table->index('service_id');
             $table->index('email');
+            $table->index(['service_id', 'email'], 'employees_service_email_index');
         });
     }
 

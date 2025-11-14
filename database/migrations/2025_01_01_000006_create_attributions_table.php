@@ -36,6 +36,13 @@ return new class extends Migration
             $table->index('employee_id');
             $table->index('date_attribution');
             $table->index('date_restitution');
+            $table->index(['materiel_id', 'date_restitution'], 'attributions_materiel_active_index');
+
+            // Index composite pour les attributions d'un employé
+            $table->index(['employee_id', 'date_restitution'], 'attributions_employee_active_index');
+
+            // Index composite pour les attributions d'un service
+            $table->index(['service_id', 'date_restitution'], 'attributions_service_active_index');
         });
     }
 
