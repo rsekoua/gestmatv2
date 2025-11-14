@@ -1,0 +1,4 @@
+numero_serie,type_materiel,marque,modele,statut,etat_physique,purchase_date,acquision,processor,ram_size_gb,storage_size_gb,screen_size,notes
+SN001,Ordinateur Portable,Dell,Latitude 5420,disponible,bon,2023-01-15,Achat,Intel Core i5-1135G7,16,512,15.6,Garantie jusqu'au 01/2026
+SN002,Imprimante,HP,LaserJet P2055,disponible,excellent,2022-06-20,Achat,,,,,
+SN003,Écran,Samsung,S24F350,disponible,bon,2023-03-10,Achat,,,,24,

@@ -1,0 +1,4 @@
+nom,prenom,email,service_code,telephone,emploi,fonction
+DUPONT,Jean,jean.dupont@mshpcmu.cd,DSI,+243 123 456 789,CDI,Développeur
+MARTIN,Marie,marie.martin@mshpcmu.cd,DRH,+243 987 654 321,CDD,Responsable RH
+BERNARD,Paul,paul.bernard@mshpcmu.cd,FIN,,CDI,Comptable
