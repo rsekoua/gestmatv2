@@ -41,13 +41,14 @@ class ViewMaterial extends ViewRecord
                         'sm' => 1,
                         'md' => 2,
                     ])
+                        ->columnSpan(2)
                     ->schema([
                         TextEntry::make('nom')
                             ->label('Désignation')
                             ->icon(Heroicon::ComputerDesktop)
                             ->iconColor('primary')
                             ->size('lg')
-                            ->weight(FontWeight::Bold)
+                          //  ->weight(FontWeight::Bold)
                             ->getStateUsing(fn ($record) => $record->nom)
                             ->columnSpanFull(),
 
@@ -57,19 +58,19 @@ class ViewMaterial extends ViewRecord
 //                            ->iconColor('primary')
 //                            ->badge()
 //                            ->color('primary')
-                            ->weight(FontWeight::Bold)
+                           // ->weight(FontWeight::Bold)
                             ->placeholder('Non défini')
                             ->copyable()
                             ->copyMessage('Numéro de série copié!')
-                            ->copyMessageDuration(1500)
-                            ->columnSpan(1),
+                            ->copyMessageDuration(1500),
+                            //->columnSpan(1),
 
 
                         TextEntry::make('materielType.nom')
                             ->label('Type de Matériel')
                             ->icon(Heroicon::Tag)
                            // ->iconColor('info')
-                            ->weight(FontWeight::Bold)
+                          //  ->weight(FontWeight::Bold)
                             //->badge()
                            // ->color('info')
                             ->placeholder('Non défini')
@@ -81,21 +82,22 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::BuildingOffice)
                             ->iconColor('gray')
                             ->placeholder('Non définie')
-                            ->weight(FontWeight::Bold)
+                           // ->weight(FontWeight::Bold)
                             ->columnSpan(1),
 
                         TextEntry::make('modele')
                             ->label('Modèle')
                             ->icon(Heroicon::Cube)
                             ->iconColor('gray')
-                            ->weight(FontWeight::Bold)
-                            ->placeholder('Non défini')
+                          //  ->weight(FontWeight::Bold)
+                           // ->placeholder('Non défini')
                             ->columnSpan(1),
                     ]),
 
                 Section::make('Spécifications Techniques')
                     ->description('Caractéristiques matérielles')
                     ->icon(Heroicon::CpuChip)
+                    ->columnSpan(2)
                     ->visible(fn ($record): bool => $record->materielType->isComputer())
                     ->columns([
                         'sm' => 1,
@@ -106,19 +108,16 @@ class ViewMaterial extends ViewRecord
                             ->label('Processeur')
                             ->icon(Heroicon::CpuChip)
                             ->iconColor('info')
-                            ->placeholder('Non renseigné')
-                            ->columnSpan([
-                                'sm' => 1,
-                                'md' => 2,
-                            ]),
+                            ->placeholder('Non renseigné'),
+//                            ->columnSpan(1),
 
                         TextEntry::make('ram_size_gb')
                             ->label('Mémoire RAM')
                             ->icon(Heroicon::CircleStack)
                             ->iconColor('success')
                             ->placeholder('Non renseignée')
-                            ->suffix(' GB')
-                            ->columnSpan(1),
+                            ->suffix(' GB'),
+//                            ->columnSpan(1),
 
                         TextEntry::make('storage_size_gb')
                             ->label('Stockage')
@@ -141,15 +140,19 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::ListBullet)
                             ->placeholder('Aucune spécification')
                             ->getStateUsing(fn ($record) => $record->specifications_summary)
-                            ->columnSpan(1),
+                            ->columnSpan([
+                                'sm' => 1,
+                                'md' => 2,
+                            ]),
                     ]),
 
                 Section::make('Acquisition et État')
                     ->description('Informations d\'achat et état actuel')
                     ->icon(Heroicon::ShoppingCart)
+                    ->columnSpan(4)
                     ->columns([
                         'sm' => 1,
-                        'md' => 2,
+                        'md' => 6,
                     ])
                     ->schema([
                         TextEntry::make('purchase_date')
@@ -286,16 +289,16 @@ class ViewMaterial extends ViewRecord
                     ->icon(Heroicon::DocumentText)
                     ->columns(1)
                     ->collapsed()
-                    ->columnSpan(2)
+                    ->columnSpan(4)
                     ->schema([
                         TextEntry::make('notes')
                             ->label('Notes')
-                            ->icon(Heroicon::ClipboardDocumentList)
+                            //->icon(Heroicon::ClipboardDocumentList)
                             ->placeholder('Aucune note')
                             ->markdown()
-                            ->columnSpanFull(),
+                            //->columnSpanFull(),
                     ]),
 
-            ]);
+            ])->columns(4);
     }
 }

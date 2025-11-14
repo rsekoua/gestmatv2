@@ -58,6 +58,15 @@ class MaterialStatsWidget extends StatsOverviewWidget
                 ->description($topTypeName)
                 ->descriptionIcon(Heroicon::Tag)
                 ->color('info'),
+            Stat::make('Matériels Amortis', $amortis)
+                ->description('Ordinateurs de plus de 3 ans')
+                ->descriptionIcon(Heroicon::ExclamationTriangle)
+                ->color($amortis > 0 ? 'danger' : 'success'),
+
+            Stat::make('Type Principal', $topTypeCount)
+                ->description($topTypeName)
+                ->descriptionIcon(Heroicon::Tag)
+                ->color('info'),
         ];
     }
 

@@ -130,7 +130,7 @@ class ViewEmployee extends ViewRecord
                     ->columns([
                         'sm' => 1,
                         'md' => 4,
-                    ])
+                    ])->columnSpan(2)
                     ->schema([
                         TextEntry::make('attributions_count')
                             ->label('Total Attributions')
@@ -164,6 +164,6 @@ class ViewEmployee extends ViewRecord
                             ->since()
                             ->columnSpan(1),
                     ]),
-            ]);
+            ])->columns(2);
     }
 }

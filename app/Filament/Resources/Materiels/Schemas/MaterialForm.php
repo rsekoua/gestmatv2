@@ -232,6 +232,7 @@ class MaterialForm
                     ->description('Informations additionnelles et observations')
                     ->icon(Heroicon::DocumentText)
                     ->columns(1)
+//                    ->columnSpan(12)
                     ->collapsed()
                     ->schema([
                         Textarea::make('notes')

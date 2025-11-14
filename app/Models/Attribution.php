@@ -164,18 +164,22 @@ class Attribution extends Model
      */
     public static function generateAttributionNumber(): string
     {
-        $year = now()->year;
-        $lastNumber = static::whereYear('date_attribution', $year)
+        // 1. Récupère les infos de date actuelles
+        $now = now();
+        $yearYYYY = $now->year;         // Année sur 4 chiffres (ex: 2025)
+        $yearYY = $now->format('y');   // Année sur 2 chiffres (ex: 25)
+        $monthMM = $now->format('m');  // Mois sur 2 chiffres (ex: 11)
+
+        // 2. Compte combien d'attributions ont déjà eu lieu CETTE ANNEE
+        $countThisYear = static::whereYear('date_attribution', $yearYYYY)
             ->whereNotNull('numero_decharge_att')
-            ->max('numero_decharge_att');
+            ->count();
 
-        if ($lastNumber) {
-            $number = (int) substr($lastNumber, -4) + 1;
-        } else {
-            $number = 1;
-        }
+        // 3. Le nouveau numéro est le total + 1
+        $number = $countThisYear + 1;
 
-        return sprintf('ATT-%d-%04d', $year, $number);
+        // 4. Crée le format ATT-YYMM-XXX (avec 3 chiffres)
+        return sprintf('ATT-%s%s-%03d', $yearYY, $monthMM, $number);
     }
 
     /**
@@ -183,18 +187,22 @@ class Attribution extends Model
      */
     public static function generateRestitutionNumber(): string
     {
-        $year = now()->year;
-        $lastNumber = static::whereYear('date_restitution', $year)
+        // 1. Récupère les infos de date actuelles
+        $now = now();
+        $yearYYYY = $now->year;
+        $yearYY = $now->format('y');
+        $monthMM = $now->format('m');
+
+        // 2. Compte combien de restitutions ont déjà eu lieu CETTE ANNEE
+        $countThisYear = static::whereYear('date_restitution', $yearYYYY)
             ->whereNotNull('numero_decharge_res')
-            ->max('numero_decharge_res');
+            ->count();
 
-        if ($lastNumber) {
-            $number = (int) substr($lastNumber, -4) + 1;
-        } else {
-            $number = 1;
-        }
+        // 3. Le nouveau numéro est le total + 1
+        $number = $countThisYear + 1;
 
-        return sprintf('RES-%d-%04d', $year, $number);
+        // 4. Crée le format RES-YYMM-XXX (avec 3 chiffres)
+        return sprintf('RES-%s%s-%03d', $yearYY, $monthMM, $number);
     }
 
     /**

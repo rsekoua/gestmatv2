@@ -17,7 +17,7 @@ class ListAttributions extends ListRecords
         return [
             CreateAction::make()
                 ->icon(Heroicon::Plus)
-                ->color('default'),
+                ->color('primary'),
         ];
     }
 
