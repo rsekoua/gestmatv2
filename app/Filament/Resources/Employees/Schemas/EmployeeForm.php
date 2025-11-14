@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Employees\Schemas;
 
+use App\Models\Service;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Cache;
 
 class EmployeeForm
 {
@@ -85,7 +87,9 @@ class EmployeeForm
                             ->placeholder('Sélectionnez un service')
                             ->helperText('Service auquel l\'employé est rattaché')
                             ->prefixIcon(Heroicon::BuildingOffice2)
-                            ->relationship('service', 'nom')
+                            ->options(fn () => Cache::remember('services.options', 3600,
+                                fn () => Service::pluck('nom', 'id')
+                            ))
                             ->searchable()
                             ->required()
                             ->preload()

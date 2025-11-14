@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\Attribution;
 use App\Models\Materiel;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 class AttributionObserver
@@ -47,6 +49,18 @@ class AttributionObserver
             ]);
         }
 
+        // Vérifier que la date d'attribution est >= à la dernière date de restitution
+        $lastRestitution = Attribution::where('materiel_id', $attribution->materiel_id)
+            ->whereNotNull('date_restitution')
+            ->orderBy('date_restitution', 'desc')
+            ->first();
+
+        if ($lastRestitution && $attribution->date_attribution < $lastRestitution->date_restitution) {
+            throw ValidationException::withMessages([
+                'date_attribution' => "La date d'attribution ({$attribution->date_attribution->format('d/m/Y')}) doit être égale ou postérieure à la dernière restitution de ce matériel ({$lastRestitution->date_restitution->format('d/m/Y')}).",
+            ]);
+        }
+
         // Mettre à jour le statut du matériel à "attribué"
         if ($attribution->materiel_id) {
             Materiel::withoutEvents(function () use ($attribution) {
@@ -57,11 +71,36 @@ class AttributionObserver
     }
 
     /**
+     * Handle the Attribution "deleting" event.
+     * Empêche la suppression des attributions restituées (historique à préserver).
+     */
+    public function deleting(Attribution $attribution): void
+    {
+        // Vérifier si l'attribution a été restituée
+        if (! is_null($attribution->date_restitution)) {
+            // Afficher une notification d'erreur
+            Notification::make()
+                ->danger()
+                ->title('Suppression impossible')
+                ->body('Impossible de supprimer une attribution restituée. L\'historique des restitutions doit être préservé pour la traçabilité et l\'audit.')
+                ->persistent()
+                ->send();
+
+            throw ValidationException::withMessages([
+                'attribution' => 'Impossible de supprimer une attribution restituée. L\'historique des restitutions doit être préservé pour la traçabilité.',
+            ]);
+        }
+
+        // Si on arrive ici, c'est une attribution active
+        // La suppression est autorisée et le matériel sera remis à "disponible" dans deleted()
+    }
+
+    /**
      * Handle the Attribution "created" event.
      */
     public function created(Attribution $attribution): void
     {
-        //
+        $this->clearCache();
     }
 
     /**
@@ -85,7 +124,6 @@ class AttributionObserver
                 ]);
             }
 
-
             if (empty($attribution->etat_general_res)) {
                 throw ValidationException::withMessages([
                     'etat_general_res' => 'L\'état général est obligatoire lors de la restitution.',
@@ -107,21 +145,26 @@ class AttributionObserver
      */
     public function updated(Attribution $attribution): void
     {
-        //
+        $this->clearCache();
     }
 
     /**
      * Handle the Attribution "deleted" event.
+     * Note: Cette méthode n'est appelée que pour les attributions ACTIVES
+     * car deleting() bloque la suppression des attributions restituées.
      */
     public function deleted(Attribution $attribution): void
     {
-        // Si l'attribution est supprimée et qu'elle était active, remettre le matériel disponible
+        // L'attribution supprimée était active (pas de date de restitution)
+        // Remettre le matériel à "disponible"
         if (is_null($attribution->date_restitution) && $attribution->materiel_id) {
             Materiel::withoutEvents(function () use ($attribution) {
                 Materiel::where('id', $attribution->materiel_id)
                     ->update(['statut' => 'disponible']);
             });
         }
+
+        $this->clearCache();
     }
 
     /**
@@ -171,5 +214,18 @@ class AttributionObserver
             Materiel::where('id', $attribution->materiel_id)
                 ->update(['statut' => $newStatus]);
         });
+    }
+
+    /**
+     * Clear all attribution-related caches
+     */
+    protected function clearCache(): void
+    {
+        Cache::forget('materiels.stats.widget');
+        Cache::forget('dashboard.overview.stats');
+        Cache::forget('dashboard.attributions.monthly');
+        Cache::forget('navigation.badge.attributions');
+        Cache::forget('navigation.badge.attributions.color');
+        Cache::forget('navigation.badge.attributions.tooltip');
     }
 }

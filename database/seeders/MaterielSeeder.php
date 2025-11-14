@@ -15,6 +15,7 @@ class MaterielSeeder extends Seeder
     {
         $laptopType = MaterielType::where('nom', 'Ordinateur Portable')->first();
         $desktopType = MaterielType::where('nom', 'Ordinateur Bureau')->first();
+        $impType = MaterielType::where('nom', 'Imprimante')->first();
 
         $materiels = [
             [
@@ -27,7 +28,7 @@ class MaterielSeeder extends Seeder
                 'storage_size_gb' => 512,
                 'screen_size' => 15.6,
                 'purchase_date' => now()->subMonths(6),
-                'acquision' => 'Achat',
+                'acquision' => 'BGE - DAF SANTE',
                 'statut' => 'disponible',
                 'etat_physique' => 'excellent',
                 'notes' => 'Ordinateur portable haute performance pour développeurs',
@@ -42,7 +43,7 @@ class MaterielSeeder extends Seeder
                 'storage_size_gb' => 256,
                 'screen_size' => 14.0,
                 'purchase_date' => now()->subMonths(12),
-                'acquision' => 'Achat',
+                'acquision' => 'UCP CD2',
                 'statut' => 'disponible',
                 'etat_physique' => 'bon',
                 'notes' => 'Ordinateur portable léger pour déplacements',
@@ -56,8 +57,8 @@ class MaterielSeeder extends Seeder
                 'ram_size_gb' => 32,
                 'storage_size_gb' => 1000,
                 'screen_size' => 17.0,
-                'purchase_date' => now()->subMonths(18),
-                'acquision' => 'Achat',
+                'purchase_date' => now()->subMonths(27),
+                'acquision' => 'SWEDD',
                 'statut' => 'disponible',
                 'etat_physique' => 'bon',
                 'notes' => 'Station de travail pour tâches intensives',
@@ -72,25 +73,22 @@ class MaterielSeeder extends Seeder
                 'storage_size_gb' => 512,
                 'screen_size' => 14.0,
                 'purchase_date' => now()->subMonths(9),
-                'acquision' => 'Achat',
+                'acquision' => 'UCP FM',
                 'statut' => 'disponible',
                 'etat_physique' => 'excellent',
                 'notes' => 'Ordinateur de bureau standard',
             ],
             [
-                'materiel_type_id' => $laptopType?->id,
-                'marque' => 'Asus',
-                'modele' => 'ZenBook 14',
-                'numero_serie' => 'ASUS-ZEN-005',
+                'materiel_type_id' => $impType?->id,
+                'marque' => 'HP',
+                'modele' => 'LaserJet MFP 654',
+                'numero_serie' => 'HP-LAJ-654001',
                 'processor' => 'AMD Ryzen 7 5800H',
-                'ram_size_gb' => 16,
-                'storage_size_gb' => 512,
-                'screen_size' => 14.0,
                 'purchase_date' => now()->subMonths(4),
-                'acquision' => 'Achat',
+                'acquision' => 'UCP FM',
                 'statut' => 'disponible',
                 'etat_physique' => 'excellent',
-                'notes' => 'Ordinateur portable ultraléger',
+                'notes' => 'Imprimante multifonction Monochrome',
             ],
         ];
 

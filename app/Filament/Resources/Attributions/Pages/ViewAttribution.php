@@ -77,8 +77,9 @@ class ViewAttribution extends ViewRecord
                     ->icon(Heroicon::DocumentText)
                     ->columns([
                         'sm' => 1,
-                        'md' => 2,
+                        'md' => 3,
                     ])
+                    ->columnSpan(1)
                     ->schema([
                         TextEntry::make('numero_decharge_att')
                             ->label('Numéro de Décharge d\'Attribution')

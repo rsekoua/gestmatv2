@@ -12,6 +12,17 @@ class MaterielImporter extends Importer
 {
     protected static ?string $model = Materiel::class;
 
+    /**
+     * Optimize import performance by processing in chunks
+     */
+    public function getChunkSize(): int
+    {
+        return 500;
+    }
+
+    /**
+     * @throws \Exception
+     */
     public static function getColumns(): array
     {
         return [
@@ -102,10 +113,10 @@ class MaterielImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Import du matériel terminé. ' . number_format($import->successful_rows) . ' matériel(s) importé(s) avec succès.';
+        $body = 'Import du matériel terminé. '.number_format($import->successful_rows).' matériel(s) importé(s) avec succès.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' matériel(s) en échec.';
+            $body .= ' '.number_format($failedRowsCount).' matériel(s) en échec.';
         }
 
         return $body;

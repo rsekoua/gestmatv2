@@ -14,7 +14,7 @@ class AccessorySeeder extends Seeder
     {
         $accessories = [
             [
-                'nom' => 'Chargeur/Câble alimentation',
+                'nom' => 'Chargeur',
                 'description' => 'Chargeur ou câble d\'alimentation secteur',
             ],
             [
@@ -22,37 +22,18 @@ class AccessorySeeder extends Seeder
                 'description' => 'Souris filaire ou sans fil',
             ],
             [
-                'nom' => 'Câble réseau',
-                'description' => 'Câble Ethernet RJ45',
-            ],
-            [
                 'nom' => 'Sacoche/Housse',
                 'description' => 'Sacoche de transport ou housse de protection',
-            ],
-            [
-                'nom' => 'Documentation',
-                'description' => 'Manuel utilisateur et documentation',
             ],
             [
                 'nom' => 'Clé USB',
                 'description' => 'Clé USB de stockage',
             ],
             [
-                'nom' => 'Casque audio',
-                'description' => 'Casque ou écouteurs',
+                'nom' => 'Disque dur externe',
+                'description' => 'Disque dur externe pour le stockage',
             ],
-            [
-                'nom' => 'Webcam',
-                'description' => 'Caméra web externe',
-            ],
-            [
-                'nom' => 'Clavier externe',
-                'description' => 'Clavier filaire ou sans fil',
-            ],
-            [
-                'nom' => 'Adaptateur',
-                'description' => 'Adaptateurs divers (HDMI, VGA, USB-C, etc.)',
-            ],
+
         ];
 
         foreach ($accessories as $accessory) {

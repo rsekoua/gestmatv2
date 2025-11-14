@@ -16,17 +16,22 @@ class ServiceSeeder extends Seeder
             [
                 'nom' => 'Direction des Systèmes d\'Information',
                 'code' => 'DSI',
-                'responsable' => 'Jean Dupont',
+                'responsable' => 'M. Thierry BOMO',
             ],
             [
-                'nom' => 'Direction des Ressources Humaines',
-                'code' => 'DRH',
-                'responsable' => 'Marie Martin',
+                'nom' => 'Service Administratif et Financier',
+                'code' => 'SAF',
+                'responsable' => 'M. Alain PEPLA',
             ],
             [
-                'nom' => 'Direction Financière',
-                'code' => 'FIN',
-                'responsable' => 'Pierre Dubois',
+                'nom' => 'Formation',
+                'code' => 'FORM',
+                'responsable' => 'Dr Regina KOUASSI',
+            ],
+            [
+                'nom' => 'Information et Gestion Logistique',
+                'code' => 'IGL',
+                'responsable' => 'Dr Venance AMAN',
             ],
         ];
 

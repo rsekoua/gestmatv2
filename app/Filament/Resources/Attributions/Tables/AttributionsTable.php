@@ -4,16 +4,10 @@ namespace App\Filament\Resources\Attributions\Tables;
 
 use App\Filament\Actions\RestituerAttributionAction;
 use App\Models\Attribution;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Textarea;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Section;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -113,13 +107,13 @@ class AttributionsTable
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-//                TextColumn::make('created_at')
-//                    ->label('Créé le')
-//                    ->dateTime('d/m/Y à H:i')
-//                    ->sortable()
-//                    ->toggleable(isToggledHiddenByDefault: true)
-//                    ->icon(Heroicon::Clock)
-//                    ->tooltip(fn ($record): string => $record->created_at->diffForHumans()),
+                //                TextColumn::make('created_at')
+                //                    ->label('Créé le')
+                //                    ->dateTime('d/m/Y à H:i')
+                //                    ->sortable()
+                //                    ->toggleable(isToggledHiddenByDefault: true)
+                //                    ->icon(Heroicon::Clock)
+                //                    ->tooltip(fn ($record): string => $record->created_at->diffForHumans()),
             ])
             ->filters([
                 TernaryFilter::make('status')
@@ -178,6 +172,9 @@ class AttributionsTable
             ->emptyStateHeading('Aucune attribution trouvée')
             ->emptyStateDescription('Commencez par créer votre première attribution en cliquant sur le bouton ci-dessous.')
             ->emptyStateIcon(Heroicon::ArrowsRightLeft)
+            ->deferLoading()
+            ->paginated([10, 25, 50, 100])
+            ->defaultPaginationPageOption(25)
             ->defaultSort('date_attribution', 'desc')
             ->striped();
     }

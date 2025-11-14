@@ -14,54 +14,55 @@ class EmployeeSeeder extends Seeder
     public function run(): void
     {
         $dsi = Service::where('code', 'DSI')->first();
-        $drh = Service::where('code', 'DRH')->first();
-        $fin = Service::where('code', 'FIN')->first();
+        $saf = Service::where('code', 'SAF')->first();
+        $form = Service::where('code', 'FORM')->first();
+        $igl = Service::where('code', 'IGL')->first();
 
         $employees = [
             [
                 'service_id' => $dsi?->id,
-                'nom' => 'Bernard',
-                'prenom' => 'Thomas',
-                'emploi' => 'Administrateur Système',
-                'email' => 'thomas.bernard@example.com',
+                'nom' => 'Ouattara',
+                'prenom' => 'Idriss',
+                'emploi' => 'Ingenieur Genie Logiciel',
+                'email' => 'iouattara@dap.ci',
                 'telephone' => '0612345678',
                 'fonction' => 'Cadre',
             ],
             [
                 'service_id' => $dsi?->id,
-                'nom' => 'Petit',
-                'prenom' => 'Sophie',
-                'emploi' => 'Développeur',
-                'email' => 'sophie.petit@example.com',
+                'nom' => 'Awo ',
+                'prenom' => 'Mobio Max',
+                'emploi' => 'Analyste de données',
+                'email' => 'amobio@dap.ci',
                 'telephone' => '0623456789',
-                'fonction' => 'Technicien',
+                'fonction' => 'Analyste de données',
             ],
             [
-                'service_id' => $drh?->id,
-                'nom' => 'Moreau',
-                'prenom' => 'Julien',
-                'emploi' => 'Chargé de Recrutement',
-                'email' => 'julien.moreau@example.com',
-                'telephone' => '0634567890',
-                'fonction' => 'Agent de maîtrise',
-            ],
-            [
-                'service_id' => $drh?->id,
-                'nom' => 'Laurent',
-                'prenom' => 'Claire',
-                'emploi' => 'Assistant RH',
-                'email' => 'claire.laurent@example.com',
-                'telephone' => '0645678901',
-                'fonction' => 'Employé',
-            ],
-            [
-                'service_id' => $fin?->id,
-                'nom' => 'Simon',
-                'prenom' => 'Marc',
-                'emploi' => 'Comptable',
-                'email' => 'marc.simon@example.com',
-                'telephone' => '0656789012',
+                'service_id' => $form?->id,
+                'nom' => 'Sekoua',
+                'prenom' => 'Roger',
+                'emploi' => 'Ingenieur Informatique',
+                'email' => 'rsekoua@dap.ci',
+                'telephone' => '0102030405',
                 'fonction' => 'Cadre',
+            ],
+            [
+                'service_id' => $igl?->id,
+                'nom' => 'AMAN',
+                'prenom' => 'Venance',
+                'emploi' => 'Pharmacien',
+                'email' => 'vaman@dap.ci',
+                'telephone' => '0645678901',
+                'fonction' => 'Chef de service',
+            ],
+            [
+                'service_id' => $saf?->id,
+                'nom' => 'Akaffou',
+                'prenom' => 'Mothiki Marthe',
+                'emploi' => 'Secretaire Médicale',
+                'email' => 'mothiki@yahoo.fr',
+                'telephone' => '0706050403',
+                'fonction' => 'Secretaire',
             ],
         ];
 

@@ -26,32 +26,8 @@ class MaterielTypeSeeder extends Seeder
                 'description' => 'Imprimante laser ou jet d\'encre',
             ],
             [
-                'nom' => 'Écran',
-                'description' => 'Moniteur externe',
-            ],
-            [
-                'nom' => 'Smartphone',
-                'description' => 'Téléphone intelligent',
-            ],
-            [
-                'nom' => 'Tablette',
-                'description' => 'Tablette tactile',
-            ],
-            [
                 'nom' => 'Vidéoprojecteur',
                 'description' => 'Projecteur pour présentations',
-            ],
-            [
-                'nom' => 'Serveur',
-                'description' => 'Serveur informatique',
-            ],
-            [
-                'nom' => 'Switch',
-                'description' => 'Commutateur réseau',
-            ],
-            [
-                'nom' => 'Routeur',
-                'description' => 'Routeur réseau',
             ],
             [
                 'nom' => 'Autre',

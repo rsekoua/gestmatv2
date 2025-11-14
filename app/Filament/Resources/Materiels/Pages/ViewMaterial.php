@@ -48,7 +48,7 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::ComputerDesktop)
                             ->iconColor('primary')
                             ->size('lg')
-                          //  ->weight(FontWeight::Bold)
+                            ->weight(FontWeight::Bold)
                             ->getStateUsing(fn ($record) => $record->nom)
                             ->columnSpanFull(),
 
@@ -58,7 +58,7 @@ class ViewMaterial extends ViewRecord
 //                            ->iconColor('primary')
 //                            ->badge()
 //                            ->color('primary')
-                           // ->weight(FontWeight::Bold)
+                            ->weight(FontWeight::Bold)
                             ->placeholder('Non défini')
                             ->copyable()
                             ->copyMessage('Numéro de série copié!')
@@ -70,7 +70,7 @@ class ViewMaterial extends ViewRecord
                             ->label('Type de Matériel')
                             ->icon(Heroicon::Tag)
                            // ->iconColor('info')
-                          //  ->weight(FontWeight::Bold)
+                            ->weight(FontWeight::Bold)
                             //->badge()
                            // ->color('info')
                             ->placeholder('Non défini')
@@ -82,14 +82,14 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::BuildingOffice)
                             ->iconColor('gray')
                             ->placeholder('Non définie')
-                           // ->weight(FontWeight::Bold)
+                            ->weight(FontWeight::Bold)
                             ->columnSpan(1),
 
                         TextEntry::make('modele')
                             ->label('Modèle')
                             ->icon(Heroicon::Cube)
                             ->iconColor('gray')
-                          //  ->weight(FontWeight::Bold)
+                            ->weight(FontWeight::Bold)
                            // ->placeholder('Non défini')
                             ->columnSpan(1),
                     ]),
@@ -116,6 +116,7 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::CircleStack)
                             ->iconColor('success')
                             ->placeholder('Non renseignée')
+                            ->weight(FontWeight::Bold)
                             ->suffix(' GB'),
 //                            ->columnSpan(1),
 
@@ -124,6 +125,7 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::ServerStack)
                             ->iconColor('warning')
                             ->placeholder('Non renseigné')
+                            ->weight(FontWeight::Bold)
                             ->suffix(' GB')
                             ->columnSpan(1),
 
@@ -132,6 +134,7 @@ class ViewMaterial extends ViewRecord
                             ->icon(Heroicon::ComputerDesktop)
                             ->iconColor('primary')
                             ->placeholder('Non renseignée')
+                            ->weight(FontWeight::Bold)
                             ->suffix(' pouces')
                             ->columnSpan(1),
 
@@ -159,13 +162,14 @@ class ViewMaterial extends ViewRecord
                             ->label('Date d\'Achat')
                             ->icon(Heroicon::Calendar)
                             ->date('d/m/Y')
-                            ->since()
+                            //->since()
                             ->placeholder('Non renseignée')
                             ->columnSpan(1),
 
                         TextEntry::make('acquision')
-                            ->label('Mode d\'Acquisition')
+                            ->label('Mode d\'Acquisition (Bailleur')
                             ->icon(Heroicon::ShoppingBag)
+                            ->weight(FontWeight::Bold)
                             ->iconColor('info')
                             ->placeholder('Non renseigné')
                             ->columnSpan(1),

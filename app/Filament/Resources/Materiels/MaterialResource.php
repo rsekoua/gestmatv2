@@ -15,13 +15,14 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use UnitEnum;
 
 class MaterialResource extends Resource
 {
     protected static ?string $model = Materiel::class;
 
-//    protected static string|BackedEnum|null $navigationIcon = Heroicon::ComputerDesktop;
+    //    protected static string|BackedEnum|null $navigationIcon = Heroicon::ComputerDesktop;
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestion des Matériels';
 
@@ -46,34 +47,40 @@ class MaterialResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return Cache::remember('navigation.badge.materiels', 300, function () {
+            return static::getModel()::count();
+        });
     }
 
     public static function getNavigationBadgeColor(): string
     {
-        $available = static::getModel()::where('statut', 'disponible')->count();
-        $total = static::getModel()::count();
+        return Cache::remember('navigation.badge.materiels.color', 300, function () {
+            $available = static::getModel()::where('statut', 'disponible')->count();
+            $total = static::getModel()::count();
 
-        if ($total === 0) {
-            return 'gray';
-        }
+            if ($total === 0) {
+                return 'gray';
+            }
 
-        $percentage = ($available / $total) * 100;
+            $percentage = ($available / $total) * 100;
 
-        return match (true) {
-            $percentage >= 50 => 'success',
-            $percentage >= 25 => 'warning',
-            default => 'danger',
-        };
+            return match (true) {
+                $percentage >= 50 => 'success',
+                $percentage >= 25 => 'warning',
+                default => 'danger',
+            };
+        });
     }
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        $total = static::getModel()::count();
-        $available = static::getModel()::where('statut', 'disponible')->count();
-        $attributed = static::getModel()::where('statut', 'attribué')->count();
+        return Cache::remember('navigation.badge.materiels.tooltip', 300, function () {
+            $total = static::getModel()::count();
+            $available = static::getModel()::where('statut', 'disponible')->count();
+            $attributed = static::getModel()::where('statut', 'attribué')->count();
 
-        return "{$total} matériels | {$available} disponibles | {$attributed} attribués";
+            return "{$total} matériels | {$available} disponibles | {$attributed} attribués";
+        });
     }
 
     /**
@@ -104,5 +111,10 @@ class MaterialResource extends Resource
             'view' => ViewMaterial::route('/{record}'),
             'edit' => EditMaterial::route('/{record}/edit'),
         ];
+    }
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 6;
     }
 }

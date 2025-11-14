@@ -12,6 +12,14 @@ class EmployeeImporter extends Importer
 {
     protected static ?string $model = Employee::class;
 
+    /**
+     * Optimize import performance by processing in chunks
+     */
+    public function getChunkSize(): int
+    {
+        return 500;
+    }
+
     public static function getColumns(): array
     {
         return [
@@ -63,10 +71,10 @@ class EmployeeImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Import des employés terminé. ' . number_format($import->successful_rows) . ' employé(s) importé(s) avec succès.';
+        $body = 'Import des employés terminé. '.number_format($import->successful_rows).' employé(s) importé(s) avec succès.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' employé(s) en échec.';
+            $body .= ' '.number_format($failedRowsCount).' employé(s) en échec.';
         }
 
         return $body;

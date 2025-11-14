@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Cache;
 
 class MaterialForm
 {
@@ -34,9 +35,10 @@ class MaterialForm
                             ->placeholder('Sélectionnez un type')
                             ->helperText('Catégorie du matériel (ordinateur, imprimante, etc.)')
                             ->prefixIcon(Heroicon::Tag)
-                            ->relationship('materielType', 'nom')
+                            ->options(fn () => Cache::remember('materiel_types.options', 3600,
+                                fn () => MaterielType::pluck('nom', 'id')
+                            ))
                             ->searchable()
-                            ->preload()
                             ->required()
                             ->live()
                             ->createOptionForm([
@@ -144,7 +146,7 @@ class MaterialForm
                             ->placeholder('Ex: 15.6')
                             ->helperText('Diagonale de l\'écran en pouces')
                             ->prefixIcon(Heroicon::ComputerDesktop)
-                            //->required()
+                            // ->required()
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(99.99)

@@ -15,6 +15,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use UnitEnum;
 
 class EmployeeResource extends Resource
@@ -46,7 +47,9 @@ class EmployeeResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return Cache::remember('navigation.badge.employees', 300, function () {
+            return static::getModel()::count();
+        });
     }
 
     public static function getNavigationBadgeColor(): string
@@ -56,9 +59,11 @@ class EmployeeResource extends Resource
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        $count = static::getModel()::count();
+        return Cache::remember('navigation.badge.employees.tooltip', 300, function () {
+            $count = static::getModel()::count();
 
-        return $count > 1 ? "{$count} employés enregistrés" : "{$count} employé enregistré";
+            return $count > 1 ? "{$count} employés enregistrés" : "{$count} employé enregistré";
+        });
     }
 
     /**

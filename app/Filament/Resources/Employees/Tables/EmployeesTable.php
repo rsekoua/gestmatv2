@@ -187,6 +187,9 @@ class EmployeesTable
             ->emptyStateHeading('Aucun employé trouvé')
             ->emptyStateDescription('Commencez par créer votre premier employé en cliquant sur le bouton ci-dessous.')
             ->emptyStateIcon(Heroicon::Users)
+            ->deferLoading()
+            ->paginated([10, 25, 50, 100])
+            ->defaultPaginationPageOption(25)
             ->defaultSort('nom', 'asc')
             ->striped();
         //            ->recordUrl(null);

@@ -17,10 +17,11 @@ class EditMaterial extends EditRecord
     {
         return [
             ViewAction::make()
-                ->icon(Heroicon::Eye),
+                ->icon(Heroicon::Eye)->size('sm'),
             DeleteAction::make()
                 ->icon(Heroicon::Trash)
                 ->requiresConfirmation()
+                ->size('sm')
                 ->successNotification(
                     Notification::make()
                         ->success()

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Attributions\Schemas;
 
 use App\Models\Accessory;
+use App\Models\Attribution;
 use App\Models\Employee;
 use App\Models\Materiel;
 use App\Models\Service;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -33,7 +35,17 @@ class AttributionForm
                         'sm' => 1,
                         'md' => 2,
                     ])
+                    ->columnSpan(2)
                     ->schema([
+                        TextInput::make('numero_decharge_att')
+                            ->label('Numéro d\'Attribution')
+                            ->disabled()
+                            ->visible(false)
+                            ->dehydrated(false)
+                            ->placeholder('Généré automatiquement')
+                            ->helperText('Généré automatiquement à la création')
+                            ->columnSpan(1),
+
                         Select::make('materiel_id')
                             ->label('Matériel')
                             ->relationship(
@@ -150,15 +162,57 @@ class AttributionForm
                             ->maxDate(now())
                             ->native(false)
                             ->displayFormat('d/m/Y')
+                            ->live()
+                            ->minDate(function (Get $get, $record) {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return null;
+                                }
+
+                                // Chercher la dernière restitution de ce matériel
+                                // Si on est en modification, exclure les restitutions après cette attribution
+                                $query = Attribution::where('materiel_id', $materielId)
+                                    ->whereNotNull('date_restitution');
+
+                                // En modification, exclure cette attribution et les suivantes
+                                if ($record) {
+                                    $query->where('date_attribution', '<', $record->date_attribution);
+                                }
+
+                                $lastRestitution = $query->orderBy('date_restitution', 'desc')->first();
+
+                                return $lastRestitution ? $lastRestitution->date_restitution : null;
+                            })
+                            ->helperText(function (Get $get, $record) {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return 'Sélectionnez d\'abord un matériel';
+                                }
+
+                                // Chercher la dernière restitution de ce matériel
+                                $query = Attribution::where('materiel_id', $materielId)
+                                    ->whereNotNull('date_restitution');
+
+                                // En modification, exclure cette attribution et les suivantes
+                                if ($record) {
+                                    $query->where('date_attribution', '<', $record->date_attribution);
+                                }
+
+                                $lastRestitution = $query->orderBy('date_restitution', 'desc')->first();
+
+                                if ($lastRestitution) {
+                                    return "⚠️ Ce matériel a été restitué le {$lastRestitution->date_restitution->format('d/m/Y')}. La date d'attribution doit être égale ou postérieure à cette date.";
+                                }
+
+                                return 'Première attribution de ce matériel';
+                            })
+                            ->validationMessages([
+                                'after_or_equal' => 'La date d\'attribution doit être égale ou postérieure à la dernière restitution de ce matériel.',
+                            ])
                             ->columnSpan(1),
 
-                        TextInput::make('numero_decharge_att')
-                            ->label('Numéro de Décharge d\'Attribution')
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->placeholder('Généré automatiquement')
-                            ->helperText('Le numéro sera généré automatiquement lors de la création')
-                            ->columnSpan(1),
 
                         Textarea::make('observations_att')
                             ->label('Observations d\'Attribution')
@@ -184,17 +238,18 @@ class AttributionForm
                     ->description('Sélectionnez les accessoires associés')
                     ->icon(Heroicon::CpuChip)
                     ->collapsible()
-                    ->collapsed()
+                    //->collapsed()
                     ->schema([
-                        CheckboxList::make('accessories')
+                        ToggleButtons::make('accessories')
                             ->label('Accessoires associés')
-                            ->relationship('accessories', 'nom')
+                            ->multiple()
+                           // ->relationship('accessories', 'nom')
                             ->options(Accessory::pluck('nom', 'id'))
-                            ->searchable()
-                            ->bulkToggleable()
+                           // ->searchable()
+                           // ->bulkToggleable()
                             ->columns([
                                 'sm' => 1,
-                                'md' => 3,
+                                'md' => 2,
                             ]),
                     ]),
 
@@ -202,6 +257,7 @@ class AttributionForm
                     ->description('Informations de restitution (à compléter lors du retour)')
                     ->icon(Heroicon::ArrowUturnLeft)
                     ->collapsible()
+                    ->columnSpan(2)
                     ->collapsed()
                     ->visible(fn ($record) => $record !== null)
                     ->columns([
@@ -286,6 +342,6 @@ class AttributionForm
                             ->columnSpanFull()
                             ->placeholder('Description des dommages éventuels'),
                     ]),
-            ]);
+            ])->columns(3);
     }
 }

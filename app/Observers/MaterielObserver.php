@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Attribution;
 use App\Models\Materiel;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 class MaterielObserver
@@ -73,5 +74,47 @@ class MaterielObserver
                 'materiel' => "Impossible de supprimer ce matériel : il a {$totalCount} attribution(s) dans l'historique. Les données d'attribution doivent être préservées.",
             ]);
         }
+    }
+
+    /**
+     * Handle the Materiel "created" event.
+     * Invalidate cache after creation
+     */
+    public function created(Materiel $materiel): void
+    {
+        $this->clearCache();
+    }
+
+    /**
+     * Handle the Materiel "updated" event.
+     * Invalidate cache after update
+     */
+    public function updated(Materiel $materiel): void
+    {
+        $this->clearCache();
+    }
+
+    /**
+     * Handle the Materiel "deleted" event.
+     * Invalidate cache after deletion
+     */
+    public function deleted(Materiel $materiel): void
+    {
+        $this->clearCache();
+    }
+
+    /**
+     * Clear all materiel-related caches
+     */
+    protected function clearCache(): void
+    {
+        Cache::forget('materiels.stats.widget');
+        Cache::forget('materiels.chart.data');
+        Cache::forget('dashboard.overview.stats');
+        Cache::forget('dashboard.materiels.monthly');
+        Cache::forget('materiel_types.options');
+        Cache::forget('navigation.badge.materiels');
+        Cache::forget('navigation.badge.materiels.color');
+        Cache::forget('navigation.badge.materiels.tooltip');
     }
 }

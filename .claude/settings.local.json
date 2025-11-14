@@ -22,7 +22,8 @@
       "Bash(php:*)",
       "Bash(curl:*)",
       "Bash(./vendor/bin/pest:*)",
-      "mcp__laravel-boost__database-connections"
+      "mcp__laravel-boost__database-connections",
+      "mcp__laravel-boost__get-config"
     ]
   },
   "enableAllProjectMcpServers": true,

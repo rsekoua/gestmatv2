@@ -15,6 +15,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use UnitEnum;
 
 class AttributionResource extends Resource
@@ -50,33 +51,39 @@ class AttributionResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::active()->count();
+        return Cache::remember('navigation.badge.attributions', 300, function () {
+            return static::getModel()::active()->count();
+        });
     }
 
     public static function getNavigationBadgeColor(): string
     {
-        $activeCount = static::getModel()::active()->count();
-        $totalCount = static::getModel()::count();
+        return Cache::remember('navigation.badge.attributions.color', 300, function () {
+            $activeCount = static::getModel()::active()->count();
+            $totalCount = static::getModel()::count();
 
-        if ($totalCount === 0) {
-            return 'gray';
-        }
+            if ($totalCount === 0) {
+                return 'gray';
+            }
 
-        $percentage = ($activeCount / $totalCount) * 100;
+            $percentage = ($activeCount / $totalCount) * 100;
 
-        return match (true) {
-            $percentage >= 70 => 'success',
-            $percentage >= 40 => 'warning',
-            default => 'info',
-        };
+            return match (true) {
+                $percentage >= 70 => 'success',
+                $percentage >= 40 => 'warning',
+                default => 'info',
+            };
+        });
     }
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        $active = static::getModel()::active()->count();
-        $closed = static::getModel()::closed()->count();
+        return Cache::remember('navigation.badge.attributions.tooltip', 300, function () {
+            $active = static::getModel()::active()->count();
+            $closed = static::getModel()::closed()->count();
 
-        return "{$active} attributions actives | {$closed} clôturées";
+            return "{$active} attributions actives | {$closed} clôturées";
+        });
     }
 
     /**

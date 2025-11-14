@@ -17,7 +17,9 @@ class ListAttributions extends ListRecords
         return [
             CreateAction::make()
                 ->icon(Heroicon::Plus)
-                ->color('primary'),
+                ->color('primary')
+                ->label('Nouvelle attribution')
+            ->size('sm'),
         ];
     }
 

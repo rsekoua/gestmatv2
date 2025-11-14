@@ -45,17 +45,15 @@ class MaterialsTable
                     ->description(fn ($record): string => $record->numero_serie ? "S/N: {$record->numero_serie}" : 'Aucun numéro de série')
                     ->wrap(),
 
-
-
-//                TextColumn::make('specifications_summary')
-//                    ->label('Spécifications')
-//                    ->icon(Heroicon::CpuChip)
-//                    ->iconColor('gray')
-//                    ->getStateUsing(fn ($record) => $record->specifications_summary)
-//                    ->placeholder('Aucune spécification')
-//                    ->wrap()
-//                    ->toggleable()
-//                    ->tooltip('CPU | RAM | Stockage | Écran'),
+                //                TextColumn::make('specifications_summary')
+                //                    ->label('Spécifications')
+                //                    ->icon(Heroicon::CpuChip)
+                //                    ->iconColor('gray')
+                //                    ->getStateUsing(fn ($record) => $record->specifications_summary)
+                //                    ->placeholder('Aucune spécification')
+                //                    ->wrap()
+                //                    ->toggleable()
+                //                    ->tooltip('CPU | RAM | Stockage | Écran'),
 
                 TextColumn::make('statut')
                     ->label('Statut')
@@ -102,13 +100,13 @@ class MaterialsTable
                     ->sortable()
                     ->toggleable(),
 
-//                TextColumn::make('purchase_date')
-//                    ->label('Date d\'Achat')
-//                    ->date('d/m/Y')
-//                    ->icon(Heroicon::Calendar)
-//                    ->sortable()
-//                    ->toggleable()
-//                    ->tooltip(fn ($record): ?string => $record->purchase_date ? $record->purchase_date->diffForHumans() : null),
+                //                TextColumn::make('purchase_date')
+                //                    ->label('Date d\'Achat')
+                //                    ->date('d/m/Y')
+                //                    ->icon(Heroicon::Calendar)
+                //                    ->sortable()
+                //                    ->toggleable()
+                //                    ->tooltip(fn ($record): ?string => $record->purchase_date ? $record->purchase_date->diffForHumans() : null),
 
                 TextColumn::make('acquision')
                     ->label('Mode d\'Acquisition')
@@ -246,6 +244,9 @@ class MaterialsTable
             ->emptyStateHeading('Aucun matériel trouvé')
             ->emptyStateDescription('Commencez par créer votre premier matériel en cliquant sur le bouton ci-dessous.')
             ->emptyStateIcon(Heroicon::ComputerDesktop)
+            ->deferLoading()
+            ->paginated([10, 25, 50, 100])
+            ->defaultPaginationPageOption(25)
             ->defaultSort('created_at', 'desc')
             ->striped();
         // ->recordUrl(null);
