@@ -21,21 +21,21 @@ class Dashboard extends BaseDashboard
             \App\Filament\Widgets\DashboardOverviewWidget::class,
 
             // Ligne 2: Alertes (pleine largeur)
-//            \App\Filament\Widgets\AlertsWidget::class,
+            \App\Filament\Widgets\AlertsWidget::class,
 
             // Ligne 3: Graphiques côte à côte (6 colonnes chacun)
-//            \App\Filament\Widgets\AttributionsChartWidget::class,
-//            \App\Filament\Widgets\MaterielsStatusChartWidget::class,
+            \App\Filament\Widgets\AttributionsChartWidget::class,
+            \App\Filament\Widgets\MaterielsStatusChartWidget::class,
 
             // Ligne 4: Graphique type matériels + Top Employés (6 colonnes chacun)
-          //  \App\Filament\Widgets\MaterielsTypeChartWidget::class,
-//            \App\Filament\Widgets\TopEmployeesWidget::class,
+            \App\Filament\Widgets\MaterielsTypeChartWidget::class,
+            \App\Filament\Widgets\TopEmployeesWidget::class,
 
             // Ligne 5: Top Matériels seul (6 colonnes, aligné à gauche)
-//            \App\Filament\Widgets\TopMaterielsWidget::class,
+            \App\Filament\Widgets\TopMaterielsWidget::class,
 
             // Ligne 6: Attributions récentes (pleine largeur)
-//            \App\Filament\Widgets\RecentAttributionsWidget::class,
+            \App\Filament\Widgets\RecentAttributionsWidget::class,
         ];
     }
 

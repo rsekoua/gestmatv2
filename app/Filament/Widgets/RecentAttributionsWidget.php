@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Models\Attribution;
 use Filament\Actions\Action;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -45,35 +44,35 @@ class RecentAttributionsWidget extends BaseWidget
                     ->sortable()
                     ->badge()
                     ->color('primary')
-                    ->icon(Heroicon::QrCode),
+                    ->icon('heroicon-o-qrcode'),
 
                 TextColumn::make('materiel.nom')
                     ->label('Matériel')
                     ->searchable()
                     ->sortable()
                     ->description(fn (Attribution $record) => $record->materiel->numero_serie)
-                    ->icon(Heroicon::ComputerDesktop),
+                    ->icon('heroicon-o-computer-desktop'),
 
                 TextColumn::make('employee.full_name')
                     ->label('Employé')
                     ->searchable()
                     ->sortable()
                     ->description(fn (Attribution $record) => $record->employee->service->nom ?? 'Sans service')
-                    ->icon(Heroicon::User),
+                    ->icon('heroicon-o-user'),
 
                 TextColumn::make('date_attribution')
                     ->label('Date Attribution')
                     ->date('d/m/Y')
                     ->sortable()
                     ->since()
-                    ->icon(Heroicon::Calendar),
+                    ->icon('heroicon-o-calendar'),
 
                 TextColumn::make('date_restitution')
                     ->label('Statut')
                     ->badge()
                     ->color(fn ($state) => $state === null ? 'success' : 'gray')
                     ->formatStateUsing(fn ($state) => $state === null ? 'Active' : 'Clôturée')
-                    ->icon(fn ($state) => $state === null ? Heroicon::CheckCircle : Heroicon::XCircle),
+                    ->icon(fn ($state) => $state === null ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'),
 
                 TextColumn::make('duration_in_days')
                     ->label('Durée')
@@ -85,12 +84,12 @@ class RecentAttributionsWidget extends BaseWidget
                         $state < 180 => 'warning',
                         default => 'danger',
                     })
-                    ->icon(Heroicon::Clock),
+                    ->icon('heroicon-o-clock'),
             ])
             ->recordActions([
                 Action::make('view')
                     ->label('Voir')
-                    ->icon(Heroicon::Eye)
+                    ->icon('heroicon-o-eye')
                     ->url(fn (Attribution $record) => route('filament.admin.resources.attributions.view', $record))
                     ->openUrlInNewTab(),
             ])

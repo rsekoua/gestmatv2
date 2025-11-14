@@ -6,7 +6,6 @@ use App\Models\Attribution;
 use App\Models\Employee;
 use App\Models\Materiel;
 use App\Models\Service;
-use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -50,29 +49,29 @@ class DashboardOverviewWidget extends StatsOverviewWidget
         return [
             Stat::make('Matériels Totaux', $totalMateriels)
                 ->description("{$disponibles} disponibles · {$attribues} attribués · {$enPanne} en panne")
-                ->descriptionIcon(Heroicon::ComputerDesktop)
+                ->descriptionIcon('heroicon-o-computer-desktop')
                 ->color('primary')
                 ->chart($this->getMaterielsMonthlyData()),
 
             Stat::make('Taux de Disponibilité', "{$disponibiliteRate}%")
                 ->description($disponibiliteRate >= 50 ? 'Bon niveau de stock' : 'Stock faible')
-                ->descriptionIcon(Heroicon::CheckCircle)
+                ->descriptionIcon('heroicon-o-check-circle')
                 ->color($disponibiliteRate >= 50 ? 'success' : ($disponibiliteRate >= 25 ? 'warning' : 'danger')),
 
             Stat::make('Attributions Actives', $activeAttributions)
                 ->description("{$closedThisMonth} clôturées ce mois")
-                ->descriptionIcon(Heroicon::ArrowsRightLeft)
+                ->descriptionIcon('heroicon-o-arrows-right-left')
                 ->color('info')
                 ->chart($this->getAttributionsMonthlyData()),
 
             Stat::make('Employés Équipés', "{$employeesRate}%")
                 ->description("{$employeesWithActiveAttributions} / {$totalEmployees} employés")
-                ->descriptionIcon(Heroicon::Users)
+                ->descriptionIcon('heroicon-o-users')
                 ->color($employeesRate >= 50 ? 'success' : 'warning'),
 
             Stat::make('Services', $totalServices)
                 ->description('Services actifs')
-                ->descriptionIcon(Heroicon::BuildingOffice2)
+                ->descriptionIcon('heroicon-o-building-office-2')
                 ->color('gray'),
         ];
     }

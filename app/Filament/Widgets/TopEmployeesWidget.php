@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Employee;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -54,7 +53,7 @@ class TopEmployeesWidget extends BaseWidget
                     ->label('Employé')
                     ->searchable(['nom', 'prenom'])
                     ->description(fn (Employee $record) => $record->service->nom ?? 'Sans service')
-                    ->icon(Heroicon::User)
+                    ->icon('heroicon-o-user')
                     ->weight('bold'),
 
                 TextColumn::make('attributions_count')
@@ -62,13 +61,13 @@ class TopEmployeesWidget extends BaseWidget
                     ->suffix(' attributions')
                     ->badge()
                     ->color('primary')
-                    ->icon(Heroicon::Cube),
+                    ->icon('heroicon-o-cube'),
 
                 TextColumn::make('active_attributions_count')
                     ->label('Actives')
                     ->badge()
                     ->color(fn ($state) => $state > 0 ? 'success' : 'gray')
-                    ->icon(Heroicon::CheckCircle),
+                    ->icon('heroicon-o-check-circle'),
             ])
             ->paginated(false);
     }

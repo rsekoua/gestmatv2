@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Materiel;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -54,20 +53,20 @@ class TopMaterielsWidget extends BaseWidget
                     ->label('Matériel')
                     ->searchable()
                     ->description(fn (Materiel $record) => $record->numero_serie)
-                    ->icon(Heroicon::ComputerDesktop)
+                    ->icon('heroicon-o-computer-desktop')
                     ->weight('bold'),
 
                 TextColumn::make('materielType.nom')
                     ->label('Type')
                     ->badge()
                     ->color('gray')
-                    ->icon(Heroicon::Tag),
+                    ->icon('heroicon-o-tag'),
 
                 TextColumn::make('attributions_count')
                     ->label('Attributions')
                     ->badge()
                     ->color('primary')
-                    ->icon(Heroicon::Cube),
+                    ->icon('heroicon-o-cube'),
 
                 TextColumn::make('statut')
                     ->label('Statut')
@@ -82,12 +81,12 @@ class TopMaterielsWidget extends BaseWidget
                     })
                     ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->icon(fn ($state) => match ($state) {
-                        'disponible' => Heroicon::CheckCircle,
-                        'attribué' => Heroicon::ArrowsRightLeft,
-                        'en_panne' => Heroicon::ExclamationTriangle,
-                        'en_maintenance' => Heroicon::Wrench,
-                        'rebuté' => Heroicon::XCircle,
-                        default => Heroicon::QuestionMarkCircle,
+                        'disponible' => 'heroicon-o-check-circle',
+                        'attribué' => 'heroicon-o-arrows-right-left',
+                        'en_panne' => 'heroicon-o-exclamation-triangle',
+                        'en_maintenance' => 'heroicon-o-wrench-screwdriver',
+                        'rebuté' => 'heroicon-o-x-circle',
+                        default => 'heroicon-o-question-mark-circle',
                     }),
             ])
             ->paginated(false);
