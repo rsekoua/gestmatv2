@@ -4,7 +4,7 @@
         <x-filament::section>
             <x-slot name="heading">
                 <div class="flex items-center gap-2">
-                    @svg('heroicon-o-funnel', 'w-5 h-5')
+                    <x-filament::icon icon="heroicon-o-funnel" class="w-5 h-5" />
                     <span>Paramètres du Rapport</span>
                 </div>
             </x-slot>
@@ -27,7 +27,7 @@
         <x-filament::section>
             <x-slot name="heading">
                 <div class="flex items-center gap-2">
-                    @svg('heroicon-o-chart-bar', 'w-5 h-5')
+                    <x-filament::icon icon="heroicon-o-chart-bar" class="w-5 h-5" />
                     <span>Statistiques Globales</span>
                 </div>
             </x-slot>
@@ -40,7 +40,7 @@
                             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Matériels</p>
                             <p class="mt-1 text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['total'] }}</p>
                         </div>
-                        @svg('heroicon-o-computer-desktop', 'h-12 w-12 text-primary-500')
+                        <x-filament::icon icon="heroicon-o-computer-desktop" class="h-12 w-12 text-primary-500" />
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@
                             <p class="mt-1 text-3xl font-bold text-success-600 dark:text-success-400">{{ $stats['disponible'] }}</p>
                             <p class="mt-1 text-xs text-gray-500">{{ $stats['taux_disponibilite'] }}% du parc</p>
                         </div>
-                        @svg('heroicon-o-check-circle', 'h-12 w-12 text-success-500')
+                        <x-filament::icon icon="heroicon-o-check-circle" class="h-12 w-12 text-success-500" />
                     </div>
                 </div>
 
@@ -64,7 +64,7 @@
                             <p class="mt-1 text-3xl font-bold text-info-600 dark:text-info-400">{{ $stats['attribue'] }}</p>
                             <p class="mt-1 text-xs text-gray-500">{{ $stats['taux_utilisation'] }}% en utilisation</p>
                         </div>
-                        @svg('heroicon-o-user-circle', 'h-12 w-12 text-info-500')
+                        <x-filament::icon icon="heroicon-o-user-circle" class="h-12 w-12 text-info-500" />
                     </div>
                 </div>
 
@@ -80,7 +80,7 @@
                                 {{ $stats['en_panne'] }} en panne · {{ $stats['en_maintenance'] }} en maintenance
                             </p>
                         </div>
-                        @svg('heroicon-o-exclamation-triangle', 'h-12 w-12 text-warning-500')
+                        <x-filament::icon icon="heroicon-o-exclamation-triangle" class="h-12 w-12 text-warning-500" />
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                             <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $this->getMaterielsAmortis() }}</p>
                             <p class="mt-1 text-xs text-gray-500">Ordinateurs uniquement</p>
                         </div>
-                        @svg('heroicon-o-calendar-days', 'h-10 w-10 text-gray-400')
+                        <x-filament::icon icon="heroicon-o-calendar-days" class="h-10 w-10 text-gray-400" />
                     </div>
                 </div>
 
@@ -106,7 +106,7 @@
                             <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $this->getAttributionsActives() }}</p>
                             <p class="mt-1 text-xs text-gray-500">Matériels actuellement en utilisation</p>
                         </div>
-                        @svg('heroicon-o-arrow-right-circle', 'h-10 w-10 text-gray-400')
+                        <x-filament::icon icon="heroicon-o-arrow-right-circle" class="h-10 w-10 text-gray-400" />
                     </div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
             <x-filament::section>
                 <x-slot name="heading">
                     <div class="flex items-center gap-2">
-                        @svg('heroicon-o-squares-2x2', 'w-5 h-5')
+                        <x-filament::icon icon="heroicon-o-squares-2x2" class="w-5 h-5" />
                         <span>Répartition par Type de Matériel</span>
                     </div>
                 </x-slot>
@@ -148,7 +148,7 @@
             <x-filament::section>
                 <x-slot name="heading">
                     <div class="flex items-center gap-2">
-                        @svg('heroicon-o-building-office-2', 'w-5 h-5')
+                        <x-filament::icon icon="heroicon-o-building-office-2" class="w-5 h-5" />
                         <span>Répartition par Service</span>
                     </div>
                 </x-slot>
@@ -170,7 +170,7 @@
         <x-filament::section>
             <x-slot name="heading">
                 <div class="flex items-center gap-2">
-                    @svg('heroicon-o-list-bullet', 'w-5 h-5')
+                    <x-filament::icon icon="heroicon-o-list-bullet" class="w-5 h-5" />
                     <span>Liste Détaillée des Matériels</span>
                 </div>
             </x-slot>
