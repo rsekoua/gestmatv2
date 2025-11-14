@@ -138,14 +138,14 @@ class ViewAttribution extends ViewRecord
                             ->label('Date d\'Attribution')
                             ->icon(Heroicon::Calendar)
                             ->date('d/m/Y')
-                            ->since()
+                           // ->since()
                             ->columnSpan(1),
 
                         TextEntry::make('formatted_duration')
                             ->label('Durée')
                             ->icon(Heroicon::Clock)
                             ->iconColor('gray')
-                            ->suffix(' jours')
+                           // ->suffix(' jours')
 //                            ->badge()
 //                            ->color(fn ($state): string => match (true) {
 //                                $state < 30 => 'success',
@@ -291,30 +291,30 @@ class ViewAttribution extends ViewRecord
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Métadonnées')
-                    ->description('Informations système')
-                    ->icon(Heroicon::InformationCircle)
-                    ->collapsible()
-                    ->collapsed()
-                    ->columns([
-                        'sm' => 1,
-                        'md' => 2,
-                    ])
-                    ->schema([
-                        TextEntry::make('created_at')
-                            ->label('Créé le')
-                            ->icon(Heroicon::Clock)
-                            ->dateTime('d/m/Y à H:i')
-                            ->since()
-                            ->columnSpan(1),
-
-                        TextEntry::make('updated_at')
-                            ->label('Modifié le')
-                            ->icon(Heroicon::PencilSquare)
-                            ->dateTime('d/m/Y à H:i')
-                            ->since()
-                            ->columnSpan(1),
-                    ]),
+//                Section::make('Métadonnées')
+//                    ->description('Informations système')
+//                    ->icon(Heroicon::InformationCircle)
+//                    ->collapsible()
+//                    ->collapsed()
+//                    ->columns([
+//                        'sm' => 1,
+//                        'md' => 2,
+//                    ])
+//                    ->schema([
+//                        TextEntry::make('created_at')
+//                            ->label('Créé le')
+//                            ->icon(Heroicon::Clock)
+//                            ->dateTime('d/m/Y à H:i')
+//                            ->since()
+//                            ->columnSpan(1),
+//
+//                        TextEntry::make('updated_at')
+//                            ->label('Modifié le')
+//                            ->icon(Heroicon::PencilSquare)
+//                            ->dateTime('d/m/Y à H:i')
+//                            ->since()
+//                            ->columnSpan(1),
+//                    ]),
             ]);
     }
 }

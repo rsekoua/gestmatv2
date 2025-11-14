@@ -86,9 +86,9 @@ class AttributionsTable
                     ->formatStateUsing(fn ($state): string => $state ? $state->format('d/m/Y') : 'En cours')
                     ->tooltip(fn ($record): ?string => $record->date_restitution?->diffForHumans()),
 
-                TextColumn::make('duration_in_days')
+                TextColumn::make('formatted_duration')
                     ->label('Durée')
-                    ->suffix(' jours')
+                   // ->suffix(' jours')
                     ->icon(Heroicon::Clock)
                     ->iconColor('gray')
                     ->sortable()
@@ -113,13 +113,13 @@ class AttributionsTable
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('created_at')
-                    ->label('Créé le')
-                    ->dateTime('d/m/Y à H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->icon(Heroicon::Clock)
-                    ->tooltip(fn ($record): string => $record->created_at->diffForHumans()),
+//                TextColumn::make('created_at')
+//                    ->label('Créé le')
+//                    ->dateTime('d/m/Y à H:i')
+//                    ->sortable()
+//                    ->toggleable(isToggledHiddenByDefault: true)
+//                    ->icon(Heroicon::Clock)
+//                    ->tooltip(fn ($record): string => $record->created_at->diffForHumans()),
             ])
             ->filters([
                 TernaryFilter::make('status')
