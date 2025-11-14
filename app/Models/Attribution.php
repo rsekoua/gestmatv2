@@ -30,6 +30,7 @@ class Attribution extends Model
         'date_restitution',
         'numero_decharge_att',
         'numero_decharge_res',
+        'decharge_scannee',
         'observations_att',
         'observations_res',
         'etat_general_res',

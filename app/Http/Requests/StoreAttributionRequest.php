@@ -30,6 +30,7 @@ class StoreAttributionRequest extends FormRequest
             'employee_id' => ['nullable', 'required_without:service_id', 'exists:employees,id'],
             'service_id' => ['nullable', 'required_without:employee_id', 'exists:services,id'],
             'date_attribution' => ['required', 'date'],
+            'decharge_scannee' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
             'observations_att' => ['nullable', 'string'],
             'accessories' => ['nullable', 'array'],
             'accessories.*' => ['exists:accessories,id'],

@@ -29,6 +29,7 @@ class UpdateAttributionRequest extends FormRequest
             'service_id' => ['nullable', 'required_without:employee_id', 'exists:services,id'],
             'date_attribution' => ['required', 'date'],
             'date_restitution' => ['nullable', 'date', 'after_or_equal:date_attribution'],
+            'decharge_scannee' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
             'observations_att' => ['nullable', 'string'],
             'observations_res' => ['nullable', 'string', 'required_with:date_restitution'],
             'etat_general_res' => [

@@ -8,6 +8,7 @@ use App\Models\Materiel;
 use App\Models\Service;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -164,6 +165,19 @@ class AttributionForm
                             ->rows(3)
                             ->columnSpanFull()
                             ->placeholder('Notes ou observations concernant l\'attribution'),
+
+                        FileUpload::make('decharge_scannee')
+                            ->label('Décharge Scannée')
+                            ->helperText('Uploadez la décharge d\'attribution signée (PDF, JPG, PNG - Max 5MB)')
+                            ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
+                            ->maxSize(5120)
+                            ->disk('public')
+                            ->directory('decharges')
+                            ->visibility('public')
+                            ->downloadable()
+                            ->openable()
+                            ->previewable()
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('Accessoires')

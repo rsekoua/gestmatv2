@@ -28,7 +28,7 @@ class ViewAttribution extends ViewRecord
 //                ->openUrlInNewTab(),
 
             Action::make('download_attribution_discharge')
-                ->label('Décharge d\'Attribution')
+                ->label('Fiche d\'Attribution')
                 ->icon(Heroicon::DocumentArrowDown)
                 ->color('info')
                 ->url(fn ($record) => route('attributions.discharge.attribution', $record))
@@ -43,7 +43,7 @@ class ViewAttribution extends ViewRecord
 //                ->openUrlInNewTab(),
 
             Action::make('download_restitution_discharge')
-                ->label('Décharge de Restitution')
+                ->label('Fiche retour')
                 ->icon(Heroicon::DocumentArrowDown)
                 ->color('success')
                 ->visible(fn ($record) => $record->isClosed())
@@ -160,6 +160,18 @@ class ViewAttribution extends ViewRecord
                             ->placeholder('Aucune observation')
                             ->markdown()
                             ->columnSpanFull(),
+
+                        TextEntry::make('decharge_scannee')
+                            ->label('Décharge Scannée')
+                            ->icon(Heroicon::Document)
+                            ->iconColor('primary')
+                            ->placeholder('Aucune décharge uploadée')
+                            ->formatStateUsing(fn ($state) => $state ? 'Décharge disponible' : 'Aucune décharge')
+                          //  ->badge()
+                            ->color(fn ($state) => $state ? 'success' : 'gray')
+                            ->url(fn ($record) => $record->decharge_scannee ? asset('storage/' . $record->decharge_scannee) : null)
+                            ->openUrlInNewTab()
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('Accessoires Associés')
@@ -172,7 +184,7 @@ class ViewAttribution extends ViewRecord
                         TextEntry::make('accessories.nom')
                             ->label('Accessoires')
                             ->listWithLineBreaks()
-                            ->bulleted()
+                           // ->bulleted()
                             ->icon(Heroicon::CpuChip)
                             ->iconColor('info')
                             ->placeholder('Aucun accessoire')

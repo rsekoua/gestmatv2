@@ -51,38 +51,44 @@ class ViewMaterial extends ViewRecord
                             ->getStateUsing(fn ($record) => $record->nom)
                             ->columnSpanFull(),
 
-                        TextEntry::make('materielType.nom')
-                            ->label('Type de Matériel')
-                            ->icon(Heroicon::Tag)
-                            ->iconColor('info')
-                            ->badge()
-                            ->color('info')
-                            ->placeholder('Non défini')
-                            ->columnSpan(1),
-
                         TextEntry::make('numero_serie')
                             ->label('Numéro de Série')
                             ->icon(Heroicon::QrCode)
-                            ->iconColor('primary')
-                            ->badge()
-                            ->color('primary')
+//                            ->iconColor('primary')
+//                            ->badge()
+//                            ->color('primary')
+                            ->weight(FontWeight::Bold)
                             ->placeholder('Non défini')
                             ->copyable()
                             ->copyMessage('Numéro de série copié!')
                             ->copyMessageDuration(1500)
                             ->columnSpan(1),
 
+
+                        TextEntry::make('materielType.nom')
+                            ->label('Type de Matériel')
+                            ->icon(Heroicon::Tag)
+                           // ->iconColor('info')
+                            ->weight(FontWeight::Bold)
+                            //->badge()
+                           // ->color('info')
+                            ->placeholder('Non défini')
+                            ->columnSpan(1),
+
+
                         TextEntry::make('marque')
                             ->label('Marque')
                             ->icon(Heroicon::BuildingOffice)
                             ->iconColor('gray')
                             ->placeholder('Non définie')
+                            ->weight(FontWeight::Bold)
                             ->columnSpan(1),
 
                         TextEntry::make('modele')
                             ->label('Modèle')
                             ->icon(Heroicon::Cube)
                             ->iconColor('gray')
+                            ->weight(FontWeight::Bold)
                             ->placeholder('Non défini')
                             ->columnSpan(1),
                     ]),
@@ -202,16 +208,6 @@ class ViewMaterial extends ViewRecord
                             })
                             ->formatStateUsing(fn (string $state): string => ucfirst($state))
                             ->columnSpan(1),
-                    ]),
-
-                Section::make('Statistiques et Métadonnées')
-                    ->description('Amortissement et historique')
-                    ->icon(Heroicon::ChartBar)
-                    ->columns([
-                        'sm' => 1,
-                        'md' => 4,
-                    ])
-                    ->schema([
                         TextEntry::make('amortissement_status')
                             ->label('Amortissement')
                             ->badge()
@@ -228,7 +224,6 @@ class ViewMaterial extends ViewRecord
                             ->getStateUsing(fn ($record): string => $record->amortissement_status)
                             ->tooltip('Amorti après 3 ans pour les ordinateurs')
                             ->columnSpan(1),
-
                         TextEntry::make('attributions_count')
                             ->label('Total Attributions')
                             ->icon(Heroicon::UserGroup)
@@ -236,21 +231,55 @@ class ViewMaterial extends ViewRecord
                             ->getStateUsing(fn ($record) => $record->attributions()->count())
                             ->suffix(' attributions')
                             ->columnSpan(1),
-
-                        TextEntry::make('created_at')
-                            ->label('Créé le')
-                            ->icon(Heroicon::Clock)
-                            ->dateTime('d/m/Y à H:i')
-                            ->since()
-                            ->columnSpan(1),
-
-                        TextEntry::make('updated_at')
-                            ->label('Modifié le')
-                            ->icon(Heroicon::PencilSquare)
-                            ->dateTime('d/m/Y à H:i')
-                            ->since()
-                            ->columnSpan(1),
                     ]),
+
+//                Section::make('Statistiques et Métadonnées')
+//                    ->description('Amortissement et historique')
+//                    ->icon(Heroicon::ChartBar)
+//                    ->columns([
+//                        'sm' => 1,
+//                        'md' => 4,
+//                    ])
+//                    ->schema([
+//                        TextEntry::make('amortissement_status')
+//                            ->label('Amortissement')
+//                            ->badge()
+//                            ->color(fn (string $state): string => match ($state) {
+//                                'Amorti' => 'danger',
+//                                'Actif' => 'success',
+//                                default => 'gray',
+//                            })
+//                            ->icon(fn (string $state): Heroicon => match ($state) {
+//                                'Amorti' => Heroicon::ExclamationTriangle,
+//                                'Actif' => Heroicon::CheckCircle,
+//                                default => Heroicon::QuestionMarkCircle,
+//                            })
+//                            ->getStateUsing(fn ($record): string => $record->amortissement_status)
+//                            ->tooltip('Amorti après 3 ans pour les ordinateurs')
+//                            ->columnSpan(1),
+//
+//                        TextEntry::make('attributions_count')
+//                            ->label('Total Attributions')
+//                            ->icon(Heroicon::UserGroup)
+//                            ->iconColor('gray')
+//                            ->getStateUsing(fn ($record) => $record->attributions()->count())
+//                            ->suffix(' attributions')
+//                            ->columnSpan(1),
+//
+//                        TextEntry::make('created_at')
+//                            ->label('Créé le')
+//                            ->icon(Heroicon::Clock)
+//                            ->dateTime('d/m/Y à H:i')
+//                            ->since()
+//                            ->columnSpan(1),
+//
+//                        TextEntry::make('updated_at')
+//                            ->label('Modifié le')
+//                            ->icon(Heroicon::PencilSquare)
+//                            ->dateTime('d/m/Y à H:i')
+//                            ->since()
+//                            ->columnSpan(1),
+//                    ]),
 
                 Section::make('Notes et Informations Complémentaires')
                     ->description('Observations et historique')
