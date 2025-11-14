@@ -25,7 +25,7 @@ class VoirHistoriqueAttributionsAction
             ->modalWidth('2xl')
             ->schema(function (Model $record): array {
                 $attributions = Attribution::where('materiel_id', $record->id)
-                    ->with(['employee.service'])
+                    ->with(['employee.service', 'service'])
                     ->orderBy('date_attribution', 'desc')
                     ->get();
 
@@ -63,8 +63,20 @@ class VoirHistoriqueAttributionsAction
 
                                     return $attributions->map(function (Attribution $attribution): string {
                                         $status = $attribution->isActive() ? '🟢 Active' : '⚫ Clôturée';
-                                        $employee = $attribution->employee->full_name;
-                                        $service = $attribution->employee->service?->nom ?? 'Sans service';
+
+                                        // Dynamic recipient display
+                                        if ($attribution->isForEmployee()) {
+                                            $icon = '👤';
+                                            $recipient = $attribution->employee->full_name;
+                                            $detail = $attribution->employee->service?->nom ?? 'Sans service';
+                                        } else {
+                                            $icon = '🏢';
+                                            $recipient = $attribution->service->nom;
+                                            $detail = $attribution->service->responsable
+                                                ? "Chef: {$attribution->service->responsable}"
+                                                : 'Chef non défini';
+                                        }
+
                                         $dateAtt = $attribution->date_attribution->format('d/m/Y');
                                         $dateRes = $attribution->date_restitution?->format('d/m/Y') ?? 'En cours';
                                         $duree = $attribution->duration_in_days.' jours';
@@ -82,7 +94,7 @@ class VoirHistoriqueAttributionsAction
                                                 {$status} | {$attribution->numero_decharge_att}
                                             </div>
                                             <div style="margin-bottom: 0.25rem;">
-                                                👤 <strong>{$employee}</strong> ({$service})
+                                                {$icon} <strong>{$recipient}</strong> ({$detail})
                                             </div>
                                             <div style="margin-bottom: 0.25rem;">
                                                 📅 {$dateAtt} → {$dateRes} ({$duree})

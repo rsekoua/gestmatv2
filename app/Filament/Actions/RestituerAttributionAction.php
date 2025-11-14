@@ -20,14 +20,19 @@ class RestituerAttributionAction
     public static function make(): Action
     {
         return Action::make('-')
-            //->label('Restituer')
+            ->label('Restituer')
             ->icon(Heroicon::ArrowUturnLeft)
             ->color('danger')
             ->visible(fn (Attribution $record): bool => $record->isActive())
             ->requiresConfirmation()
             ->modalHeading('Restituer le matériel')
-            ->modalDescription(fn (Attribution $record): string => "Matériel : {$record->materiel->numero_serie} | Employé : {$record->employee->full_name}"
-            )
+            ->modalDescription(function (Attribution $record): string {
+                $recipient = $record->isForEmployee()
+                    ? "Employé : {$record->employee->full_name}"
+                    : "Service : {$record->service->code}";
+
+                return "Matériel : {$record->materiel->nom} | {$record->materiel->numero_serie} | {$recipient}";
+            })
             ->modalSubmitActionLabel('Confirmer la restitution')
             ->modalWidth('2xl')
             ->Schema([
@@ -115,10 +120,14 @@ class RestituerAttributionAction
             ->action(function (Attribution $record, array $data): void {
                 $record->update($data);
 
+                $recipient = $record->isForEmployee()
+                    ? "de {$record->employee->full_name}"
+                    : "du service {$record->service->nom}";
+
                 Notification::make()
                     ->title('Restitution enregistrée')
                     ->success()
-                    ->body("Le matériel {$record->materiel->numero_serie} a été restitué avec succès.")
+                    ->body("Le matériel {$record->materiel->numero_serie} a été restitué {$recipient} avec succès.")
                     ->send();
             });
     }

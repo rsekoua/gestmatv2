@@ -24,6 +24,8 @@ class Attribution extends Model
     protected $fillable = [
         'materiel_id',
         'employee_id',
+        'service_id',
+        'responsable_service',
         'date_attribution',
         'date_restitution',
         'numero_decharge_att',
@@ -61,6 +63,14 @@ class Attribution extends Model
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    /**
+     * Get the service that owns the attribution.
+     */
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
     }
 
     /**
@@ -169,6 +179,38 @@ class Attribution extends Model
     }
 
     /**
+     * Get the recipient name (employee or service).
+     */
+    public function getRecipientNameAttribute(): string
+    {
+        if ($this->employee_id) {
+            return $this->employee->full_name;
+        }
+
+        if ($this->service_id) {
+            return $this->service->nom;
+        }
+
+        return 'Non défini';
+    }
+
+    /**
+     * Check if attribution is for an employee.
+     */
+    public function isForEmployee(): bool
+    {
+        return ! is_null($this->employee_id);
+    }
+
+    /**
+     * Check if attribution is for a service.
+     */
+    public function isForService(): bool
+    {
+        return ! is_null($this->service_id);
+    }
+
+    /**
      * Activity log options
      */
     public function getActivitylogOptions(): LogOptions
@@ -177,6 +219,8 @@ class Attribution extends Model
             ->logOnly([
                 'materiel_id',
                 'employee_id',
+                'service_id',
+                'responsable_service',
                 'date_attribution',
                 'date_restitution',
                 'observations_att',

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Attributions\Schemas;
 use App\Models\Accessory;
 use App\Models\Employee;
 use App\Models\Materiel;
+use App\Models\Service;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -25,7 +26,7 @@ class AttributionForm
         return $schema
             ->components([
                 Section::make('Informations de l\'Attribution')
-                    ->description('Sélectionnez le matériel et l\'employé')
+                    ->description('Sélectionnez le matériel et le destinataire')
                     ->icon(Heroicon::DocumentText)
                     ->columns([
                         'sm' => 1,
@@ -44,6 +45,7 @@ class AttributionForm
                             ->searchable(['numero_serie', 'marque', 'modele'])
                             ->preload()
                             ->required()
+                            ->live()
                             ->helperText(fn ($record) => $record
                                 ? 'Matériel actuellement attribué'
                                 : 'Seuls les matériels disponibles sont affichés'
@@ -56,9 +58,88 @@ class AttributionForm
                             ->relationship('employee', 'nom')
                             ->searchable()
                             ->preload()
-                            ->required()
-                            ->helperText('Sélectionnez l\'employé destinataire')
+                            ->required(function (Get $get): bool {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return false;
+                                }
+
+                                $materiel = Materiel::with('materielType')->find($materielId);
+
+                                return $materiel && $materiel->materielType->isComputer();
+                            })
+                            ->visible(function (Get $get): bool {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return true;
+                                }
+
+                                $materiel = Materiel::with('materielType')->find($materielId);
+
+                                return $materiel && $materiel->materielType->isComputer();
+                            })
+                            ->helperText('Les ordinateurs sont attribués aux employés')
                             ->getOptionLabelFromRecordUsing(fn (Employee $record) => "{$record->full_name} - {$record->service?->code}")
+                            ->columnSpan(1),
+
+                        Select::make('service_id')
+                            ->label('Service')
+                            ->relationship('service', 'nom')
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $service = Service::find($state);
+                                    $set('responsable_service', $service?->responsable);
+                                } else {
+                                    $set('responsable_service', null);
+                                }
+                            })
+                            ->required(function (Get $get): bool {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return false;
+                                }
+
+                                $materiel = Materiel::with('materielType')->find($materielId);
+
+                                return $materiel && ! $materiel->materielType->isComputer();
+                            })
+                            ->visible(function (Get $get): bool {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return false;
+                                }
+
+                                $materiel = Materiel::with('materielType')->find($materielId);
+
+                                return $materiel && ! $materiel->materielType->isComputer();
+                            })
+                            ->helperText('Les autres équipements sont attribués aux services')
+                            ->getOptionLabelFromRecordUsing(fn (Service $record) => $record->full_name)
+                            ->columnSpan(1),
+
+                        TextInput::make('responsable_service')
+                            ->label('Responsable du Service')
+                            ->helperText('Nom du chef de service (rempli automatiquement)')
+                            ->disabled()
+                            ->dehydrated()
+                            ->visible(function (Get $get): bool {
+                                $materielId = $get('materiel_id');
+
+                                if (! $materielId) {
+                                    return false;
+                                }
+
+                                $materiel = Materiel::with('materielType')->find($materielId);
+
+                                return $materiel && ! $materiel->materielType->isComputer();
+                            })
                             ->columnSpan(1),
 
                         DatePicker::make('date_attribution')

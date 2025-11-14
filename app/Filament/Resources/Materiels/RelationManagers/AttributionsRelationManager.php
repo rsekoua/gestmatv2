@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Materiels\RelationManagers;
 
+use App\Filament\Actions\RestituerAttributionAction;
 use App\Models\Attribution;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
@@ -42,18 +43,32 @@ class AttributionsRelationManager extends RelationManager
                     ->copyMessage('Numéro copié!')
                     ->copyMessageDuration(1500),
 
-                TextColumn::make('employee.full_name')
-                    ->label('Employé')
-                    ->icon(Heroicon::User)
-                    ->iconColor('success')
-                    ->searchable(['nom', 'prenom'])
-                    ->sortable()
-                    ->description(fn ($record): string => $record->employee?->service?->nom ?? 'Aucun service')
+                TextColumn::make('recipient_name')
+                    ->label('Attribué à')
+                    ->icon(fn (Attribution $record): Heroicon => $record->isForEmployee() ? Heroicon::User : Heroicon::BuildingOffice2)
+                    ->iconColor(fn (Attribution $record): string => $record->isForEmployee() ? 'success' : 'info')
+                    ->searchable(['employee.nom', 'employee.prenom', 'service.nom'])
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query
+                            ->leftJoin('employees', 'attributions.employee_id', '=', 'employees.id')
+                            ->leftJoin('services', 'attributions.service_id', '=', 'services.id')
+                            ->orderBy(\DB::raw('COALESCE(employees.nom, services.nom)'), $direction);
+                    })
+                    ->description(fn (Attribution $record): string => $record->isForEmployee()
+                        ? ($record->employee?->service?->nom ?? 'Aucun service')
+                        : ($record->service?->responsable ? "Chef: {$record->service->responsable}" : 'Chef non défini')
+                    )
                     ->wrap()
-                    ->url(fn ($record): string => $record->employee
-                        ? route('filament.admin.resources.employees.view', ['record' => $record->employee])
-                        : '#'
-                    ),
+                    ->url(function ($record): string {
+                        if ($record->isForEmployee() && $record->employee) {
+                            return route('filament.admin.resources.employees.view', ['record' => $record->employee]);
+                        }
+                        if ($record->isForService() && $record->service) {
+                            return route('filament.admin.resources.services.view', ['record' => $record->service]);
+                        }
+
+                        return '#';
+                    }),
 
                 TextColumn::make('date_attribution')
                     ->label('Date Attribution')
@@ -218,6 +233,7 @@ class AttributionsRelationManager extends RelationManager
                             ->success()
                             ->send();
                     }),
+                RestituerAttributionAction::make(),
                 ViewAction::make()
                     ->iconButton()
                     ->url(fn ($record): string => route('filament.admin.resources.attributions.view', ['record' => $record])),

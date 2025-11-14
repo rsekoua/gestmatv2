@@ -139,7 +139,7 @@ class Materiel extends Model
     public function getNomAttribute(): string
     {
         $parts = array_filter([
-            $this->materielType?->nom,
+           // $this->materielType?->nom,
             $this->marque,
             $this->modele,
         ]);

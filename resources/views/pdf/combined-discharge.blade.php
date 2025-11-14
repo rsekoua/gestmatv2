@@ -138,14 +138,27 @@
     <div class="section">
         <div class="section-title">BÉNÉFICIAIRE</div>
         <table>
-            <tr>
-                <td class="td-label">Nom</td>
-                <td class="td-value">{{ $attribution->employee->full_name }}</td>
-            </tr>
-            <tr>
-                <td class="td-label">Service</td>
-                <td class="td-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</td>
-            </tr>
+            @if($attribution->isForEmployee())
+                <tr>
+                    <td class="td-label">Nom</td>
+                    <td class="td-value">{{ $attribution->employee->full_name }}</td>
+                </tr>
+                <tr>
+                    <td class="td-label">Service</td>
+                    <td class="td-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td class="td-label">Service</td>
+                    <td class="td-value">{{ $attribution->service->nom }}</td>
+                </tr>
+                @if($attribution->service->responsable)
+                <tr>
+                    <td class="td-label">Chef de service</td>
+                    <td class="td-value">{{ $attribution->service->responsable }}</td>
+                </tr>
+                @endif
+            @endif
         </table>
     </div>
 

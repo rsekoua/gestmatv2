@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Filament\Resources\Employees\RelationManagers;
+namespace App\Filament\Resources\Services\RelationManagers;
 
-use App\Filament\Actions\RestituerAttributionAction;
 use App\Models\Attribution;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
@@ -19,11 +18,11 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class AttributionsRelationManager extends RelationManager
+class ServiceAttributionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'attributions';
 
-    protected static ?string $title = 'Attributions';
+    protected static ?string $title = 'Attributions du Service';
 
     protected static ?string $recordTitleAttribute = 'numero_decharge_att';
 
@@ -58,6 +57,15 @@ class AttributionsRelationManager extends RelationManager
                         ? route('filament.admin.resources.materiels.materials.view', ['record' => $record->materiel])
                         : '#'
                     ),
+
+                TextColumn::make('materiel.materielType.nom')
+                    ->label('Type')
+                    ->icon(Heroicon::Tag)
+                    ->iconColor('gray')
+                    ->badge()
+                    ->color('info')
+                    ->searchable()
+                    ->sortable(),
 
                 TextColumn::make('date_attribution')
                     ->label('Date Attribution')
@@ -121,97 +129,96 @@ class AttributionsRelationManager extends RelationManager
                     ),
             ])
             ->headerActions([
-                // On peut ajouter une action pour créer une attribution depuis l'employé
+                // On peut ajouter une action pour créer une attribution depuis le service
             ])
             ->recordActions([
-//                Action::make('restituer')
-//                    ->icon(Heroicon::ArrowUturnLeft)
-//                    ->color('warning')
-//                    ->iconButton()
-//                    ->tooltip('Restituer')
-//                    ->visible(fn (Attribution $record): bool => $record->isActive())
-//                    ->requiresConfirmation()
-//                    ->modalHeading('Restituer le matériel')
-//                    ->modalSubmitActionLabel('Confirmer')
-//                    ->modalWidth('2xl')
-//                    ->Schema([
-//                        Section::make('Informations de restitution')
-//                            ->schema([
-//                                DatePicker::make('date_restitution')
-//                                    ->label('Date de restitution')
-//                                    ->required()
-//                                    ->default(now())
-//                                    ->maxDate(now())
-//                                    ->native(false)
-//                                    ->displayFormat('d/m/Y')
-//                                    ->closeOnDateSelection(),
-//
-//                                Textarea::make('observations_res')
-//                                    ->label('Observations')
-//                                    ->rows(3)
-//                                    ->columnSpanFull(),
-//                            ]),
-//
-//                        Section::make('État du matériel')
-//                            ->schema([
-//                                Radio::make('etat_general_res')
-//                                    ->label('État général')
-//                                    ->required()
-//                                    ->options([
-//                                        'excellent' => 'Excellent',
-//                                        'bon' => 'Bon',
-//                                        'moyen' => 'Moyen',
-//                                        'mauvais' => 'Mauvais',
-//                                    ])
-//                                    ->inline()
-//                                    ->default('bon'),
-//
-//                                Radio::make('etat_fonctionnel_res')
-//                                    ->label('État fonctionnel')
-//                                    ->required()
-//                                    ->options([
-//                                        'parfait' => 'Parfait',
-//                                        'defauts_mineurs' => 'Défauts mineurs',
-//                                        'dysfonctionnements' => 'Dysfonctionnements',
-//                                        'hors_service' => 'Hors service',
-//                                    ])
-//                                    ->inline()
-//                                    ->default('parfait'),
-//
-//                                Radio::make('decision_res')
-//                                    ->label('Décision')
-//                                    ->required()
-//                                    ->options([
-//                                        'remis_en_stock' => 'Remis en stock',
-//                                        'a_reparer' => 'À réparer',
-//                                        'rebut' => 'Rebut',
-//                                    ])
-//                                    ->inline()
-//                                    ->default('remis_en_stock'),
-//
-//                                Textarea::make('dommages_res')
-//                                    ->label('Dommages constatés')
-//                                    ->rows(3)
-//                                    ->columnSpanFull(),
-//                            ]),
-//                    ])
-//                    ->action(function (Attribution $record, array $data): void {
-//                        $record->update($data);
-//                        Notification::make()
-//                            ->title('Restitution enregistrée')
-//                            ->success()
-//                            ->send();
-//                    }),
-                RestituerAttributionAction::make(),
+                Action::make('restituer')
+                    ->icon(Heroicon::ArrowUturnLeft)
+                    ->color('warning')
+                    ->iconButton()
+                    ->tooltip('Restituer')
+                    ->visible(fn (Attribution $record): bool => $record->isActive())
+                    ->requiresConfirmation()
+                    ->modalHeading('Restituer le matériel')
+                    ->modalSubmitActionLabel('Confirmer')
+                    ->modalWidth('2xl')
+                    ->Schema([
+                        Section::make('Informations de restitution')
+                            ->schema([
+                                DatePicker::make('date_restitution')
+                                    ->label('Date de restitution')
+                                    ->required()
+                                    ->default(now())
+                                    ->maxDate(now())
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->closeOnDateSelection(),
+
+                                Textarea::make('observations_res')
+                                    ->label('Observations')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Section::make('État du matériel')
+                            ->schema([
+                                Radio::make('etat_general_res')
+                                    ->label('État général')
+                                    ->required()
+                                    ->options([
+                                        'excellent' => 'Excellent',
+                                        'bon' => 'Bon',
+                                        'moyen' => 'Moyen',
+                                        'mauvais' => 'Mauvais',
+                                    ])
+                                    ->inline()
+                                    ->default('bon'),
+
+                                Radio::make('etat_fonctionnel_res')
+                                    ->label('État fonctionnel')
+                                    ->required()
+                                    ->options([
+                                        'parfait' => 'Parfait',
+                                        'defauts_mineurs' => 'Défauts mineurs',
+                                        'dysfonctionnements' => 'Dysfonctionnements',
+                                        'hors_service' => 'Hors service',
+                                    ])
+                                    ->inline()
+                                    ->default('parfait'),
+
+                                Radio::make('decision_res')
+                                    ->label('Décision')
+                                    ->required()
+                                    ->options([
+                                        'remis_en_stock' => 'Remis en stock',
+                                        'a_reparer' => 'À réparer',
+                                        'rebut' => 'Rebut',
+                                    ])
+                                    ->inline()
+                                    ->default('remis_en_stock'),
+
+                                Textarea::make('dommages_res')
+                                    ->label('Dommages constatés')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                            ]),
+                    ])
+                    ->action(function (Attribution $record, array $data): void {
+                        $record->update($data);
+                        Notification::make()
+                            ->title('Restitution enregistrée')
+                            ->success()
+                            ->send();
+                    }),
                 ViewAction::make()
                     ->iconButton()
                     ->url(fn ($record): string => route('filament.admin.resources.attributions.view', ['record' => $record])),
             ])
             ->toolbarActions([
-                // Pas d'actions en masse sur les attributions depuis cette vue
+                // Pas d'actions en masse
             ])
             ->emptyStateHeading('Aucune attribution')
-            ->emptyStateDescription('Cet employé n\'a pas encore d\'attribution.')
+            ->emptyStateDescription('Ce service n\'a pas encore d\'attribution d\'équipement.')
             ->emptyStateIcon(Heroicon::ArrowsRightLeft)
             ->defaultSort('date_attribution', 'desc')
             ->paginated([10, 25, 50]);

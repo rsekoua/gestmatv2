@@ -48,11 +48,11 @@ class DashboardOverviewWidget extends StatsOverviewWidget
         $totalServices = Service::count();
 
         return [
-//            Stat::make('Matériels Totaux', $totalMateriels)
-//                ->description("{$disponibles} disponibles · {$attribues} attribués · {$enPanne} en panne")
-//                ->descriptionIcon(Heroicon::ComputerDesktop)
-//                ->color('primary')
-//                ->chart($this->getMaterielsMonthlyData()),
+            Stat::make('Matériels Totaux', $totalMateriels)
+                ->description("{$disponibles} disponibles · {$attribues} attribués · {$enPanne} en panne")
+                ->descriptionIcon(Heroicon::ComputerDesktop)
+                ->color('primary')
+                ->chart($this->getMaterielsMonthlyData()),
 
             Stat::make('Taux de Disponibilité', "{$disponibiliteRate}%")
                 ->description($disponibiliteRate >= 50 ? 'Bon niveau de stock' : 'Stock faible')

@@ -25,7 +25,8 @@ class UpdateAttributionRequest extends FormRequest
     {
         return [
             'materiel_id' => ['required', 'exists:materiels,id'],
-            'employee_id' => ['required', 'exists:employees,id'],
+            'employee_id' => ['nullable', 'required_without:service_id', 'exists:employees,id'],
+            'service_id' => ['nullable', 'required_without:employee_id', 'exists:services,id'],
             'date_attribution' => ['required', 'date'],
             'date_restitution' => ['nullable', 'date', 'after_or_equal:date_attribution'],
             'observations_att' => ['nullable', 'string'],
@@ -60,8 +61,10 @@ class UpdateAttributionRequest extends FormRequest
         return [
             'materiel_id.required' => 'Le matériel est obligatoire.',
             'materiel_id.exists' => 'Le matériel sélectionné n\'existe pas.',
-            'employee_id.required' => 'L\'employé est obligatoire.',
+            'employee_id.required_without' => 'L\'employé est obligatoire si aucun service n\'est sélectionné.',
             'employee_id.exists' => 'L\'employé sélectionné n\'existe pas.',
+            'service_id.required_without' => 'Le service est obligatoire si aucun employé n\'est sélectionné.',
+            'service_id.exists' => 'Le service sélectionné n\'existe pas.',
             'date_attribution.required' => 'La date d\'attribution est obligatoire.',
             'date_attribution.date' => 'La date d\'attribution doit être une date valide.',
             'date_restitution.date' => 'La date de restitution doit être une date valide.',

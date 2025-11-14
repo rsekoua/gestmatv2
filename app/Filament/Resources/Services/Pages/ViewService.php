@@ -70,6 +70,16 @@ class ViewService extends ViewRecord
                             ->suffix(fn ($state) => $state > 1 ? ' employés' : ' employé')
                             ->columnSpan(1),
 
+                        TextEntry::make('attributions_count')
+                            ->label('Équipements attribués')
+                            ->icon(Heroicon::ComputerDesktop)
+                            ->iconColor('info')
+                            ->getStateUsing(fn ($record) => $record->attributions()->whereNull('date_restitution')->count())
+                            ->suffix(fn ($state) => $state > 1 ? ' équipements' : ' équipement')
+                            ->badge()
+                            ->color(fn ($state) => $state > 0 ? 'info' : 'gray')
+                            ->columnSpan(1),
+
                         TextEntry::make('created_at')
                             ->label('Créé le')
                             ->icon(Heroicon::Clock)

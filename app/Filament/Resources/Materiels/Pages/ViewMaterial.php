@@ -90,6 +90,7 @@ class ViewMaterial extends ViewRecord
                 Section::make('Spécifications Techniques')
                     ->description('Caractéristiques matérielles')
                     ->icon(Heroicon::CpuChip)
+                    ->visible(fn ($record): bool => $record->materielType->isComputer())
                     ->columns([
                         'sm' => 1,
                         'md' => 2,

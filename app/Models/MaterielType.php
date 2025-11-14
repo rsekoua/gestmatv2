@@ -30,10 +30,18 @@ class MaterielType extends Model
     }
 
     /**
+     * Check if this type is a computer.
+     */
+    public function isComputer(): bool
+    {
+        return in_array($this->nom, ['Ordinateur Portable', 'Ordinateur Bureau']);
+    }
+
+    /**
      * Check if this type supports automatic depreciation.
      */
     public function supportsAutoDepreciation(): bool
     {
-        return in_array($this->nom, ['Ordinateur Portable', 'Ordinateur Bureau']);
+        return $this->isComputer();
     }
 }

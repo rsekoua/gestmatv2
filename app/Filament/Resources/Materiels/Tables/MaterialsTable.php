@@ -23,6 +23,17 @@ class MaterialsTable
     {
         return $table
             ->columns([
+                TextColumn::make('materielType.nom')
+                    ->label('Type')
+//                    ->icon(Heroicon::Tag)
+//                    ->iconColor('info')
+//                    ->badge()
+//                    ->color('info')
+                    ->searchable()
+                    ->description(fn ($record): string => $record->numero_serie ? "S/N: {$record->numero_serie}" : 'Aucun numéro de série')
+                    ->sortable()
+                    ->placeholder('—'),
+
                 TextColumn::make('nom')
                     ->label('Désignation')
                     ->icon(Heroicon::ComputerDesktop)
@@ -34,15 +45,7 @@ class MaterialsTable
                     ->description(fn ($record): string => $record->numero_serie ? "S/N: {$record->numero_serie}" : 'Aucun numéro de série')
                     ->wrap(),
 
-                TextColumn::make('materielType.nom')
-                    ->label('Type')
-                    ->icon(Heroicon::Tag)
-                    ->iconColor('info')
-                    ->badge()
-                    ->color('info')
-                    ->searchable()
-                    ->sortable()
-                    ->placeholder('—'),
+
 
                 TextColumn::make('specifications_summary')
                     ->label('Spécifications')

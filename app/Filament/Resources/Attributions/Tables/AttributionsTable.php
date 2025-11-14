@@ -51,13 +51,21 @@ class AttributionsTable
                     ->description(fn ($record): string => $record->materiel?->numero_serie ?? '—')
                     ->wrap(),
 
-                TextColumn::make('employee.full_name')
-                    ->label('Employé')
-                    ->icon(Heroicon::User)
-                    ->iconColor('success')
-                    ->searchable(['nom', 'prenom'])
-                    ->sortable()
-                    ->description(fn ($record): string => $record->employee?->service?->nom ?? 'Aucun service')
+                TextColumn::make('recipient_name')
+                    ->label('Attribué à')
+                    ->icon(fn (Attribution $record): Heroicon => $record->isForEmployee() ? Heroicon::User : Heroicon::BuildingOffice2)
+                    ->iconColor(fn (Attribution $record): string => $record->isForEmployee() ? 'success' : 'info')
+                    ->searchable(['employee.nom', 'employee.prenom', 'service.nom', 'responsable_service'])
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query
+                            ->leftJoin('employees', 'attributions.employee_id', '=', 'employees.id')
+                            ->leftJoin('services', 'attributions.service_id', '=', 'services.id')
+                            ->orderBy(\DB::raw('COALESCE(employees.nom, services.nom)'), $direction);
+                    })
+                    ->description(fn (Attribution $record): string => $record->isForEmployee()
+                        ? ($record->employee?->service?->nom ?? 'Aucun service')
+                        : ($record->service?->responsable ? "Chef: {$record->service->responsable}" : 'Chef non défini')
+                    )
                     ->wrap(),
 
                 TextColumn::make('date_attribution')
@@ -138,6 +146,13 @@ class AttributionsTable
                     ->preload()
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name),
 
+                SelectFilter::make('service_id')
+                    ->label('Service')
+                    ->relationship('service', 'nom')
+                    ->searchable()
+                    ->preload()
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name),
+
                 SelectFilter::make('decision_res')
                     ->label('Décision de restitution')
                     ->options([
@@ -147,93 +162,7 @@ class AttributionsTable
                     ]),
             ])
             ->recordActions([
-//                Action::make('restituer')
-//                    ->label('Restituer')
-//                    ->icon(Heroicon::ArrowUturnLeft)
-//                    ->color('warning')
-//                    ->iconButton()
-//                    ->tooltip('Restituer le matériel')
-//                    ->visible(fn (Attribution $record): bool => $record->isActive())
-//                    ->requiresConfirmation()
-//                    ->modalHeading('Restituer le matériel')
-//                    ->modalSubmitActionLabel('Confirmer la restitution')
-//                    ->modalWidth('2xl')
-//                    ->form([
-//                        Section::make('Informations de restitution')
-//                            ->schema([
-//                                DatePicker::make('date_restitution')
-//                                    ->label('Date de restitution')
-//                                    ->required()
-//                                    ->default(now())
-//                                    ->maxDate(now())
-//                                    ->native(false)
-//                                    ->displayFormat('d/m/Y')
-//                                    ->closeOnDateSelection(),
-//
-//                                Textarea::make('observations_res')
-//                                    ->label('Observations')
-//                                    ->rows(3)
-//                                    ->placeholder('Observations générales sur la restitution...')
-//                                    ->columnSpanFull(),
-//                            ]),
-//
-//                        Section::make('État du matériel')
-//                            ->schema([
-//                                Radio::make('etat_general_res')
-//                                    ->label('État général')
-//                                    ->required()
-//                                    ->options([
-//                                        'excellent' => 'Excellent',
-//                                        'bon' => 'Bon',
-//                                        'moyen' => 'Moyen',
-//                                        'mauvais' => 'Mauvais',
-//                                    ])
-//                                    ->inline()
-//                                    ->inlineLabel(false)
-//                                    ->default('bon'),
-//
-//                                Radio::make('etat_fonctionnel_res')
-//                                    ->label('État fonctionnel')
-//                                    ->required()
-//                                    ->options([
-//                                        'parfait' => 'Parfait',
-//                                        'defauts_mineurs' => 'Défauts mineurs',
-//                                        'dysfonctionnements' => 'Dysfonctionnements',
-//                                        'hors_service' => 'Hors service',
-//                                    ])
-//                                    ->inline()
-//                                    ->inlineLabel(false)
-//                                    ->default('parfait'),
-//
-//                                Radio::make('decision_res')
-//                                    ->label('Décision')
-//                                    ->required()
-//                                    ->options([
-//                                        'remis_en_stock' => 'Remis en stock',
-//                                        'a_reparer' => 'À réparer',
-//                                        'rebut' => 'Rebut',
-//                                    ])
-//                                    ->inline()
-//                                    ->inlineLabel(false)
-//                                    ->default('remis_en_stock')
-//                                    ->helperText('Que devient le matériel après restitution ?'),
-//
-//                                Textarea::make('dommages_res')
-//                                    ->label('Dommages constatés')
-//                                    ->rows(3)
-//                                    ->placeholder('Décrivez les dommages éventuels...')
-//                                    ->columnSpanFull(),
-//                            ]),
-//                    ])
-//                    ->action(function (Attribution $record, array $data): void {
-//                        $record->update($data);
-//
-//                        Notification::make()
-//                            ->title('Restitution enregistrée')
-//                            ->success()
-//                            ->body("Le matériel {$record->materiel->numero_serie} a été restitué avec succès.")
-//                            ->send();
-//                    }),
+
                 RestituerAttributionAction::make(),
                 ViewAction::make()
                     ->iconButton(),

@@ -31,6 +31,14 @@ class Service extends Model
     }
 
     /**
+     * Get the attributions for the service.
+     */
+    public function attributions(): HasMany
+    {
+        return $this->hasMany(Attribution::class);
+    }
+
+    /**
      * Get the full name with code.
      */
     public function getFullNameAttribute(): string

@@ -96,20 +96,27 @@ class ViewAttribution extends ViewRecord
                             ->copyMessageDuration(1500)
                             ->columnSpan(1),
 
-                        TextEntry::make('employee.full_name')
-                            ->label('Employé Bénéficiaire')
-                            ->icon(Heroicon::User)
-                            ->iconColor('success')
+                        TextEntry::make('recipient_name')
+                            ->label(fn ($record): string => $record->isForEmployee() ? 'Employé Bénéficiaire' : 'Service Bénéficiaire')
+                            ->icon(fn ($record): Heroicon => $record->isForEmployee() ? Heroicon::User : Heroicon::BuildingOffice2)
+                            ->iconColor(fn ($record): string => $record->isForEmployee() ? 'success' : 'info')
                             ->weight(FontWeight::Bold)
                             ->columnSpan(1),
 
-                        TextEntry::make('employee.service.nom')
-                            ->label('Service')
-                            ->icon(Heroicon::BuildingOffice2)
-                            ->iconColor('success')
+                        TextEntry::make('service_or_employee_detail')
+                            ->label(fn ($record): string => $record->isForEmployee() ? 'Service' : 'Chef de Service')
+                            ->icon(fn ($record): Heroicon => $record->isForEmployee() ? Heroicon::BuildingOffice2 : Heroicon::UserCircle)
+                            ->iconColor(fn ($record): string => $record->isForEmployee() ? 'success' : 'info')
                             ->badge()
-                            ->color('success')
-                            ->placeholder('Aucun service')
+                            ->color(fn ($record): string => $record->isForEmployee() ? 'success' : 'info')
+                            ->state(function ($record): string {
+                                if ($record->isForEmployee()) {
+                                    return $record->employee?->service?->nom ?? 'Aucun service';
+                                }
+
+                                return $record->service?->responsable ?? 'Chef non défini';
+                            })
+                            ->placeholder(fn ($record): string => $record->isForEmployee() ? 'Aucun service' : 'Chef non défini')
                             ->columnSpan(1),
 
                         TextEntry::make('date_attribution')

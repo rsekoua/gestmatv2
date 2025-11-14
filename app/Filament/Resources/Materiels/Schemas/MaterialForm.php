@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Materiels\Schemas;
 
+use App\Models\MaterielType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 
@@ -36,6 +38,7 @@ class MaterialForm
                             ->searchable()
                             ->preload()
                             ->required()
+                            ->live()
                             ->createOptionForm([
                                 TextInput::make('nom')
                                     ->label('Nom du Type')
@@ -90,6 +93,17 @@ class MaterialForm
                         'sm' => 1,
                         'md' => 2,
                     ])
+                    ->visible(function (Get $get): bool {
+                        $typeId = $get('materiel_type_id');
+
+                        if (! $typeId) {
+                            return false;
+                        }
+
+                        $type = MaterielType::find($typeId);
+
+                        return $type && $type->isComputer();
+                    })
                     ->schema([
                         TextInput::make('processor')
                             ->label('Processeur')

@@ -184,18 +184,31 @@
         </table>
     </div>
 
-    {{-- Informations de l'employé --}}
+    {{-- Informations de l'employé ou du service --}}
     <div class="section">
-        <div class="section-title">EMPLOYÉ RESTITUANT</div>
+        <div class="section-title">{{ $attribution->isForEmployee() ? 'EMPLOYÉ RESTITUANT' : 'SERVICE RESTITUANT' }}</div>
         <table>
-            <tr>
-                <td class="td-label">Nom complet</td>
-                <td class="td-value"><strong>{{ $attribution->employee->full_name }}</strong></td>
-            </tr>
-            <tr>
-                <td class="td-label">Service</td>
-                <td class="td-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</td>
-            </tr>
+            @if($attribution->isForEmployee())
+                <tr>
+                    <td class="td-label">Nom complet</td>
+                    <td class="td-value"><strong>{{ $attribution->employee->full_name }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">Service</td>
+                    <td class="td-value">{{ $attribution->employee->service->nom ?? 'N/A' }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td class="td-label">Service</td>
+                    <td class="td-value"><strong>{{ $attribution->service->nom }}</strong></td>
+                </tr>
+                @if($attribution->service->responsable)
+                <tr>
+                    <td class="td-label">Chef de service</td>
+                    <td class="td-value"><strong>{{ $attribution->service->responsable }}</strong></td>
+                </tr>
+                @endif
+            @endif
         </table>
     </div>
 
@@ -315,8 +328,13 @@
         <div class="section-title">SIGNATURES</div>
         <div class="signature-grid">
             <div class="signature-cell">
-                <div class="signature-label">L'employé restituant</div>
-                <div class="signature-name">{{ $attribution->employee->full_name }}</div>
+                @if($attribution->isForEmployee())
+                    <div class="signature-label">L'employé restituant</div>
+                    <div class="signature-name">{{ $attribution->employee->full_name }}</div>
+                @else
+                    <div class="signature-label">Le chef de service</div>
+                    <div class="signature-name">{{ $attribution->service->responsable ?? 'N/A' }}</div>
+                @endif
                 <div class="signature-box">
                     Signature et date
                 </div>
