@@ -9,7 +9,7 @@
                 </div>
             </x-slot>
 
-            <form wire:submit="$refresh">
+            <x-filament-panels::form wire:submit="$refresh">
                 {{ $this->form }}
 
                 <div class="mt-4">
@@ -17,7 +17,7 @@
                         Générer le rapport
                     </x-filament::button>
                 </div>
-            </form>
+            </x-filament-panels::form>
         </x-filament::section>
 
         {{-- Statistiques globales --}}
