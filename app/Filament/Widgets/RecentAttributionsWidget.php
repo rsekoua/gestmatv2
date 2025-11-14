@@ -44,7 +44,7 @@ class RecentAttributionsWidget extends BaseWidget
                     ->sortable()
                     ->badge()
                     ->color('primary')
-                    ->icon('heroicon-o-qrcode'),
+                    ->icon('heroicon-o-qr-code'),
 
                 TextColumn::make('materiel.nom')
                     ->label('Matériel')

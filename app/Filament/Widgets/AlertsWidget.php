@@ -65,7 +65,7 @@ class AlertsWidget extends Widget
                 'message' => "{$longuesDurees} attribution(s) sont active(s) depuis plus d'un an.",
                 'icon' => 'heroicon-o-clock',
                 'action' => 'Voir les attributions',
-                'url' => route('filament.admin.resources.attributions.materials.index'),
+              //  'url' => route('filament.admin.resources.attributions.materials.index'),
             ];
         }
 
