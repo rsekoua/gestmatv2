@@ -63,10 +63,17 @@ class AttributionObserver
 
         // Mettre à jour le statut du matériel à "attribué"
         if ($attribution->materiel_id) {
-            Materiel::withoutEvents(function () use ($attribution) {
-                Materiel::where('id', $attribution->materiel_id)
+            $updated = Materiel::withoutEvents(function () use ($attribution) {
+                return Materiel::where('id', $attribution->materiel_id)
                     ->update(['statut' => 'attribué']);
             });
+
+            // Vérifier que la mise à jour a bien fonctionné
+            if ($updated === 0) {
+                throw ValidationException::withMessages([
+                    'materiel_id' => 'Erreur lors de la mise à jour du statut du matériel.',
+                ]);
+            }
         }
     }
 
@@ -159,7 +166,7 @@ class AttributionObserver
         // Remettre le matériel à "disponible"
         if (is_null($attribution->date_restitution) && $attribution->materiel_id) {
             Materiel::withoutEvents(function () use ($attribution) {
-                Materiel::where('id', $attribution->materiel_id)
+                return Materiel::where('id', $attribution->materiel_id)
                     ->update(['statut' => 'disponible']);
             });
         }
@@ -210,10 +217,17 @@ class AttributionObserver
             };
         }
 
-        Materiel::withoutEvents(function () use ($attribution, $newStatus) {
-            Materiel::where('id', $attribution->materiel_id)
+        $updated = Materiel::withoutEvents(function () use ($attribution, $newStatus) {
+            return Materiel::where('id', $attribution->materiel_id)
                 ->update(['statut' => $newStatus]);
         });
+
+        // Vérifier que la mise à jour a bien fonctionné
+        if ($updated === 0) {
+            throw ValidationException::withMessages([
+                'materiel_id' => 'Erreur lors de la mise à jour du statut du matériel à la restitution.',
+            ]);
+        }
     }
 
     /**
