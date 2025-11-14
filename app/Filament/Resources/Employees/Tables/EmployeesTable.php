@@ -34,12 +34,12 @@ class EmployeesTable
                     ->description(fn ($record): string => $record->email)
                     ->wrap(),
 
-                TextColumn::make('service.nom')
+                TextColumn::make('service.code')
                     ->label('Service')
                     ->icon(Heroicon::BuildingOffice2)
                     ->iconColor('success')
-                    ->badge()
-                    ->color('success')
+//                    ->badge()
+//                    ->color('success')
                     ->searchable()
                     ->sortable()
                     ->placeholder('Non assigné')

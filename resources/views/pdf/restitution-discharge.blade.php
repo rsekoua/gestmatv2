@@ -111,7 +111,11 @@
             min-height: 30px;
         }
         .signature-section {
-            margin-top: 10px;
+            position: fixed;
+            bottom: 25pt;
+            left: 0;
+            right: 0;
+            margin-top: 20px;
         }
         .signature-grid {
             display: table;
@@ -164,13 +168,13 @@
         <table class="header-table">
             <tr>
                 <td class="header-logo">
-                    <img src="{{ public_path('storage/logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
+                    <img src="{{ public_path('logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
                 </td>
                 <td class="header-title">
                     <h1>DÉCHARGE DE RESTITUTION DE MATÉRIEL</h1>
                 </td>
                 <td class="header-logo">
-                    <img src="{{ public_path('storage/logos/DAP.png') }}" alt="Logo DAP">
+                    <img src="{{ public_path('logos/DAP.png') }}" alt="Logo DAP">
                 </td>
             </tr>
         </table>
@@ -356,7 +360,7 @@
     {{-- Signatures --}}
     <div class="signature-section">
 {{--        <div class="section-title">SIGNATURES</div>--}}
-        <hr>
+{{--        <hr class="style-hr">--}}
         <div class="signature-grid">
             <div class="signature-cell">
                 @if($attribution->isForEmployee())

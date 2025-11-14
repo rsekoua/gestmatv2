@@ -101,14 +101,25 @@
         .observations {
             background-color: #f9fafb;
             padding: 8px;
-            border-left: 4px solid #9ca3af;
+            /*border-left: 4px solid #9ca3af;*/
             /*font-style: italic;*/
             font-size: 10pt;
             min-height: 30px;
+
+            position: fixed;
+            bottom: 140pt;
+            left: 0;
+            right: 0;
+            margin-bottom: 20px;
         }
         .signature-section {
+            position: fixed;
+            bottom: 25pt;
+            left: 0;
+            right: 0;
             margin-top: 20px;
         }
+
         .signature-grid {
             display: table;
             width: 100%;
@@ -160,13 +171,13 @@
         <table class="header-table">
             <tr>
                 <td class="header-logo">
-                    <img src="{{ public_path('storage/logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
+                    <img src="{{ public_path('logos/MSHPCMU.jpg') }}" alt="Logo MSHPCMU">
                 </td>
                 <td class="header-title">
                     <h1>DÉCHARGE POUR ATTRIBUTION DE MATÉRIEL</h1>
                 </td>
                 <td class="header-logo">
-                    <img src="{{ public_path('storage/logos/DAP.png') }}" alt="Logo DAP">
+                    <img src="{{ public_path('logos/DAP.png') }}" alt="Logo DAP">
                 </td>
             </tr>
         </table>
@@ -283,7 +294,7 @@
     {{-- Signatures --}}
     <div class="signature-section">
 {{--        <div class="section-title">SIGNATURES</div>--}}
-        <hr>
+
         <div class="signature-grid">
             <div class="signature-cell">
                 @if($attribution->isForEmployee())

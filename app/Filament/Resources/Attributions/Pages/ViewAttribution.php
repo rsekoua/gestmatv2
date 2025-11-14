@@ -20,27 +20,27 @@ class ViewAttribution extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('preview_attribution_discharge')
-                ->label('Attri')
-                ->icon(Heroicon::Eye)
-                ->color('gray')
-                ->url(fn ($record) => route('attributions.preview.attribution', $record))
-                ->openUrlInNewTab(),
+//            Action::make('preview_attribution_discharge')
+//                ->label('Attri')
+//                ->icon(Heroicon::Eye)
+//                ->color('gray')
+//                ->url(fn ($record) => route('attributions.preview.attribution', $record))
+//                ->openUrlInNewTab(),
 
             Action::make('download_attribution_discharge')
                 ->label('Décharge d\'Attribution')
                 ->icon(Heroicon::DocumentArrowDown)
-                ->color('primary')
+                ->color('info')
                 ->url(fn ($record) => route('attributions.discharge.attribution', $record))
                 ->openUrlInNewTab(),
 
-            Action::make('preview_restitution_discharge')
-                ->label('Resti')
-                ->icon(Heroicon::Eye)
-                ->color('gray')
-                ->visible(fn ($record) => $record->isClosed())
-                ->url(fn ($record) => route('attributions.preview.restitution', $record))
-                ->openUrlInNewTab(),
+//            Action::make('preview_restitution_discharge')
+//                ->label('Resti')
+//                ->icon(Heroicon::Eye)
+//                ->color('gray')
+//                ->visible(fn ($record) => $record->isClosed())
+//                ->url(fn ($record) => route('attributions.preview.restitution', $record))
+//                ->openUrlInNewTab(),
 
             Action::make('download_restitution_discharge')
                 ->label('Décharge de Restitution')
@@ -83,11 +83,11 @@ class ViewAttribution extends ViewRecord
                         TextEntry::make('numero_decharge_att')
                             ->label('Numéro de Décharge d\'Attribution')
                             ->icon(Heroicon::QrCode)
-                            ->iconColor('primary')
+                            //->iconColor('primary')
                             ->size('lg')
                             ->weight(FontWeight::Bold)
-                            ->badge()
-                            ->color('primary')
+                           // ->badge()
+                           // ->color('primary')
                             ->copyable()
                             ->copyMessage('Numéro copié!')
                             ->copyMessageDuration(1500)
@@ -141,17 +141,17 @@ class ViewAttribution extends ViewRecord
                             ->since()
                             ->columnSpan(1),
 
-                        TextEntry::make('duration_in_days')
+                        TextEntry::make('formatted_duration')
                             ->label('Durée')
                             ->icon(Heroicon::Clock)
                             ->iconColor('gray')
                             ->suffix(' jours')
-                            ->badge()
-                            ->color(fn ($state): string => match (true) {
-                                $state < 30 => 'success',
-                                $state < 180 => 'warning',
-                                default => 'danger',
-                            })
+//                            ->badge()
+//                            ->color(fn ($state): string => match (true) {
+//                                $state < 30 => 'success',
+//                                $state < 180 => 'warning',
+//                                default => 'danger',
+//                            })
                             ->columnSpan(1),
 
                         TextEntry::make('observations_att')
@@ -193,9 +193,10 @@ class ViewAttribution extends ViewRecord
                         TextEntry::make('numero_decharge_res')
                             ->label('Numéro de Décharge de Restitution')
                             ->icon(Heroicon::QrCode)
-                            ->iconColor('success')
-                            ->badge()
-                            ->color('success')
+                            ->weight(FontWeight::Bold)
+                           // ->iconColor('success')
+                           // ->badge()
+                           // ->color('success')
                             ->copyable()
                             ->copyMessage('Numéro copié!')
                             ->copyMessageDuration(1500)
