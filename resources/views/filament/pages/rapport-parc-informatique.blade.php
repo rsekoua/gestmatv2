@@ -180,69 +180,140 @@
                 </div>
             </x-slot>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-                    <tr>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">Type</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">Nom</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">Marque/Modèle</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">N° Série</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">Statut</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">État Physique</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">Attribué à</th>
-                        <th class="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">Service</th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($this->getMateriels() as $materiel)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                            <td class="px-4 py-3 text-gray-700 dark:text-gray-300">
-                                    <span
-                                        class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-                                        {{ $materiel->materielType->nom }}
-                                    </span>
-                            </td>
-                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ $materiel->nom }}</td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
-                                {{ $materiel->marque }}<br>
-                                <span class="text-xs">{{ $materiel->modele }}</span>
-                            </td>
-                            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">{{ $materiel->numero_serie }}</td>
-                            <td class="px-4 py-3">
-                                @php
-                                    $statutColor = match($materiel->statut) {
-                                        'disponible' => 'bg-success-100 text-success-700 dark:bg-success-500/20 dark:text-success-400',
-                                        'attribué' => 'bg-info-100 text-info-700 dark:bg-info-500/20 dark:text-info-400',
-                                        'en_panne' => 'bg-danger-100 text-danger-700 dark:bg-danger-500/20 dark:text-danger-400',
-                                        'en_maintenance' => 'bg-warning-100 text-warning-700 dark:bg-warning-500/20 dark:text-warning-400',
-                                        default => 'bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400'
-                                    };
-                                @endphp
-                                <span
-                                    class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {{ $statutColor }}">
-                                        {{ ucfirst($materiel->statut) }}
-                                    </span>
-                            </td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
-                                {{ $materiel->etat_physique ? ucfirst($materiel->etat_physique) : 'N/A' }}
-                            </td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
-                                {{ $materiel->activeAttribution?->employee?->full_name ?? '-' }}
-                            </td>
-                            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
-                                {{ $materiel->activeAttribution?->employee?->service?->nom ?? '-' }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Aucun matériel trouvé avec les filtres sélectionnés
-                            </td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+            <div class="fi-ta-ctn divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
+                <div class="overflow-x-auto">
+                    <table class="fi-ta-table w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5">
+                        <thead class="divide-y divide-gray-200 dark:divide-white/5">
+                            <tr class="bg-gray-50 dark:bg-white/5">
+                                <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">Type</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">Nom</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">Marque/Modèle</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">N° Série</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">Statut</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">État Physique</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">Attribué à</span>
+                                </th>
+                                <th class="fi-ta-header-cell px-3 py-3.5 sm:last-of-type:pe-6">
+                                    <span class="text-sm font-semibold text-gray-950 dark:text-white">Service</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 whitespace-nowrap dark:divide-white/5">
+                            @forelse($this->getMateriels() as $materiel)
+                                <tr class="fi-ta-row hover:bg-gray-50 dark:hover:bg-white/5">
+                                    <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="flex items-center gap-x-3">
+                                                <div class="flex-1">
+                                                    <x-filament::badge color="gray">
+                                                        {{ $materiel->materielType->nom }}
+                                                    </x-filament::badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="fi-ta-text-item">
+                                                <div class="fi-ta-text-item-label text-sm font-medium text-gray-950 dark:text-white">
+                                                    {{ $materiel->nom }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="fi-ta-text-item">
+                                                <div class="fi-ta-text-item-label text-sm text-gray-950 dark:text-white">
+                                                    {{ $materiel->marque }}
+                                                </div>
+                                                <div class="fi-ta-text-item-description text-xs text-gray-500 dark:text-gray-400">
+                                                    {{ $materiel->modele }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="fi-ta-text-item">
+                                                <code class="text-xs text-gray-500 dark:text-gray-400">
+                                                    {{ $materiel->numero_serie }}
+                                                </code>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            @php
+                                                $statutColor = match($materiel->statut) {
+                                                    'disponible' => 'success',
+                                                    'attribué' => 'info',
+                                                    'en_panne' => 'danger',
+                                                    'en_maintenance' => 'warning',
+                                                    'rebuté' => 'gray',
+                                                    default => 'gray'
+                                                };
+                                            @endphp
+                                            <x-filament::badge :color="$statutColor">
+                                                {{ ucfirst($materiel->statut) }}
+                                            </x-filament::badge>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="fi-ta-text-item-label text-sm text-gray-700 dark:text-gray-300">
+                                                {{ $materiel->etat_physique ? ucfirst($materiel->etat_physique) : 'N/A' }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="fi-ta-text-item-label text-sm text-gray-700 dark:text-gray-300">
+                                                {{ $materiel->activeAttribution?->employee?->full_name ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fi-ta-cell p-0">
+                                        <div class="fi-ta-col-wrp px-3 py-4">
+                                            <div class="fi-ta-text-item-label text-sm text-gray-700 dark:text-gray-300">
+                                                {{ $materiel->activeAttribution?->employee?->service?->nom ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="fi-ta-empty-state-ctn p-6">
+                                        <div class="fi-ta-empty-state mx-auto grid max-w-lg justify-items-center text-center">
+                                            <div class="fi-ta-empty-state-icon-ctn mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-500/20">
+                                                <x-filament::icon icon="heroicon-o-x-mark" class="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                                            </div>
+                                            <h4 class="fi-ta-empty-state-heading text-base font-semibold text-gray-950 dark:text-white">
+                                                Aucun matériel trouvé
+                                            </h4>
+                                            <p class="fi-ta-empty-state-description text-sm text-gray-500 dark:text-gray-400">
+                                                Aucun matériel ne correspond aux filtres sélectionnés
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </x-filament::section>
     </div>
