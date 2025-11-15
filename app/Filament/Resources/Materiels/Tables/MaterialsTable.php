@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Materiels\Tables;
 
+use App\Filament\Exports\MaterielExporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
@@ -237,6 +239,14 @@ class MaterialsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ExportBulkAction::make()
+                        ->exporter(MaterielExporter::class)
+                        ->label('Exporter la sélection')
+                        ->icon('heroicon-o-arrow-up-tray')
+                        ->columnMapping(true)
+                       // ->enableVisibleTableColumnsByDefault()
+                        ->columnMappingColumns(2)
+                        ->fileName(fn (): string => 'materiels-selection-'.now()->format('Y-m-d-His')),
                     DeleteBulkAction::make()
                         ->requiresConfirmation(),
                 ]),

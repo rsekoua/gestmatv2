@@ -15,7 +15,8 @@ class MaterielExporter extends Exporter
     {
         return [
             ExportColumn::make('id')
-                ->label('ID'),
+                ->label('ID')
+                ->enabledByDefault(false),
 
             ExportColumn::make('materielType.nom')
                 ->label('Type de Matériel'),
@@ -30,16 +31,20 @@ class MaterielExporter extends Exporter
                 ->label('Numéro de Série'),
 
             ExportColumn::make('processor')
-                ->label('Processeur'),
+                ->label('Processeur')
+                ->enabledByDefault(false),
 
             ExportColumn::make('ram_size_gb')
-                ->label('RAM (GB)'),
+                ->label('RAM (GB)')
+                ->enabledByDefault(false),
 
             ExportColumn::make('storage_size_gb')
-                ->label('Stockage (GB)'),
+                ->label('Stockage (GB)')
+                ->enabledByDefault(false),
 
             ExportColumn::make('screen_size')
-                ->label('Taille Écran (pouces)'),
+                ->label('Taille Écran (pouces)')
+                ->enabledByDefault(false),
 
             ExportColumn::make('purchase_date')
                 ->label('Date d\'Achat'),
@@ -64,15 +69,18 @@ class MaterielExporter extends Exporter
 
             ExportColumn::make('amortissement_status')
                 ->label('Amortissement')
-                ->state(fn (Materiel $record): string => $record->amortissement_status),
+                ->state(fn (Materiel $record): string => $record->amortissement_status)
+                ->enabledByDefault(false),
 
             ExportColumn::make('specifications_summary')
                 ->label('Spécifications')
-                ->state(fn (Materiel $record): string => $record->specifications_summary ?? ''),
+                ->state(fn (Materiel $record): string => $record->specifications_summary ?? '')
+                ->enabledByDefault(false),
 
             ExportColumn::make('attributions_count')
                 ->label('Nombre d\'Attributions')
-                ->counts('attributions'),
+                ->counts('attributions')
+                ->enabledByDefault(false),
 
             ExportColumn::make('active_attribution.employee.full_name')
                 ->label('Employé Actuel'),
@@ -84,22 +92,25 @@ class MaterielExporter extends Exporter
                 ->label('Date Attribution Actuelle'),
 
             ExportColumn::make('notes')
-                ->label('Notes'),
+                ->label('Notes')
+                ->enabledByDefault(false),
 
             ExportColumn::make('created_at')
-                ->label('Créé le'),
+                ->label('Créé le')
+                ->enabledByDefault(false),
 
             ExportColumn::make('updated_at')
-                ->label('Modifié le'),
+                ->label('Modifié le')
+                ->enabledByDefault(false),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'L\'export de ' . number_format($export->successful_rows) . ' ' . str('matériel')->plural($export->successful_rows) . ' est terminé.';
+        $body = 'L\'export de '.number_format($export->successful_rows).' '.str('matériel')->plural($export->successful_rows).' est terminé.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('ligne')->plural($failedRowsCount) . ' a échoué.';
+            $body .= ' '.number_format($failedRowsCount).' '.str('ligne')->plural($failedRowsCount).' a échoué.';
         }
 
         return $body;

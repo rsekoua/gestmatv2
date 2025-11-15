@@ -82,16 +82,16 @@ class ViewAttribution extends ViewRecord
                     ->columnSpan(1)
                     ->schema([
                         TextEntry::make('numero_decharge_att')
-                            ->label('Numéro de Décharge d\'Attribution')
+                            ->label('Numéro de décharge d\'Attribution')
                             ->icon(Heroicon::QrCode)
                             //->iconColor('primary')
                             ->size('lg')
                             ->weight(FontWeight::Bold)
                            // ->badge()
                            // ->color('primary')
-                            ->copyable()
-                            ->copyMessage('Numéro copié!')
-                            ->copyMessageDuration(1500)
+//                            ->copyable()
+//                            ->copyMessage('Numéro copié!')
+//                            ->copyMessageDuration(1500)
                             ->columnSpanFull(),
 
                         TextEntry::make('materiel.nom')
@@ -100,6 +100,8 @@ class ViewAttribution extends ViewRecord
                             ->iconColor('info')
                             ->weight(FontWeight::Bold)
                             ->columnSpan(1),
+
+
 
                         TextEntry::make('materiel.numero_serie')
                             ->label('Numéro de Série')

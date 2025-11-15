@@ -24,8 +24,10 @@ class ListMaterials extends ListRecords
                 ->color('primary')
                 ->size('sm')
                 ->icon('heroicon-o-arrow-up-tray')
-                ->columnMapping(false)
-                ->fileName(fn(): string => 'materiels-' . now()->format('Y-m-d-His')),
+                ->columnMapping(true)
+//                ->enableVisibleTableColumnsByDefault()
+                ->columnMappingColumns(2)
+                ->fileName(fn (): string => 'materiels-'.now()->format('Y-m-d-His')),
             ImportAction::make()
                 ->importer(MaterielImporter::class)
                 ->label('Importer')
@@ -44,7 +46,6 @@ class ListMaterials extends ListRecords
             MaterialStatsWidget::class,
         ];
     }
-
 
     public function getHeaderWidgetsColumns(): int|array
     {
