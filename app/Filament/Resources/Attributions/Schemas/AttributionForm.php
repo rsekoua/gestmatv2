@@ -7,7 +7,6 @@ use App\Models\Attribution;
 use App\Models\Employee;
 use App\Models\Materiel;
 use App\Models\Service;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -59,8 +58,9 @@ class AttributionForm
                             ->preload()
                             ->required()
                             ->live()
+                            ->disabled(fn ($record) => $record !== null)
                             ->helperText(fn ($record) => $record
-                                ? 'Matériel actuellement attribué'
+                                ? '⚠️ Le matériel ne peut pas être modifié après la création de l\'attribution'
                                 : 'Seuls les matériels disponibles sont affichés'
                             )
                             ->getOptionLabelFromRecordUsing(fn (Materiel $record) => "{$record->nom} ({$record->numero_serie})")
@@ -93,7 +93,11 @@ class AttributionForm
 
                                 return $materiel && $materiel->materielType->isComputer();
                             })
-                            ->helperText('Les ordinateurs sont attribués aux employés')
+                            ->disabled(fn ($record) => $record !== null)
+                            ->helperText(fn ($record) => $record
+                                ? '⚠️ L\'employé ne peut pas être modifié après la création'
+                                : 'Les ordinateurs sont attribués aux employés'
+                            )
                             ->getOptionLabelFromRecordUsing(fn (Employee $record) => "{$record->full_name} - {$record->service?->code}")
                             ->columnSpan(1),
 
@@ -133,7 +137,11 @@ class AttributionForm
 
                                 return $materiel && ! $materiel->materielType->isComputer();
                             })
-                            ->helperText('Les autres équipements sont attribués aux services')
+                            ->disabled(fn ($record) => $record !== null)
+                            ->helperText(fn ($record) => $record
+                                ? '⚠️ Le service ne peut pas être modifié après la création'
+                                : 'Les autres équipements sont attribués aux services'
+                            )
                             ->getOptionLabelFromRecordUsing(fn (Service $record) => $record->full_name)
                             ->columnSpan(1),
 
@@ -213,7 +221,6 @@ class AttributionForm
                             ])
                             ->columnSpan(1),
 
-
                         Textarea::make('observations_att')
                             ->label('Observations d\'Attribution')
                             ->rows(3)
@@ -238,7 +245,7 @@ class AttributionForm
                     ->description('Sélectionnez les accessoires associés')
                     ->icon(Heroicon::CpuChip)
                     ->collapsible()
-                    //->collapsed()
+                    // ->collapsed()
                     ->schema([
                         ToggleButtons::make('accessories')
                             ->label('Accessoires associés')

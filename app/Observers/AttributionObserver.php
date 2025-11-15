@@ -115,6 +115,46 @@ class AttributionObserver
      */
     public function updating(Attribution $attribution): void
     {
+        // Empêcher le changement de matériel qui modifie le type d'attribution
+        if ($attribution->isDirty('materiel_id')) {
+            $newMateriel = Materiel::with('materielType')->find($attribution->materiel_id);
+            $isForEmployee = ! is_null($attribution->employee_id);
+            $isForService = ! is_null($attribution->service_id);
+
+            // Un ordinateur doit être attribué à un employé
+            if ($newMateriel->materielType->isComputer() && ! $isForEmployee) {
+                throw ValidationException::withMessages([
+                    'materiel_id' => 'Un ordinateur ne peut être attribué qu\'à un employé. Cette attribution est faite à un service.',
+                ]);
+            }
+
+            // Un non-ordinateur doit être attribué à un service
+            if (! $newMateriel->materielType->isComputer() && ! $isForService) {
+                throw ValidationException::withMessages([
+                    'materiel_id' => 'Ce type de matériel ne peut être attribué qu\'à un service. Cette attribution est faite à un employé.',
+                ]);
+            }
+        }
+
+        // Empêcher le changement de destinataire (employé -> service ou service -> employé)
+        if ($attribution->isDirty('employee_id') || $attribution->isDirty('service_id')) {
+            $materiel = Materiel::with('materielType')->find($attribution->materiel_id);
+
+            // Si on essaie d'attribuer à un service alors que c'est un ordinateur
+            if ($attribution->isDirty('service_id') && ! is_null($attribution->service_id) && $materiel->materielType->isComputer()) {
+                throw ValidationException::withMessages([
+                    'service_id' => 'Un ordinateur ne peut être attribué qu\'à un employé, pas à un service.',
+                ]);
+            }
+
+            // Si on essaie d'attribuer à un employé alors que c'est un non-ordinateur
+            if ($attribution->isDirty('employee_id') && ! is_null($attribution->employee_id) && ! $materiel->materielType->isComputer()) {
+                throw ValidationException::withMessages([
+                    'employee_id' => 'Ce type de matériel ne peut être attribué qu\'à un service, pas à un employé.',
+                ]);
+            }
+        }
+
         // Si on ajoute une date de restitution (clôture de l'attribution)
         if ($attribution->isDirty('date_restitution') && ! is_null($attribution->date_restitution)) {
             // Valider que la date de restitution est >= date d'attribution

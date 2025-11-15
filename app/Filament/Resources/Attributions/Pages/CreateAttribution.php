@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Attributions\Pages;
 
+use App\Filament\Concerns\ManagesAccessories;
 use App\Filament\Resources\Attributions\AttributionResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateAttribution extends CreateRecord
 {
+    use ManagesAccessories;
+
     protected static string $resource = AttributionResource::class;
 
     protected function getRedirectUrl(): string
@@ -36,18 +39,7 @@ class CreateAttribution extends CreateRecord
         // Récupérer les accessoires sélectionnés depuis le formulaire
         $accessories = $this->form->getState()['accessories'] ?? [];
 
-        if (! empty($accessories)) {
-            // Préparer les données pivot pour chaque accessoire
-            $pivotData = [];
-            foreach ($accessories as $accessoryId) {
-                $pivotData[$accessoryId] = [
-                    'statut_att' => 'fourni',
-                    'statut_res' => null,
-                ];
-            }
-
-            // Attacher les accessoires avec les données pivot
-            $this->record->accessories()->attach($pivotData);
-        }
+        // Utiliser le trait pour attacher les accessoires
+        $this->attachAccessories($this->record, $accessories);
     }
 }

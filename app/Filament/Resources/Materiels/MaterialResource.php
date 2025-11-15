@@ -42,7 +42,7 @@ class MaterialResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['materielType', 'activeAttribution.employee.service', 'activeAttribution.service.chefService']);
+            ->with(['materielType', 'activeAttribution.employee.service', 'activeAttribution.service']);
     }
 
     public static function getNavigationBadge(): ?string

@@ -20,6 +20,12 @@ return new class extends Migration
             $table->string('numero_decharge_att', 50)->unique()->nullable();
             $table->string('numero_decharge_res', 50)->unique()->nullable();
 
+            $table->foreignUuid('service_id')->nullable()->constrained()->restrictOnDelete();
+            $table->string('responsable_service')->nullable();
+
+            // Modifier employee_id pour le rendre nullable
+            $table->foreignUuid('employee_id')->nullable()->change();
+
             // Champs pour l'attribution
             $table->text('observations_att')->nullable();
 

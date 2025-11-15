@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Attributions\Pages;
 
 use App\Filament\Actions\RestituerAttributionAction;
+use App\Filament\Concerns\ManagesAccessories;
 use App\Filament\Resources\Attributions\AttributionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -11,6 +12,8 @@ use Filament\Support\Icons\Heroicon;
 
 class EditAttribution extends EditRecord
 {
+    use ManagesAccessories;
+
     protected static string $resource = AttributionResource::class;
 
     protected function getHeaderActions(): array
@@ -36,7 +39,7 @@ class EditAttribution extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Charger les accessoires existants pour les afficher dans le formulaire
-        $data['accessories'] = $this->record->accessories()->pluck('accessory_id')->toArray();
+        $data['accessories'] = $this->getAccessoryIds($this->record);
 
         return $data;
     }
@@ -63,30 +66,7 @@ class EditAttribution extends EditRecord
         // Récupérer les accessoires sélectionnés depuis le formulaire
         $accessories = $this->form->getState()['accessories'] ?? [];
 
-        // Préparer les données pivot pour chaque accessoire
-        $pivotData = [];
-        foreach ($accessories as $accessoryId) {
-            // Vérifier si l'accessoire était déjà attaché
-            $existingPivot = $this->record->accessories()
-                ->wherePivot('accessory_id', $accessoryId)
-                ->first();
-
-            if ($existingPivot) {
-                // Conserver les données pivot existantes
-                $pivotData[$accessoryId] = [
-                    'statut_att' => $existingPivot->pivot->statut_att,
-                    'statut_res' => $existingPivot->pivot->statut_res,
-                ];
-            } else {
-                // Nouvel accessoire, définir les valeurs par défaut
-                $pivotData[$accessoryId] = [
-                    'statut_att' => 'fourni',
-                    'statut_res' => null,
-                ];
-            }
-        }
-
-        // Synchroniser les accessoires avec les données pivot
-        $this->record->accessories()->sync($pivotData);
+        // Utiliser le trait pour synchroniser les accessoires
+        $this->syncAccessories($this->record, $accessories);
     }
 }

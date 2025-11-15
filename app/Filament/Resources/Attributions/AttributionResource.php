@@ -45,7 +45,7 @@ class AttributionResource extends Resource
             ->with([
                 'materiel.materielType',
                 'employee.service',
-                'service.chefService',
+                'service',
             ]);
     }
 
