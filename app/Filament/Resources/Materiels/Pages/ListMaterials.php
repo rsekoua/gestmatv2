@@ -18,24 +18,25 @@ class ListMaterials extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            ExportAction::make()
-                ->exporter(MaterielExporter::class)
-                ->label('Exporter')
-                ->color('primary')
-                ->size('sm')
-                ->icon('heroicon-o-arrow-up-tray')
-                ->columnMapping(true)
-//                ->enableVisibleTableColumnsByDefault()
-                ->columnMappingColumns(2)
-                ->fileName(fn (): string => 'materiels-'.now()->format('Y-m-d-His')),
-            ImportAction::make()
-                ->importer(MaterielImporter::class)
-                ->label('Importer')
-                ->size('sm')
-                ->color('success')
-                ->icon('heroicon-o-arrow-down-tray'),
+//            ExportAction::make()
+//                ->exporter(MaterielExporter::class)
+//                ->label('Exporter')
+//                ->color('primary')
+//                ->size('sm')
+//                ->icon('heroicon-o-arrow-up-tray')
+//                ->columnMapping(true)
+////                ->enableVisibleTableColumnsByDefault()
+//                ->columnMappingColumns(2)
+//                ->fileName(fn (): string => 'materiels-'.now()->format('Y-m-d-His')),
+//            ImportAction::make()
+//                ->importer(MaterielImporter::class)
+//                ->label('Importer')
+//                ->size('sm')
+//                ->color('success')
+//                ->icon('heroicon-o-arrow-down-tray'),
             CreateAction::make()
-                ->icon('heroicon-o-plus')->label('')
+                ->icon('heroicon-o-plus')
+                ->label('Nouveau material')
                 ->size('sm'),
         ];
     }
