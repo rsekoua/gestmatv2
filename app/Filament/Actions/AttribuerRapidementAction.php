@@ -31,7 +31,7 @@ class AttribuerRapidementAction
             ->visible(fn (Materiel $record): bool => $record->statut === 'disponible')
             ->requiresConfirmation()
             ->modalHeading('Attribuer le matériel')
-            ->modalDescription(fn (Materiel $record): string => "Matériel : {$record->numero_serie} ({$record->marque} {$record->modele})"
+            ->modalDescription(fn (Materiel $record): string => "{$record->materielType->nom} - {$record->marque} {$record->modele}"
             )
             ->modalSubmitActionLabel('Créer l\'attribution')
             ->modalWidth('2xl')

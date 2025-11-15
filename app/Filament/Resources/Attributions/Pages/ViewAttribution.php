@@ -81,8 +81,8 @@ class ViewAttribution extends ViewRecord
                     ])
                     ->columnSpan(1)
                     ->schema([
-                        TextEntry::make('numero_decharge_att')
-                            ->label('Numéro de décharge d\'Attribution')
+                        TextEntry::make('materiel.materielType.nom')
+                            ->label('Type de Matériel')
                             ->icon(Heroicon::QrCode)
                             //->iconColor('primary')
                             ->size('lg')
@@ -94,9 +94,21 @@ class ViewAttribution extends ViewRecord
 //                            ->copyMessageDuration(1500)
                             ->columnSpanFull(),
 
+                           // TextEntry::make('numero_decharge_att')
+                           // ->label('Numéro de décharge d\'Attribution')
+                            //->icon(Heroicon::QrCode)
+                            //->iconColor('primary')
+                           // ->size('lg')
+                           // ->weight(FontWeight::Bold)
+                           // ->badge()
+                           // ->color('primary')
+//                            ->copyable()
+//                            ->copyMessage('Numéro copié!')
+//                            ->copyMessageDuration(1500)
+                            //,
                         TextEntry::make('materiel.nom')
                             ->label('Matériel Attribué')
-                            ->icon(Heroicon::ComputerDesktop)
+                           // ->icon(Heroicon::ComputerDesktop)
                             ->iconColor('info')
                             ->weight(FontWeight::Bold)
                             ->columnSpan(1),
@@ -125,7 +137,7 @@ class ViewAttribution extends ViewRecord
                             ->label(fn ($record): string => $record->isForEmployee() ? 'Service' : 'Chef de Service')
                             ->icon(fn ($record): Heroicon => $record->isForEmployee() ? Heroicon::BuildingOffice2 : Heroicon::UserCircle)
                             ->iconColor(fn ($record): string => $record->isForEmployee() ? 'success' : 'info')
-                            ->badge()
+                           // ->badge()
                             ->color(fn ($record): string => $record->isForEmployee() ? 'success' : 'info')
                             ->state(function ($record): string {
                                 if ($record->isForEmployee()) {

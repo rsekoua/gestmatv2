@@ -14,17 +14,19 @@ return new class extends Migration
         Schema::create('attributions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('materiel_id')->constrained('materiels')->onDelete('restrict');
-            $table->foreignUuid('employee_id')->constrained('employees')->onDelete('restrict');
+            
+            $table->foreignUuid('service_id')->nullable()->constrained()->restrictOnDelete();
+            $table->string('responsable_service')->nullable();
+
+            $table->foreignUuid('employee_id')->nullable()->constrained()->restrictOnDelete();
             $table->date('date_attribution');
             $table->date('date_restitution')->nullable();
             $table->string('numero_decharge_att', 50)->unique()->nullable();
             $table->string('numero_decharge_res', 50)->unique()->nullable();
 
-            $table->foreignUuid('service_id')->nullable()->constrained()->restrictOnDelete();
-            $table->string('responsable_service')->nullable();
 
             // Modifier employee_id pour le rendre nullable
-            $table->foreignUuid('employee_id')->nullable()->change();
+           // $table->foreignUuid('employee_id')->nullable()->change();
 
             // Champs pour l'attribution
             $table->text('observations_att')->nullable();
