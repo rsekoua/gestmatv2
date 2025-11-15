@@ -74,10 +74,10 @@ class DashboardOverviewWidget extends StatsOverviewWidget
                 ->color('primary')
                 ->chart($this->getMaterielsMonthlyData()),
 
-            Stat::make('Taux de Disponibilité', "{$disponibiliteRate}%")
-                ->description($disponibiliteRate >= 50 ? 'Bon niveau de stock' : 'Stock faible')
-                ->descriptionIcon(Heroicon::CheckCircle)
-                ->color($disponibiliteRate >= 50 ? 'success' : ($disponibiliteRate >= 25 ? 'warning' : 'danger')),
+//            Stat::make('Taux de Disponibilité', "{$disponibiliteRate}%")
+//                ->description($disponibiliteRate >= 50 ? 'Bon niveau de stock' : 'Stock faible')
+//                ->descriptionIcon(Heroicon::CheckCircle)
+//                ->color($disponibiliteRate >= 50 ? 'success' : ($disponibiliteRate >= 25 ? 'warning' : 'danger')),
 
             Stat::make('Attributions Actives', $activeAttributions)
                 ->description("{$closedThisMonth} clôturées ce mois")
@@ -85,10 +85,10 @@ class DashboardOverviewWidget extends StatsOverviewWidget
                 ->color('info')
                 ->chart($this->getAttributionsMonthlyData()),
 
-            Stat::make('Employés Équipés', "{$employeesRate}%")
-                ->description("{$employeesWithActiveAttributions} / {$totalEmployees} employés")
-                ->descriptionIcon(Heroicon::Users)
-                ->color($employeesRate >= 50 ? 'success' : 'warning'),
+//            Stat::make('Employés Équipés', "{$employeesRate}%")
+//                ->description("{$employeesWithActiveAttributions} / {$totalEmployees} employés")
+//                ->descriptionIcon(Heroicon::Users)
+//                ->color($employeesRate >= 50 ? 'success' : 'warning'),
 
             Stat::make('Services', $totalServices)
                 ->description('Services actifs')
