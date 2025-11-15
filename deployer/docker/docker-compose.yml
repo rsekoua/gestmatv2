@@ -1,0 +1,242 @@
+# ==================================================
+# GESTMAT V2 - DOCKER COMPOSE CONFIGURATION
+# ==================================================
+# Usage:
+#   Development: docker-compose up -d
+#   Production: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ==================================================
+
+version: '3.8'
+
+services:
+  # ==================================================
+  # Application Service (Laravel + Nginx + PHP-FPM)
+  # ==================================================
+  app:
+    build:
+      context: ../..
+      dockerfile: deployer/docker/Dockerfile
+    container_name: gestmat-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-gestmatv2}
+      - DB_USERNAME=${DB_USERNAME:-gestmat}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - CACHE_STORE=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    volumes:
+      - ../../storage:/var/www/html/storage
+      - ../../public/storage:/var/www/html/public/storage
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - gestmat-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==================================================
+  # PostgreSQL Database
+  # ==================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: gestmat-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_DATABASE:-gestmatv2}
+      - POSTGRES_USER=${DB_USERNAME:-gestmat}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - gestmat-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-gestmat}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================================================
+  # Redis Cache & Queue
+  # ==================================================
+  redis:
+    image: redis:7-alpine
+    container_name: gestmat-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - gestmat-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ==================================================
+  # Queue Worker (Separate container for scalability)
+  # ==================================================
+  queue-worker:
+    build:
+      context: ../..
+      dockerfile: deployer/docker/Dockerfile
+    container_name: gestmat-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-gestmatv2}
+      - DB_USERNAME=${DB_USERNAME:-gestmat}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - QUEUE_CONNECTION=redis
+    volumes:
+      - ../../storage:/var/www/html/storage
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - gestmat-network
+    deploy:
+      replicas: 2  # Run 2 queue workers
+
+  # ==================================================
+  # Scheduler (Laravel Cron)
+  # ==================================================
+  scheduler:
+    build:
+      context: ../..
+      dockerfile: deployer/docker/Dockerfile
+    container_name: gestmat-scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: >
+      sh -c "while true; do
+        php artisan schedule:run --verbose --no-interaction >> /var/log/scheduler.log 2>&1
+        sleep 60
+      done"
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_DATABASE=${DB_DATABASE:-gestmatv2}
+      - DB_USERNAME=${DB_USERNAME:-gestmat}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ../../storage:/var/www/html/storage
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - gestmat-network
+
+  # ==================================================
+  # Optional: pgAdmin (Database Management UI)
+  # ==================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gestmat-pgadmin
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL:-admin@gestmat.local}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - gestmat-network
+    profiles:
+      - tools  # Only start with: docker-compose --profile tools up
+
+  # ==================================================
+  # Optional: Redis Commander (Redis Management UI)
+  # ==================================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: gestmat-redis-commander
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    networks:
+      - gestmat-network
+    profiles:
+      - tools
+
+# ==================================================
+# NETWORKS
+# ==================================================
+networks:
+  gestmat-network:
+    driver: bridge
+
+# ==================================================
+# VOLUMES
+# ==================================================
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+
+# ==================================================
+# USAGE EXAMPLES
+# ==================================================
+# Start all services:
+#   docker-compose up -d
+#
+# Start with management tools:
+#   docker-compose --profile tools up -d
+#
+# View logs:
+#   docker-compose logs -f app
+#   docker-compose logs -f queue-worker
+#
+# Execute artisan commands:
+#   docker-compose exec app php artisan migrate
+#   docker-compose exec app php artisan cache:clear
+#
+# Scale queue workers:
+#   docker-compose up -d --scale queue-worker=5
+#
+# Stop all:
+#   docker-compose down
+#
+# Remove volumes (CAUTION: deletes data):
+#   docker-compose down -v
