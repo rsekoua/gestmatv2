@@ -247,4 +247,11 @@ class Materiel extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+    /**
+     * Get the maintenance operations for the materiel.
+     */
+    public function maintenanceOperations(): HasMany
+    {
+        return $this->hasMany(MaintenanceOperation::class);
+    }
 }

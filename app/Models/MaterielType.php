@@ -44,4 +44,11 @@ class MaterielType extends Model
     {
         return $this->isComputer();
     }
+    /**
+     * Get the maintenance definitions for the materiel type.
+     */
+    public function maintenanceDefinitions(): HasMany
+    {
+        return $this->hasMany(MaintenanceDefinition::class);
+    }
 }

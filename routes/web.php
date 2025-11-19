@@ -26,3 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attributions/{attribution}/preview/restitution', [AttributionPreviewController::class, 'previewRestitution'])
         ->name('attributions.preview.restitution');
 });
+
+Route::get('/app/{any?}', function () {
+    return view('react');
+})->where('any', '.*');
