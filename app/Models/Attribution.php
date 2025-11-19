@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+use Illuminate\Support\Facades\DB;
+
 class Attribution extends Model
 {
     use HasFactory, HasUuids, LogsActivity;
@@ -165,8 +167,8 @@ class Attribution extends Model
     public static function generateAttributionNumber(): string
     {
         $year = now()->year;
-        $lastNumber = static::whereYear('date_attribution', $year)
-            ->whereNotNull('numero_decharge_att')
+        $prefix = "ATT-{$year}-";
+        $lastNumber = static::where('numero_decharge_att', 'like', "{$prefix}%")
             ->max('numero_decharge_att');
 
         if ($lastNumber) {
@@ -184,8 +186,8 @@ class Attribution extends Model
     public static function generateRestitutionNumber(): string
     {
         $year = now()->year;
-        $lastNumber = static::whereYear('date_restitution', $year)
-            ->whereNotNull('numero_decharge_res')
+        $prefix = "RES-{$year}-";
+        $lastNumber = static::where('numero_decharge_res', 'like', "{$prefix}%")
             ->max('numero_decharge_res');
 
         if ($lastNumber) {
@@ -269,26 +271,63 @@ class Attribution extends Model
     }
 
     /**
+     * Save the model to the database.
+     *
+     * @param  array  $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        $attempts = 0;
+        $maxAttempts = 3;
+
+        while ($attempts < $maxAttempts) {
+            DB::beginTransaction();
+            try {
+                // Générer le numéro d'attribution si nécessaire
+                if (! $this->exists && empty($this->numero_decharge_att)) {
+                    $this->numero_decharge_att = static::generateAttributionNumber();
+                }
+
+                // Générer le numéro de restitution si nécessaire
+                if ($this->exists && 
+                    $this->isDirty('date_restitution') && 
+                    ! empty($this->date_restitution) && 
+                    empty($this->numero_decharge_res)) {
+                    $this->numero_decharge_res = static::generateRestitutionNumber();
+                }
+
+                $result = parent::save($options);
+                DB::commit();
+                return $result;
+            } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+                DB::rollBack();
+                // Si c'est une erreur de contrainte unique sur les numéros de décharge, on réessaie
+                if (str_contains($e->getMessage(), 'attributions_numero_decharge_att_unique') ||
+                    str_contains($e->getMessage(), 'attributions_numero_decharge_res_unique') ||
+                    str_contains($e->getMessage(), 'attributions.numero_decharge_att') ||
+                    str_contains($e->getMessage(), 'attributions.numero_decharge_res')) {
+                    $attempts++;
+                    if ($attempts >= $maxAttempts) {
+                        throw $e;
+                    }
+                    continue;
+                }
+                throw $e;
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Boot the model.
      */
     protected static function boot()
     {
         parent::boot();
-
-        // Générer automatiquement le numéro de décharge d'attribution
-        static::creating(function ($attribution) {
-            if (empty($attribution->numero_decharge_att)) {
-                $attribution->numero_decharge_att = static::generateAttributionNumber();
-            }
-        });
-
-        // Générer automatiquement le numéro de décharge de restitution
-        static::updating(function ($attribution) {
-            if ($attribution->isDirty('date_restitution') &&
-                ! empty($attribution->date_restitution) &&
-                empty($attribution->numero_decharge_res)) {
-                $attribution->numero_decharge_res = static::generateRestitutionNumber();
-            }
-        });
     }
 }
