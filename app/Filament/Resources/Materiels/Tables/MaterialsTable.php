@@ -41,7 +41,7 @@ class MaterialsTable
                     ->icon(Heroicon::ComputerDesktop)
                     ->iconColor('primary')
                     ->weight(FontWeight::Bold)
-                    ->searchable(['marque', 'modele'])
+                    ->searchable(['marque', 'modele','numero_serie'])
                     ->sortable(['marque', 'modele'])
                     ->getStateUsing(fn ($record) => $record->nom)
                     ->description(fn ($record): string => $record->numero_serie ? "S/N: {$record->numero_serie}" : 'Aucun numéro de série')

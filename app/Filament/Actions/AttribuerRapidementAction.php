@@ -3,6 +3,7 @@
 namespace App\Filament\Actions;
 
 use App\Filament\Concerns\ManagesAccessories;
+use App\Filament\Concerns\ValidatesAttributionDates;
 use App\Models\Accessory;
 use App\Models\Attribution;
 use App\Models\Employee;
@@ -20,7 +21,7 @@ use Filament\Support\Icons\Heroicon;
 
 class AttribuerRapidementAction
 {
-    use ManagesAccessories;
+    use ManagesAccessories, ValidatesAttributionDates;
 
     public static function make(): Action
     {
@@ -105,7 +106,9 @@ class AttribuerRapidementAction
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->closeOnDateSelection()
-                            ->helperText('Date de prise en charge du matériel'),
+                            ->minDate(fn (Materiel $record) => (new self)->getMinimumAttributionDate($record))
+                            ->helperText(fn (Materiel $record) => (new self)->getAttributionDateHelperText($record))
+                            ->validationMessages((new self)->getAttributionDateValidationMessages()),
 
                         Textarea::make('observations_att')
                             ->label('Observations')
