@@ -139,22 +139,22 @@ class Attribution extends Model
 
                 // 2. Construit le tableau des parties de la chaîne
                 if ($interval->y > 0) {
-                    $parts[] = $interval->y . " an" . ($interval->y > 1 ? "s" : "");
+                    $parts[] = $interval->y.' an'.($interval->y > 1 ? 's' : '');
                 }
                 if ($interval->m > 0) {
-                    $parts[] = $interval->m . " mois"; // 'mois' est invariable
+                    $parts[] = $interval->m.' mois'; // 'mois' est invariable
                 }
                 if ($interval->d > 0) {
-                    $parts[] = $interval->d . " jour" . ($interval->d > 1 ? "s" : "");
+                    $parts[] = $interval->d.' jour'.($interval->d > 1 ? 's' : '');
                 }
 
                 // 3. Gère le cas où la durée est de 0 jour
                 if (empty($parts)) {
-                    return "0 jours";
+                    return '0 jours';
                 }
 
                 // 4. Combine les parties
-                return implode(" ", $parts);
+                return implode(' ', $parts);
             }
         );
     }
@@ -170,16 +170,42 @@ class Attribution extends Model
         $yearYY = $now->format('y');   // Année sur 2 chiffres (ex: 25)
         $monthMM = $now->format('m');  // Mois sur 2 chiffres (ex: 11)
 
-        // 2. Compte combien d'attributions ont déjà eu lieu CETTE ANNEE
-        $countThisYear = static::whereYear('date_attribution', $yearYYYY)
+        // 2. Crée le préfixe du numéro
+        $prefix = "ATT-{$yearYY}{$monthMM}-";
+
+        // 3. Trouve le dernier numéro utilisé pour ce mois/année
+        $lastNumber = static::whereYear('date_attribution', $yearYYYY)
+            ->whereMonth('date_attribution', $monthMM)
             ->whereNotNull('numero_decharge_att')
-            ->count();
+            ->where('numero_decharge_att', 'like', "{$prefix}%")
+            ->orderByRaw('CAST(SUBSTR(numero_decharge_att, -3) AS INTEGER) DESC')
+            ->value('numero_decharge_att');
 
-        // 3. Le nouveau numéro est le total + 1
-        $number = $countThisYear + 1;
+        // 4. Extrait le numéro séquentiel et incrémente
+        if ($lastNumber) {
+            $lastSequence = (int) substr($lastNumber, -3);
+            $number = $lastSequence + 1;
+        } else {
+            $number = 1;
+        }
 
-        // 4. Crée le format ATT-YYMM-XXX (avec 3 chiffres)
-        return sprintf('ATT-%s%s-%03d', $yearYY, $monthMM, $number);
+        // 5. En cas de collision (très rare), trouve le prochain numéro disponible
+        $maxAttempts = 100;
+        for ($attempt = 0; $attempt < $maxAttempts; $attempt++) {
+            $generatedNumber = sprintf('%s%03d', $prefix, $number);
+
+            // Vérifie si ce numéro existe déjà
+            $exists = static::where('numero_decharge_att', $generatedNumber)->exists();
+
+            if (! $exists) {
+                return $generatedNumber;
+            }
+
+            $number++;
+        }
+
+        // 6. Si après 100 tentatives on n'a pas trouvé, utilise un timestamp
+        return sprintf('%s%s', $prefix, substr(str_replace('.', '', microtime(true)), -3));
     }
 
     /**
@@ -193,16 +219,42 @@ class Attribution extends Model
         $yearYY = $now->format('y');
         $monthMM = $now->format('m');
 
-        // 2. Compte combien de restitutions ont déjà eu lieu CETTE ANNEE
-        $countThisYear = static::whereYear('date_restitution', $yearYYYY)
+        // 2. Crée le préfixe du numéro
+        $prefix = "RES-{$yearYY}{$monthMM}-";
+
+        // 3. Trouve le dernier numéro utilisé pour ce mois/année
+        $lastNumber = static::whereYear('date_restitution', $yearYYYY)
+            ->whereMonth('date_restitution', $monthMM)
             ->whereNotNull('numero_decharge_res')
-            ->count();
+            ->where('numero_decharge_res', 'like', "{$prefix}%")
+            ->orderByRaw('CAST(SUBSTR(numero_decharge_res, -3) AS INTEGER) DESC')
+            ->value('numero_decharge_res');
 
-        // 3. Le nouveau numéro est le total + 1
-        $number = $countThisYear + 1;
+        // 4. Extrait le numéro séquentiel et incrémente
+        if ($lastNumber) {
+            $lastSequence = (int) substr($lastNumber, -3);
+            $number = $lastSequence + 1;
+        } else {
+            $number = 1;
+        }
 
-        // 4. Crée le format RES-YYMM-XXX (avec 3 chiffres)
-        return sprintf('RES-%s%s-%03d', $yearYY, $monthMM, $number);
+        // 5. En cas de collision (très rare), trouve le prochain numéro disponible
+        $maxAttempts = 100;
+        for ($attempt = 0; $attempt < $maxAttempts; $attempt++) {
+            $generatedNumber = sprintf('%s%03d', $prefix, $number);
+
+            // Vérifie si ce numéro existe déjà
+            $exists = static::where('numero_decharge_res', $generatedNumber)->exists();
+
+            if (! $exists) {
+                return $generatedNumber;
+            }
+
+            $number++;
+        }
+
+        // 6. Si après 100 tentatives on n'a pas trouvé, utilise un timestamp
+        return sprintf('%s%s', $prefix, substr(str_replace('.', '', microtime(true)), -3));
     }
 
     /**

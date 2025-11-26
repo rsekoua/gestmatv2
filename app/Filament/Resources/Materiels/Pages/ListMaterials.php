@@ -44,7 +44,7 @@ class ListMaterials extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            MaterialStatsWidget::class,
+          //  MaterialStatsWidget::class,
         ];
     }
 
