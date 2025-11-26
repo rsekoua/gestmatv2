@@ -17,48 +17,59 @@ class EmployeeImporter extends Importer
      */
     public function getChunkSize(): int
     {
-        return 500;
+        return 50;
     }
 
     public static function getColumns(): array
     {
         return [
             ImportColumn::make('nom')
+                ->label('Nom')
                 ->requiredMapping()
                 ->rules(['required', 'max:255'])
-                ->example('DUPONT'),
+                ->example('Dupont'),
 
             ImportColumn::make('prenom')
+                ->label('Prénom')
                 ->requiredMapping()
                 ->rules(['required', 'max:255'])
                 ->example('Jean'),
 
             ImportColumn::make('email')
+                ->label('Email')
                 ->requiredMapping()
-                ->rules(['required', 'email', 'unique:employees,email'])
-                ->example('jean.dupont@mshpcmu.cd'),
+                ->rules(['required', 'email', 'unique:employees,email', 'max:255'])
+                ->example('jean.dupont@example.com'),
 
-            ImportColumn::make('service')
-                ->label('Service Code')
+            ImportColumn::make('service_id')
+                ->label('Service')
                 ->requiredMapping()
-                ->relationship(resolveUsing: function (string $state): ?Service {
-                    return Service::where('code', $state)->first();
+                ->guess(['service', 'service_code', 'code_service'])
+                ->castStateUsing(function (string $state): ?string {
+                    // Try to find service by code first, then by name
+                    $service = Service::where('code', $state)->first()
+                        ?? Service::where('nom', $state)->first();
+
+                    return $service?->id;
                 })
-                ->rules(['required'])
-                ->exampleHeader('service_code')
-                ->example('DSI'),
-
-            ImportColumn::make('telephone')
-                ->rules(['nullable', 'max:255'])
-                ->example('+243 123 456 789'),
+                ->rules(['required', 'exists:services,id'])
+                ->exampleHeader('service')
+                ->example('DG'),
 
             ImportColumn::make('emploi')
+                ->label('Emploi')
                 ->rules(['nullable', 'max:255'])
-                ->example('CDI'),
+                ->example('Ingénieur'),
 
             ImportColumn::make('fonction')
+                ->label('Fonction')
                 ->rules(['nullable', 'max:255'])
-                ->example('Développeur'),
+                ->example('Responsable Technique'),
+
+            ImportColumn::make('telephone')
+                ->label('Téléphone')
+                ->rules(['nullable', 'max:255'])
+                ->example('+33 1 23 45 67 89'),
         ];
     }
 
