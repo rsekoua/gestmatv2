@@ -308,4 +308,110 @@ class AttributionForm
                     ]),
             ])->columns(3);
     }
+
+    /**
+     * Get attribution form schema for quick actions (without restitution section).
+     *
+     * @param  Materiel  $materiel  Pre-selected materiel
+     */
+    public static function getQuickAttributionSchema(Materiel $materiel): array
+    {
+        return [
+            Section::make('Informations d\'attribution')
+                ->description(fn () => $materiel->materielType->isComputer()
+                    ? 'Les ordinateurs sont attribués aux employés'
+                    : 'Les autres équipements sont attribués aux services'
+                )
+                ->icon(Heroicon::DocumentText)
+                ->schema([
+                    // Champ Employé (visible uniquement pour les ordinateurs)
+                    Select::make('employee_id')
+                        ->label('Employé')
+                        ->required(fn (): bool => $materiel->materielType->isComputer())
+                        ->visible(fn (): bool => $materiel->materielType->isComputer())
+                        ->searchable(['nom', 'prenom', 'matricule'])
+                        ->preload()
+                        ->options(function () {
+                            return Employee::with('service')
+                                ->get()
+                                ->mapWithKeys(function (Employee $employee) {
+                                    $serviceName = $employee->service?->code ?? 'Sans service';
+
+                                    return [$employee->id => "{$employee->full_name} - ({$serviceName})"];
+                                });
+                        })
+                        ->placeholder('Sélectionnez un employé')
+                        ->helperText('Employé qui recevra le matériel'),
+
+                    // Champ Service (visible uniquement pour les non-ordinateurs)
+                    Select::make('service_id')
+                        ->label('Service')
+                        ->required(fn (): bool => ! $materiel->materielType->isComputer())
+                        ->visible(fn (): bool => ! $materiel->materielType->isComputer())
+                        ->searchable(['nom', 'code'])
+                        ->preload()
+                        ->options(function () {
+                            return Service::query()
+                                ->orderBy('nom')
+                                ->get()
+                                ->mapWithKeys(function (Service $service) {
+                                    return [$service->id => $service->full_name];
+                                });
+                        })
+                        ->live()
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state) {
+                                $service = Service::find($state);
+                                $set('responsable_service', $service?->responsable);
+                            } else {
+                                $set('responsable_service', null);
+                            }
+                        })
+                        ->placeholder('Sélectionnez un service')
+                        ->helperText('Service qui recevra le matériel'),
+
+                    // Champ Responsable du service (visible uniquement pour les non-ordinateurs)
+                    TextInput::make('responsable_service')
+                        ->label('Responsable du Service')
+                        ->disabled()
+                        ->dehydrated()
+                        ->visible(fn (): bool => ! $materiel->materielType->isComputer())
+                        ->helperText('Nom du chef de service (rempli automatiquement)'),
+
+                    DatePicker::make('date_attribution')
+                        ->label('Date d\'attribution')
+                        ->required()
+                        ->default(now())
+                        ->maxDate(now())
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->closeOnDateSelection()
+                        ->minDate(fn () => (new self)->getMinimumAttributionDate($materiel))
+                        ->helperText(fn () => (new self)->getAttributionDateHelperText($materiel))
+                        ->validationMessages((new self)->getAttributionDateValidationMessages()),
+
+                    Textarea::make('observations_att')
+                        ->label('Observations')
+                        ->rows(3)
+                        ->placeholder('Notes ou observations concernant l\'attribution')
+                        ->columnSpanFull(),
+                ]),
+
+            Section::make('Accessoires')
+                ->description('Sélectionnez les accessoires associés')
+                ->icon(Heroicon::CpuChip)
+                ->collapsible()
+                ->collapsed(false)
+                ->schema([
+                    ToggleButtons::make('accessories')
+                        ->label('Accessoires associés')
+                        ->multiple()
+                        ->options(Accessory::pluck('nom', 'id'))
+                        ->columns([
+                            'sm' => 1,
+                            'md' => 2,
+                        ]),
+                ]),
+        ];
+    }
 }
