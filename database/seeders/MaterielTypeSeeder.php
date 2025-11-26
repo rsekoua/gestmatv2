@@ -30,8 +30,8 @@ class MaterielTypeSeeder extends Seeder
                 'description' => 'Projecteur pour présentations',
             ],
             [
-                'nom' => 'Autre',
-                'description' => 'Autre type de matériel',
+                'nom' => 'Serveur',
+                'description' => 'Serveur pour hébergement de données',
             ],
         ];
 

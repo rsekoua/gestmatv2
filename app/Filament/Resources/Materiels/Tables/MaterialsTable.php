@@ -198,6 +198,7 @@ class MaterialsTable
                         ->pluck('marque', 'marque')
                         ->toArray()
                     )
+                    ->getOptionLabelUsing(fn ($value): string => $value ?? '')
                     ->searchable()
                     ->placeholder('Toutes les marques'),
 
