@@ -27,7 +27,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->brandName('Gest-Mat')
             ->path('admin')
-//            ->topNavigation()
+            ->registration()
+            ->passwordReset()
+            //->topNavigation()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
