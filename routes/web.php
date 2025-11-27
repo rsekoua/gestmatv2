@@ -4,9 +4,10 @@ use App\Http\Controllers\AttributionPdfController;
 use App\Http\Controllers\AttributionPreviewController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//    return view('welcome');
+// });
+Route::redirect('/', '/admin')->name('root');
 
 // Routes pour les décharges PDF
 Route::middleware(['auth'])->group(function () {

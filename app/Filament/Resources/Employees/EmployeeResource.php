@@ -22,6 +22,7 @@ use UnitEnum;
 class EmployeeResource extends Resource
 {
     use HasResourcePermissions;
+
     protected static ?string $model = Employee::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
@@ -44,7 +45,8 @@ class EmployeeResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['service']);
+            ->with(['service'])
+            ->withCount(['attributions', 'activeAttributions']);
     }
 
     public static function getNavigationBadge(): ?string

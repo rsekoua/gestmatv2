@@ -50,7 +50,8 @@ class MaterialResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['materielType', 'activeAttribution.employee.service', 'activeAttribution.service']);
+            ->with(['materielType', 'activeAttribution.employee.service', 'activeAttribution.service'])
+            ->withCount('attributions');
     }
 
     public static function getNavigationBadge(): ?string
