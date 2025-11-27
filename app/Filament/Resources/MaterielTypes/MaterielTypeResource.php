@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MaterielTypes;
 
+use App\Filament\Concerns\HasResourcePermissions;
 use App\Filament\Resources\MaterielTypes\Pages\ManageMaterielTypes;
 use App\Models\MaterielType;
 use BackedEnum;
@@ -21,6 +22,12 @@ use Filament\Tables\Table;
 
 class MaterielTypeResource extends Resource
 {
+    use HasResourcePermissions;
+
+    protected static function getPermissionName(): string
+    {
+        return 'materiel_types';
+    }
     protected static ?string $model = MaterielType::class;
 
 //    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

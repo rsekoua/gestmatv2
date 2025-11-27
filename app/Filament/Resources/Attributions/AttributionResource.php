@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attributions;
 
+use App\Filament\Concerns\HasResourcePermissions;
 use App\Filament\Resources\Attributions\Pages\CreateAttribution;
 use App\Filament\Resources\Attributions\Pages\EditAttribution;
 use App\Filament\Resources\Attributions\Pages\ListAttributions;
@@ -20,6 +21,7 @@ use UnitEnum;
 
 class AttributionResource extends Resource
 {
+    use HasResourcePermissions;
     protected static ?string $model = Attribution::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ArrowsRightLeft;

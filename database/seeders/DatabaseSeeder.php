@@ -18,18 +18,23 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'admin User',
-            'email' => 'admin@local.host',
-            'password' => Hash::make('password'),
-        ]);
+
 
         $this->call([
-            MaterielTypeSeeder::class,
+           // MaterielTypeSeeder::class,
             AccessorySeeder::class,
+            RolePermissionSeeder::class,
             // ServiceSeeder::class,
             // EmployeeSeeder::class,
             // MaterielSeeder::class,
         ]);
+        $user = User::create([
+            'name' => 'Administrateur Principal',
+            'email' => 'admin@dap-ci.org',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+
+        $user->assignRole('super_admin');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Materiels;
 
+use App\Filament\Concerns\HasResourcePermissions;
 use App\Filament\Resources\Materiels\Pages\CreateMaterial;
 use App\Filament\Resources\Materiels\Pages\EditMaterial;
 use App\Filament\Resources\Materiels\Pages\ListMaterials;
@@ -20,7 +21,14 @@ use UnitEnum;
 
 class MaterialResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Materiel::class;
+
+    protected static function getPermissionName(): string
+    {
+        return 'materiels';
+    }
 
     //    protected static string|BackedEnum|null $navigationIcon = Heroicon::ComputerDesktop;
 

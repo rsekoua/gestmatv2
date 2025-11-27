@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Accessories;
 
+use App\Filament\Concerns\HasResourcePermissions;
 use App\Filament\Resources\Accessories\Pages\ManageAccessories;
 use App\Models\Accessory;
 use BackedEnum;
@@ -21,6 +22,7 @@ use Filament\Tables\Table;
 
 class AccessoryResource extends Resource
 {
+    use HasResourcePermissions;
     protected static ?string $model = Accessory::class;
     protected static string|null|\UnitEnum $navigationGroup = 'Gestion des Matériels';
 //    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
