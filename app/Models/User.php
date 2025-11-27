@@ -57,7 +57,7 @@ class User extends Authenticatable implements FilamentUser
             // (Facile pour le développement et le seeding)
             return true;
         }
-        return str_ends_with($this->email, '@dap-ci.org') && $this->hasVerifiedEmail();
+        return str_ends_with($this->email, '@dap-ci.org'); //&& $this->hasVerifiedEmail();
     }
 
 }
