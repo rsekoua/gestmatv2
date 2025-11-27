@@ -59,7 +59,7 @@ class Employee extends Model
      */
     public function getFullNameAttribute(): string
     {
-        return "{$this->prenom} {$this->nom}";
+        return "{$this->nom} {$this->prenom} ";
     }
 
     /**

@@ -31,7 +31,7 @@ class EmployeesTable
                    // ->searchable(['nom', 'prenom'])
                     ->sortable(['nom', 'prenom'])
                     ->getStateUsing(fn ($record) => $record->full_name)
-                    ->description(fn ($record): string => $record->email)
+                    ->description(fn ($record): ?string => $record->email)
                     ->wrap(),
 
                 TextColumn::make('service.code')

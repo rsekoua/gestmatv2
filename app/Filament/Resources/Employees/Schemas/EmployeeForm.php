@@ -8,7 +8,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\Facades\Cache;
 
 class EmployeeForm
 {
@@ -53,7 +52,7 @@ class EmployeeForm
                             ->helperText('Adresse email professionnelle (doit être unique)')
                             ->prefixIcon(Heroicon::Envelope)
                             ->email()
-                            ->required()
+                           // ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255)
                             ->autocomplete(false)
@@ -84,12 +83,14 @@ class EmployeeForm
                     ->schema([
                         Select::make('service_id')
                             ->label('Service')
-                            ->placeholder('Sélectionnez un service')
+                            ->placeholder('Votre service')
                             ->helperText('Service auquel l\'employé est rattaché')
                             ->prefixIcon(Heroicon::BuildingOffice2)
-                            ->options(fn () => Cache::remember('services.options', 3600,
-                                fn () => Service::pluck('nom', 'id')
-                            ))
+                            ->options(fn () => Service::query()
+                                ->orderBy('nom')
+                                ->pluck('code', 'id')
+                                ->toArray()
+                            )
                             ->searchable()
                             ->required()
                             ->preload()
@@ -100,15 +101,19 @@ class EmployeeForm
                                     ->maxLength(255),
                                 TextInput::make('code')
                                     ->label('Code du Service')
-                                    ->extraInputAttributes(['oninput' => 'this.value = this.value.toUpperCase()'])->maxLength(10),
-                                //                                    ->uppercase(),
+                                    ->required()
+                                    ->extraInputAttributes(['oninput' => 'this.value = this.value.toUpperCase()'])
+                                    ->maxLength(10),
                                 TextInput::make('responsable')
                                     ->label('Responsable du Service')
                                     ->maxLength(255),
                             ])
+                            ->createOptionUsing(function (array $data): string {
+                                return Service::create($data)->getKey();
+                            })
                             ->columnSpan([
                                 'sm' => 1,
-                                'md' => 2,
+                                'md' => 1,
                             ]),
 
                         TextInput::make('emploi')
@@ -128,7 +133,7 @@ class EmployeeForm
                             ->prefixIcon(Heroicon::Identification)
                             ->maxLength(255)
                             ->autocomplete(false)
-                            ->columnSpan(1),
+                            ->columnSpan(2),
                     ]),
             ]);
     }

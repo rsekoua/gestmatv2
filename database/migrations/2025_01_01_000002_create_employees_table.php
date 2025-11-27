@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nom', 100);
             $table->string('prenom', 100);
             $table->string('emploi', 100);
-            $table->string('email', 255)->unique();
+            $table->string('email', 255)->unique()->nullable();
             $table->string('telephone', 20)->nullable();
             $table->string('fonction', 100)->nullable();
             $table->timestamps();

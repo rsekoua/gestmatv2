@@ -121,6 +121,23 @@ class StoreAttributionRequest extends FormRequest
                     );
                 }
             }
+
+            // Vérifier que la date d'attribution n'est pas antérieure à la date d'achat du matériel
+            if ($this->materiel_id && $this->date_attribution) {
+                $materiel = Materiel::find($this->materiel_id);
+
+                if ($materiel && $materiel->purchase_date) {
+                    $dateAttribution = \Carbon\Carbon::parse($this->date_attribution);
+                    $purchaseDate = \Carbon\Carbon::parse($materiel->purchase_date);
+
+                    if ($dateAttribution->lt($purchaseDate)) {
+                        $validator->errors()->add(
+                            'date_attribution',
+                            "La date d'attribution ne peut pas être antérieure à la date d'achat du matériel ({$purchaseDate->format('d/m/Y')})."
+                        );
+                    }
+                }
+            }
         });
     }
 

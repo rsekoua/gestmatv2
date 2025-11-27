@@ -17,7 +17,7 @@ class MaterielImporter extends Importer
      */
     public function getChunkSize(): int
     {
-        return 500;
+        return 50;
     }
 
     /**
@@ -31,13 +31,16 @@ class MaterielImporter extends Importer
                 ->rules(['required', 'unique:materiels,numero_serie', 'max:255'])
                 ->example('SN001'),
 
-            ImportColumn::make('materiel_type')
+            ImportColumn::make('materiel_type_id')
                 ->label('Type de Matériel')
                 ->requiredMapping()
-                ->relationship(resolveUsing: function (string $state): ?MaterielType {
-                    return MaterielType::where('nom', $state)->first();
+                ->guess(['type_materiel', 'type', 'materiel_type'])
+                ->castStateUsing(function (string $state): ?string {
+                    $type = MaterielType::where('nom', $state)->first();
+
+                    return $type?->id;
                 })
-                ->rules(['required'])
+                ->rules(['required', 'exists:materiel_types,id'])
                 ->exampleHeader('type_materiel')
                 ->example('Ordinateur Portable'),
 
@@ -61,6 +64,24 @@ class MaterielImporter extends Importer
             ImportColumn::make('purchase_date')
                 ->label('Date d\'achat')
                 ->rules(['nullable', 'date'])
+                ->castStateUsing(function ($state) {
+                    if (empty($state)) {
+                        return null;
+                    }
+
+                    // Try to parse different date formats
+                    try {
+                        // Handle formats like "01/01/2022" or "01-01-2022"
+                        if (preg_match('/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/', $state, $matches)) {
+                            return sprintf('%s-%s-%s', $matches[3], $matches[2], $matches[1]);
+                        }
+
+                        // Already in correct format or parseable by Carbon
+                        return $state;
+                    } catch (\Exception $e) {
+                        return null;
+                    }
+                })
                 ->exampleHeader('purchase_date')
                 ->example('2023-01-15'),
 
@@ -78,7 +99,13 @@ class MaterielImporter extends Importer
                 ->label('RAM (GB)')
                 ->rules(['nullable', 'integer', 'min:1'])
                 ->castStateUsing(function ($state) {
-                    return $state ? (int) $state : null;
+                    if (empty($state)) {
+                        return null;
+                    }
+                    // Remove "Go", "GB", spaces and convert to integer
+                    $cleaned = preg_replace('/[^\d]/', '', $state);
+
+                    return $cleaned ? (int) $cleaned : null;
                 })
                 ->example('16'),
 
@@ -86,7 +113,22 @@ class MaterielImporter extends Importer
                 ->label('Stockage (GB)')
                 ->rules(['nullable', 'integer', 'min:1'])
                 ->castStateUsing(function ($state) {
-                    return $state ? (int) $state : null;
+                    if (empty($state)) {
+                        return null;
+                    }
+                    // Remove "Go", "GB", "To", "TB", spaces, commas and convert to integer
+                    // Handle "1 To" -> 1000 GB, "2,5 To" -> 2500 GB
+                    $state = str_replace(',', '.', $state);
+
+                    if (stripos($state, 'To') !== false || stripos($state, 'TB') !== false) {
+                        $value = (float) preg_replace('/[^\d.]/', '', $state);
+
+                        return $value ? (int) ($value * 1000) : null;
+                    }
+
+                    $cleaned = preg_replace('/[^\d]/', '', $state);
+
+                    return $cleaned ? (int) $cleaned : null;
                 })
                 ->example('512'),
 

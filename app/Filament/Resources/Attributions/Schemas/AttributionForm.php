@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Attributions\Schemas;
 
+use App\Filament\Concerns\ValidatesAttributionDates;
 use App\Models\Accessory;
-use App\Models\Attribution;
 use App\Models\Employee;
 use App\Models\Materiel;
 use App\Models\Service;
@@ -20,6 +20,8 @@ use Filament\Support\Icons\Heroicon;
 
 class AttributionForm
 {
+    use ValidatesAttributionDates;
+
     /**
      * @throws \Exception
      */
@@ -171,54 +173,9 @@ class AttributionForm
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->live()
-                            ->minDate(function (Get $get, $record) {
-                                $materielId = $get('materiel_id');
-
-                                if (! $materielId) {
-                                    return null;
-                                }
-
-                                // Chercher la dernière restitution de ce matériel
-                                // Si on est en modification, exclure les restitutions après cette attribution
-                                $query = Attribution::where('materiel_id', $materielId)
-                                    ->whereNotNull('date_restitution');
-
-                                // En modification, exclure cette attribution et les suivantes
-                                if ($record) {
-                                    $query->where('date_attribution', '<', $record->date_attribution);
-                                }
-
-                                $lastRestitution = $query->orderBy('date_restitution', 'desc')->first();
-
-                                return $lastRestitution ? $lastRestitution->date_restitution : null;
-                            })
-                            ->helperText(function (Get $get, $record) {
-                                $materielId = $get('materiel_id');
-
-                                if (! $materielId) {
-                                    return 'Sélectionnez d\'abord un matériel';
-                                }
-
-                                // Chercher la dernière restitution de ce matériel
-                                $query = Attribution::where('materiel_id', $materielId)
-                                    ->whereNotNull('date_restitution');
-
-                                // En modification, exclure cette attribution et les suivantes
-                                if ($record) {
-                                    $query->where('date_attribution', '<', $record->date_attribution);
-                                }
-
-                                $lastRestitution = $query->orderBy('date_restitution', 'desc')->first();
-
-                                if ($lastRestitution) {
-                                    return "⚠️ Ce matériel a été restitué le {$lastRestitution->date_restitution->format('d/m/Y')}. La date d'attribution doit être égale ou postérieure à cette date.";
-                                }
-
-                                return 'Première attribution de ce matériel';
-                            })
-                            ->validationMessages([
-                                'after_or_equal' => 'La date d\'attribution doit être égale ou postérieure à la dernière restitution de ce matériel.',
-                            ])
+                            ->minDate((new self)->getMinDateClosure())
+                            ->helperText((new self)->getHelperTextClosure())
+                            ->validationMessages((new self)->getAttributionDateValidationMessages())
                             ->columnSpan(1),
 
                         Textarea::make('observations_att')
@@ -350,5 +307,131 @@ class AttributionForm
                             ->placeholder('Description des dommages éventuels'),
                     ]),
             ])->columns(3);
+    }
+
+    /**
+     * Get attribution form schema for quick actions (without restitution section).
+     *
+     * @param  Materiel  $materiel  Pre-selected materiel
+     */
+    public static function getQuickAttributionSchema(Materiel $materiel): array
+    {
+        return [
+            Section::make('Destinataire')
+                ->description(fn () => $materiel->materielType->isComputer()
+                    ? '👤 Sélectionnez l\'employé qui recevra ce matériel'
+                    : '🏢 Sélectionnez le service qui recevra cet équipement'
+                )
+                ->icon(Heroicon::UserCircle)
+                ->columns([
+                    'sm' => 1,
+                    'md' => 2,
+                ])
+                ->schema([
+                    // Champ Employé (visible uniquement pour les ordinateurs)
+                    Select::make('employee_id')
+                        ->label('Employé destinataire')
+                        ->required(fn (): bool => $materiel->materielType->isComputer())
+                        ->visible(fn (): bool => $materiel->materielType->isComputer())
+                        ->searchable(['nom', 'prenom', 'matricule'])
+                        ->preload()
+                        ->native(false)
+                        ->live()
+                        ->options(function () {
+                            return Employee::with('service')
+                                ->orderBy('nom')
+                                ->orderBy('prenom')
+                                ->get()
+                                ->mapWithKeys(function (Employee $employee) {
+                                    $serviceName = $employee->service?->code ?? 'Sans service';
+
+                                    return [$employee->id => "{$employee->full_name} - {$serviceName}"];
+                                });
+                        })
+                        ->getOptionLabelFromRecordUsing(function (Employee $record) {
+                            $serviceCode = $record->service?->code ?? 'N/A';
+
+                            return "{$record->full_name} ({$serviceCode})";
+                        })
+                        ->placeholder('Rechercher un employé par nom, prénom ou matricule')
+                        ->helperText('L\'employé qui recevra le matériel')
+                        ->columnSpanFull(),
+
+                    // Champ Service (visible uniquement pour les non-ordinateurs)
+                    Select::make('service_id')
+                        ->label('Service destinataire')
+                        ->required(fn (): bool => ! $materiel->materielType->isComputer())
+                        ->visible(fn (): bool => ! $materiel->materielType->isComputer())
+                        ->searchable(['nom', 'code'])
+                        ->preload()
+                        ->native(false)
+                        ->live()
+                        ->options(function () {
+                            return Service::query()
+                                ->orderBy('nom')
+                                ->get()
+                                ->mapWithKeys(function (Service $service) {
+                                    return [$service->id => $service->full_name];
+                                });
+                        })
+                        ->getOptionLabelFromRecordUsing(fn (Service $record) => $record->full_name)
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state) {
+                                $service = Service::find($state);
+                                $set('responsable_service', $service?->responsable);
+                            } else {
+                                $set('responsable_service', null);
+                            }
+                        })
+                        ->placeholder('Rechercher un service par nom ou code')
+                        ->helperText('Le service qui recevra l\'équipement')
+                        ->columnSpan(1),
+
+                    // Champ Responsable du service (visible uniquement pour les non-ordinateurs)
+                    TextInput::make('responsable_service')
+                        ->label('Responsable du service')
+                        ->disabled()
+                        ->dehydrated()
+                        ->visible(fn (): bool => ! $materiel->materielType->isComputer())
+                        ->helperText('Rempli automatiquement')
+                        ->columnSpan(1),
+
+                    DatePicker::make('date_attribution')
+                        ->label('Date d\'attribution')
+                        ->required()
+                        ->default(now())
+                        ->maxDate(now())
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->closeOnDateSelection()
+                        ->minDate(fn () => (new self)->getMinimumAttributionDate($materiel))
+                        ->helperText(fn () => (new self)->getAttributionDateHelperText($materiel))
+                        ->validationMessages((new self)->getAttributionDateValidationMessages())
+                        ->columnSpan(1),
+
+                    Textarea::make('observations_att')
+                        ->label('Observations (optionnel)')
+                        ->rows(3)
+                        ->placeholder('Ajoutez des notes concernant cette attribution...')
+                        ->helperText('Informations complémentaires sur l\'attribution')
+                        ->columnSpan(1),
+                ]),
+
+            Section::make('Accessoires')
+                ->description('🔌 Sélectionnez les accessoires fournis avec le matériel')
+                ->icon(Heroicon::CpuChip)
+                ->collapsible()
+                ->collapsed(false)
+                ->compact()
+                ->schema([
+                    ToggleButtons::make('accessories')
+                        ->label('')
+                        ->multiple()
+                        ->inline()
+                        ->options(Accessory::orderBy('nom')->pluck('nom', 'id'))
+                        ->grouped()
+                        ->helperText('Laissez vide si aucun accessoire n\'est fourni'),
+                ]),
+        ];
     }
 }

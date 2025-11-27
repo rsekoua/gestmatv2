@@ -19,17 +19,21 @@ class ListEmployees extends ListRecords
             ImportAction::make()
                 ->importer(EmployeeImporter::class)
                 ->label('Importer')
+                ->size('sm')
                 ->color('success')
-                ->icon('heroicon-o-arrow-down-tray'),
+                ->icon('heroicon-o-arrow-down-tray')
+                ->job(null), // Process synchronously to show progress immediately
             CreateAction::make()
-                ->icon('heroicon-o-plus')->label(''),
+                ->icon('heroicon-o-plus')
+                ->label('Nouvel employé')
+                ->size('sm'),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            //EmployeeStatsWidget::class,
+            // EmployeeStatsWidget::class,
         ];
     }
 
