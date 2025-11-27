@@ -50,6 +50,11 @@ class MaterialForm
                                     ->label('Description')
                                     ->maxLength(500),
                             ])
+                            ->createOptionUsing(function (array $data): string {
+                                Cache::forget('materiel_types.options');
+
+                                return MaterielType::create($data)->getKey();
+                            })
                             ->columnSpan([
                                 'sm' => 1,
                                 'md' => 2,
