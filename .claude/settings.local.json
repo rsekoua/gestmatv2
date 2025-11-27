@@ -26,7 +26,8 @@
       "mcp__laravel-boost__get-config",
       "Bash(del:*)",
       "mcp__laravel-boost__last-error",
-      "mcp__laravel-boost__read-log-entries"
+      "mcp__laravel-boost__read-log-entries",
+      "Bash(mkdir:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
