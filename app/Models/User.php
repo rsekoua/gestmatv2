@@ -53,11 +53,9 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         if (App::environment('local')) {
-            // On autorise l'accès à tous les utilisateurs enregistrés.
-            // (Facile pour le développement et le seeding)
             return true;
         }
-        return str_ends_with($this->email, '@dap-ci.org'); //&& $this->hasVerifiedEmail();
-    }
 
+        return str_ends_with($this->email, '@dap-ci.org');
+    }
 }
