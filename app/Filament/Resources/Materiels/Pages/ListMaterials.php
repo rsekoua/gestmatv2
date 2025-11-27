@@ -28,12 +28,12 @@ class ListMaterials extends ListRecords
 ////                ->enableVisibleTableColumnsByDefault()
 //                ->columnMappingColumns(2)
 //                ->fileName(fn (): string => 'materiels-'.now()->format('Y-m-d-His')),
-//            ImportAction::make()
-//                ->importer(MaterielImporter::class)
-//                ->label('Importer')
-//                ->size('sm')
-//                ->color('success')
-//                ->icon('heroicon-o-arrow-down-tray'),
+            ImportAction::make()
+                ->importer(MaterielImporter::class)
+                ->label('Importer')
+                ->size('sm')
+                ->color('success')
+                ->icon('heroicon-o-arrow-down-tray'),
             CreateAction::make()
                 ->icon('heroicon-o-plus')
                 ->label('Nouveau material')

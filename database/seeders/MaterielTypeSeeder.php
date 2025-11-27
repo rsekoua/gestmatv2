@@ -33,6 +33,10 @@ class MaterielTypeSeeder extends Seeder
                 'nom' => 'Serveur',
                 'description' => 'Serveur pour hébergement de données',
             ],
+            [
+                'nom' => 'Tablette',
+                'description' => 'Tablette pour enquête',
+            ],
         ];
 
         foreach ($types as $type) {
